@@ -24,6 +24,8 @@ import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions } from "./BaseChart";
 interface MapChartOptions extends BaseChartOptions {
+  labelPadding?: number;
+  labelSize?: number;
   pathShadowBlur?: number;
   pathShadowColor?: string;
   useShadow?: boolean;
@@ -35,6 +37,8 @@ interface MapChartOptions extends BaseChartOptions {
   getMapId?: (id: string) => string;
   strokeStyle?: string;
   defaultFill?: string | CanvasGradient | CanvasPattern;
+
+  noDataLabel?: string;
   showLabel?: boolean;
 }
 export class MapChart extends BaseChart {
@@ -46,6 +50,7 @@ export class MapChart extends BaseChart {
   map: any;
   mapIdField: string;
   visualMap: (t: number) => string;
+  noDataLabel: string | undefined | null;
   getMapId: (id: string) => string;
   strokeStyle: string;
   defaultFill: string | CanvasGradient | CanvasPattern;
@@ -59,6 +64,8 @@ export class MapChart extends BaseChart {
   pathShadowColor: string | undefined;
   useShadow: boolean;
   showLabel: boolean;
+  labelPadding: number;
+  labelSize: any;
 
   constructor(options?: MapChartOptions) {
     super(options);
@@ -80,6 +87,9 @@ export class MapChart extends BaseChart {
     this.pathShadowBlur = options.pathShadowBlur ?? 100;
     this.showGraticule = options.showGraticule ?? false;
     this.showLabel = options.showLabel ?? false;
+    this.noDataLabel = options.noDataLabel ?? "No data.";
+    this.labelPadding = options.labelPadding ?? 8;
+    this.labelSize = options.labelSize ?? 12;
   }
   margin: { top: number; left: number; right: number; bottom: number };
   setup(stage: Stage) {
@@ -131,6 +141,9 @@ export class MapChart extends BaseChart {
     this.initPathMap(map, geoGener);
   }
 
+  labelFormat = (id: string) => {
+    return id;
+  };
   private initPathMap(map: any, geoGener: GeoPath<any, GeoPermissibleObjects>) {
     this.labelComponentMap = new Map<string, Component>();
     for (const feature of map.features) {
@@ -139,18 +152,21 @@ export class MapChart extends BaseChart {
       this.pathMap.set(mapId, path);
       const txt = new Text({
         position: { x: 4, y: 6 },
-        text: feature.properties.name,
+        text: this.labelFormat(feature.properties[this.mapIdField]),
         textAlign: "left",
         textBaseline: "top",
-        fillStyle: "#FFF",
-        fontSize: 12,
+        fillStyle: this.strokeStyle,
+        fontSize: this.labelSize,
       });
       const width = canvasHelper.measure(txt).width;
       const label = new Rect({
         position: { x: 0, y: 0 },
         fillStyle: "#2225",
-        strokeStyle: "#fff",
-        shape: { width: width + 8, height: 13 + 8 },
+        strokeStyle: this.strokeStyle,
+        shape: {
+          width: width + this.labelPadding,
+          height: this.labelSize + this.labelPadding,
+        },
       });
       label.addChild(txt);
       this.labelComponentMap.set(mapId, label);
@@ -182,7 +198,6 @@ export class MapChart extends BaseChart {
       this.graticulePathComp = new Path({
         path: this.graticulePath,
         strokeStyle: stroke?.toString(),
-        fillStyle: "#0000",
       });
       this.wrapper.children.push(this.graticulePathComp);
     }
@@ -250,6 +265,15 @@ export class MapChart extends BaseChart {
         label.position.x = center[0];
         label.position.y = center[1];
       }
+      if (label) {
+        (label.children[0] as Text).text =
+          this.dataScales.get(mapId) || !this.noDataLabel
+            ? this.labelFormat(mapId)
+            : this.noDataLabel;
+
+        const width = canvasHelper.measure(label.children[0] as Text).width;
+        (label as Rect).shape.width = width + this.labelPadding;
+      }
     }
     for (const [id, data] of this.dataScales) {
       const mapId = this.getMapId(id);
@@ -257,6 +281,8 @@ export class MapChart extends BaseChart {
       const rate = this.scale(currentValue);
       const color = this.visualMap(rate);
       const comp = this.pathComponentMap.get(mapId);
+      const label = this.labelComponentMap.get(mapId);
+
       if (comp) {
         comp.fillStyle = color;
         if (this.useShadow) {

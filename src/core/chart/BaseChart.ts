@@ -49,11 +49,11 @@ export interface BaseChartOptions {
 }
 export type KeyGenerate =
   | ((id: string) => string)
-  | ((id: string, meta: Map<string, any> | undefined) => string)
+  | ((id: string, meta?: Map<string, any> | undefined) => string)
   | ((
       id: string,
-      meta: Map<string, any> | undefined,
-      data: Map<string, any> | undefined
+      meta?: Map<string, any> | undefined,
+      data?: Map<string, any> | undefined
     ) => string);
 export abstract class BaseChart extends Ani {
   yAxisWidth: number;

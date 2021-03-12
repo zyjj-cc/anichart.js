@@ -186,6 +186,12 @@ ani.recourse.loadJSON(
   "map"
 );
 stage.addChild(img);
-stage.play();
+async function start() {
+  const img = await d3.image("./pic/pattern.png");
+  const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
+  map.defaultFill = pattern!;
+  stage.play();
+}
+start();
 (window as any).stage = stage;
 (window as any).d3 = d3;
