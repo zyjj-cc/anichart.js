@@ -251,6 +251,7 @@ export class MapChart extends BaseChart {
         this.graticulePathComp.path = graticulePath;
       }
     }
+    let a = scaleLinear([400, 560], [0, 1]).clamp(true);
     for (const feature of this.map.features) {
       const mapId = feature.properties[this.mapIdField];
       const path = this.geoGener(feature);
@@ -261,7 +262,8 @@ export class MapChart extends BaseChart {
       const label = this.labelComponentMap.get(mapId);
       if (label) {
         const center = this.geoGener.centroid(feature);
-        label.alpha = path ? 1 : 0;
+        const area = this.geoGener.area(feature);
+        label.alpha = path ? a(area) : 0;
         label.position.x = center[0];
         label.position.y = center[1];
       }
