@@ -24,6 +24,7 @@ import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions } from "./BaseChart";
 interface MapChartOptions extends BaseChartOptions {
+  labelAlphaScale?: ScaleLinear<number, number, never>;
   labelPadding?: number;
   labelSize?: number;
   pathShadowBlur?: number;
@@ -66,6 +67,7 @@ export class MapChart extends BaseChart {
   showLabel: boolean;
   labelPadding: number;
   labelSize: any;
+  labelAlphaScale: ScaleLinear<number, number, never>;
 
   constructor(options?: MapChartOptions) {
     super(options);
@@ -90,6 +92,8 @@ export class MapChart extends BaseChart {
     this.noDataLabel = options.noDataLabel ?? "No data.";
     this.labelPadding = options.labelPadding ?? 8;
     this.labelSize = options.labelSize ?? 12;
+    this.labelAlphaScale =
+      options.labelAlphaScale ?? scaleLinear([400, 560], [0, 1]).clamp(true);
   }
   margin: { top: number; left: number; right: number; bottom: number };
   setup(stage: Stage) {
@@ -251,7 +255,6 @@ export class MapChart extends BaseChart {
         this.graticulePathComp.path = graticulePath;
       }
     }
-    let a = scaleLinear([400, 560], [0, 1]).clamp(true);
     for (const feature of this.map.features) {
       const mapId = feature.properties[this.mapIdField];
       const path = this.geoGener(feature);
@@ -263,7 +266,7 @@ export class MapChart extends BaseChart {
       if (label) {
         const center = this.geoGener.centroid(feature);
         const area = this.geoGener.area(feature);
-        label.alpha = path ? a(area) : 0;
+        label.alpha = path ? this.labelAlphaScale(area) : 0;
         label.position.x = center[0];
         label.position.y = center[1];
       }
