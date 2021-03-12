@@ -3,7 +3,6 @@ import { CanvasRenderer } from "./CanvasRenderer";
 import { Component } from "./component/Component";
 import { Timer } from "d3";
 export declare class Stage {
-    aniRoot: Ani;
     compRoot: Component;
     renderer: CanvasRenderer;
     options: {
@@ -32,6 +31,5 @@ export declare class Stage {
     play(): void;
     private doPlay;
     setup(): void;
-    private preRender;
     private setupChildren;
 }

@@ -2,8 +2,9 @@ import { Component } from "../component/Component";
 import { Stage } from "../Stage";
 export declare class Ani {
     stage: Stage | undefined;
-    children: (Ani | Component)[];
-    constructor(ani?: Ani);
+    offsetSec: number;
+    parent: Ani | Component;
+    constructor();
     getComponent(sec: number): Component | null;
     setup(stage: Stage): void;
 }

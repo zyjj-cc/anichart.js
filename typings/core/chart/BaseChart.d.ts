@@ -28,11 +28,12 @@ export interface BaseChartOptions {
     valueField?: string;
     valueKeys?: string[];
     valueFormat?: (cData: any) => string;
-    labelFormat?: (id: string, meta: Map<string, any>, data: Map<string, any>) => string;
+    labelFormat?: (id: string, meta?: Map<string, any>, data?: Map<string, any>) => string;
     dateFormat?: string;
+    visualRange?: "total" | "current" | "history" | [number, number];
     dataName?: string;
     metaName?: string;
-    maxInterval?: number;
+    maxIntervalMS?: number;
 }
 export declare type KeyGenerate = ((id: string) => string) | ((id: string, meta: Map<string, any> | undefined) => string) | ((id: string, meta: Map<string, any> | undefined, data: Map<string, any> | undefined) => string);
 export declare abstract class BaseChart extends Ani {
@@ -40,8 +41,9 @@ export declare abstract class BaseChart extends Ani {
     xAxisHeight: number;
     yAxisPadding: number;
     xAxisPadding: number;
-    maxInterval: number;
+    maxIntervalMS: number;
     dataGroupByDate: Map<any, any[]>;
+    visualRange: "total" | "current" | "history" | [number, number];
     constructor(options?: BaseChartOptions);
     tickKeyFrameDuration: number;
     dataScales: Map<string, any>;
