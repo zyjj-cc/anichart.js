@@ -92,6 +92,7 @@ export class MapChart extends BaseChart {
     this.noDataLabel = options.noDataLabel ?? undefined;
     this.labelPadding = options.labelPadding ?? 8;
     this.labelSize = options.labelSize ?? 12;
+    if (options.labelFormat) this.labelFormat = options.labelFormat;
     this.labelAlphaScale =
       options.labelAlphaScale ?? scaleLinear([400, 560], [0, 1]).clamp(true);
   }
