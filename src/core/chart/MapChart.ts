@@ -274,7 +274,8 @@ export class MapChart extends BaseChart {
       }
       if (label) {
         (label.children[0] as Text).text =
-          this.dataScales?.get(mapId)?.(sec) || !this.noDataLabel
+          this.dataScales?.get(mapId)?.(sec)[this.valueField] ||
+          !this.noDataLabel
             ? this.labelFormat(mapId)
             : this.noDataLabel;
 
@@ -288,10 +289,9 @@ export class MapChart extends BaseChart {
       const rate = this.scale(currentValue);
       const color = this.visualMap(rate);
       const comp = this.pathComponentMap.get(mapId);
-      const label = this.labelComponentMap.get(mapId);
 
       if (comp) {
-        comp.fillStyle = color;
+        comp.fillStyle = currentValue ? color : this.defaultFill;
         if (this.useShadow) {
           comp.shadow = {
             enable: true,

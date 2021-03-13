@@ -4,6 +4,7 @@ import { Component } from "../component/Component";
 import { TextOptions } from "../component/Text";
 import { Stage } from "../Stage";
 export interface BaseChartOptions {
+    interpolateInitValue?: number;
     aniTime?: [number, number];
     fadeTime?: [number, number];
     freezeTime?: [number, number];
@@ -35,7 +36,7 @@ export interface BaseChartOptions {
     metaName?: string;
     maxIntervalMS?: number;
 }
-export declare type KeyGenerate = ((id: string) => string) | ((id: string, meta: Map<string, any> | undefined) => string) | ((id: string, meta: Map<string, any> | undefined, data: Map<string, any> | undefined) => string);
+export declare type KeyGenerate = ((id: string) => string) | ((id: string, meta?: Map<string, any> | undefined) => string) | ((id: string, meta?: Map<string, any> | undefined, data?: Map<string, any> | undefined) => string);
 export declare abstract class BaseChart extends Ani {
     yAxisWidth: number;
     xAxisHeight: number;
@@ -44,6 +45,7 @@ export declare abstract class BaseChart extends Ani {
     maxIntervalMS: number;
     dataGroupByDate: Map<any, any[]>;
     visualRange: "total" | "current" | "history" | [number, number];
+    interpolateInitValue: number;
     constructor(options?: BaseChartOptions);
     tickKeyFrameDuration: number;
     dataScales: Map<string, any>;
