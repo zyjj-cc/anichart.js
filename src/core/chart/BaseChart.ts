@@ -18,6 +18,7 @@ import { font } from "../Constant";
 import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
 export interface BaseChartOptions {
+  interpolateInitValue?: number;
   aniTime?: [number, number];
   fadeTime?: [number, number];
   freezeTime?: [number, number];
@@ -63,6 +64,7 @@ export abstract class BaseChart extends Ani {
   maxIntervalMS: number;
   dataGroupByDate: Map<any, any[]>;
   visualRange: "total" | "current" | "history" | [number, number];
+  interpolateInitValue: number;
   constructor(options?: BaseChartOptions) {
     super();
     if (!options) return;
@@ -84,6 +86,7 @@ export abstract class BaseChart extends Ani {
     if (options.metaName) this.metaName = options.metaName;
     if (options.visualRange) this.visualRange = options.visualRange;
     if (options.position) this.position = options.position;
+    this.interpolateInitValue = options.interpolateInitValue ?? NaN;
     this.maxIntervalMS = options.maxIntervalMS ?? Number.MAX_VALUE;
   }
   tickKeyFrameDuration: number = 1;
@@ -210,7 +213,7 @@ export abstract class BaseChart extends Ani {
         this.maxIntervalMS
       ) {
         const obj = Object.assign({}, last);
-        obj[this.valueField] = 0;
+        obj[this.valueField] = this.interpolateInitValue;
         obj[this.dateField] = new Date(obj[this.dateField].getTime() + 1);
         // console.log(obj);
         dataList.push(obj);
@@ -222,7 +225,7 @@ export abstract class BaseChart extends Ani {
         this.maxIntervalMS
       ) {
         const obj = Object.assign({}, first);
-        obj[this.valueField] = 0;
+        obj[this.valueField] = this.interpolateInitValue;
         obj[this.dateField] = new Date(obj[this.dateField].getTime() - 1);
         // console.log(obj);
         dataList.unshift(obj);
