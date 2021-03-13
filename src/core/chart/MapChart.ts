@@ -273,7 +273,7 @@ export class MapChart extends BaseChart {
       }
       if (label) {
         (label.children[0] as Text).text =
-          this.dataScales.get(mapId) || !this.noDataLabel
+          this.dataScales.get(mapId)(sec) || !this.noDataLabel
             ? this.labelFormat(mapId)
             : this.noDataLabel;
 
