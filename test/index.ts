@@ -35,8 +35,8 @@ textJannchieStudio.component.text = "Powered by Jannchie Studio";
 textJannchieStudio.component.font = "Sarasa Mono Slab SC";
 textJannchieStudio.type = "blur";
 
-textLinesAni.children.push(textAnichart);
-textLinesAni.children.push(textJannchieStudio);
+// textLinesAni.children.push(textAnichart);
+// textLinesAni.children.push(textJannchieStudio);
 
 ani.recourse.loadImage("./data/ANI.png", "logo");
 ani.recourse.loadImage(
@@ -157,7 +157,10 @@ stage.addChild(textLinesAni);
 stage.addChild(rectAni);
 stage.addChild(logoAni);
 
-const map = new ani.MapChart();
+const map = new ani.MapChart({
+  showLabel: true,
+  projectionType: "orthographic",
+});
 stage.addChild(map);
 
 stage.addChild(barChart);
@@ -183,6 +186,12 @@ ani.recourse.loadJSON(
   "map"
 );
 stage.addChild(img);
-stage.play();
+async function start() {
+  const img = await d3.image("./pic/pattern.png");
+  const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
+  map.defaultFill = pattern!;
+  stage.play();
+}
+start();
 (window as any).stage = stage;
 (window as any).d3 = d3;

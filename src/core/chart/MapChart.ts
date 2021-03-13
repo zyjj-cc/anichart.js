@@ -13,13 +13,20 @@ import {
   extent,
   scaleLinear,
   geoGraticule10,
+  geoCentroid,
 } from "d3";
+import { canvasHelper } from "../CanvasHelper";
 import { Component, ShadowOptions } from "../component/Component";
 import { Path } from "../component/Path";
+import { Rect } from "../component/Rect";
+import { Text } from "../component/Text";
 import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions } from "./BaseChart";
 interface MapChartOptions extends BaseChartOptions {
+  labelAlphaScale?: ScaleLinear<number, number, never>;
+  labelPadding?: number;
+  labelSize?: number;
   pathShadowBlur?: number;
   pathShadowColor?: string;
   useShadow?: boolean;
@@ -29,22 +36,25 @@ interface MapChartOptions extends BaseChartOptions {
   mapIdField?: string;
   visualMap?: (t: number) => string;
   getMapId?: (id: string) => string;
-  visualRange?: "total" | "current" | "history" | [number, number];
   strokeStyle?: string;
-  defaultFill?: string;
+  defaultFill?: string | CanvasGradient | CanvasPattern;
+
+  noDataLabel?: string;
+  showLabel?: boolean;
 }
 export class MapChart extends BaseChart {
   geoGener: GeoPath<any, GeoPermissibleObjects>;
   pathMap: Map<string, string | null>;
   pathComponentMap: Map<string, Path>;
+  labelComponentMap: Map<string, Component>;
   projection: GeoProjection;
   map: any;
   mapIdField: string;
   visualMap: (t: number) => string;
-  visualRange: "total" | "current" | "history" | [number, number];
+  noDataLabel: string | undefined | null;
   getMapId: (id: string) => string;
   strokeStyle: string;
-  defaultFill: string;
+  defaultFill: string | CanvasGradient | CanvasPattern;
   projectionType: "orthographic" | "natural" | "mercator" | "equirectangular";
   scale: ScaleLinear<number, number, never>;
   showGraticule: boolean;
@@ -54,6 +64,10 @@ export class MapChart extends BaseChart {
   pathShadowBlur: number;
   pathShadowColor: string | undefined;
   useShadow: boolean;
+  showLabel: boolean;
+  labelPadding: number;
+  labelSize: any;
+  labelAlphaScale: ScaleLinear<number, number, never>;
 
   constructor(options?: MapChartOptions) {
     super(options);
@@ -70,11 +84,17 @@ export class MapChart extends BaseChart {
     this.strokeStyle = options.strokeStyle ?? "#FFF";
     this.defaultFill = options.defaultFill ?? "#FFF1";
     this.projectionType = options.projectionType ?? "natural";
-    this.visualRange = options.visualRange ?? "current";
     this.useShadow = options.useShadow ?? false;
     this.pathShadowColor = options.pathShadowColor;
     this.pathShadowBlur = options.pathShadowBlur ?? 100;
     this.showGraticule = options.showGraticule ?? false;
+    this.showLabel = options.showLabel ?? false;
+    this.noDataLabel = options.noDataLabel ?? undefined;
+    this.labelPadding = options.labelPadding ?? 8;
+    this.labelSize = options.labelSize ?? 12;
+    if (options.labelFormat) this.labelFormat = options.labelFormat;
+    this.labelAlphaScale =
+      options.labelAlphaScale ?? scaleLinear([400, 560], [0, 1]).clamp(true);
   }
   margin: { top: number; left: number; right: number; bottom: number };
   setup(stage: Stage) {
@@ -126,11 +146,35 @@ export class MapChart extends BaseChart {
     this.initPathMap(map, geoGener);
   }
 
+  labelFormat = (id: string) => {
+    return id;
+  };
   private initPathMap(map: any, geoGener: GeoPath<any, GeoPermissibleObjects>) {
+    this.labelComponentMap = new Map<string, Component>();
     for (const feature of map.features) {
       const mapId = feature.properties[this.mapIdField];
       const path = geoGener(feature);
       this.pathMap.set(mapId, path);
+      const txt = new Text({
+        position: { x: 4, y: 6 },
+        text: this.labelFormat(feature.properties[this.mapIdField]),
+        textAlign: "left",
+        textBaseline: "top",
+        fillStyle: this.strokeStyle,
+        fontSize: this.labelSize,
+      });
+      const width = canvasHelper.measure(txt).width;
+      const label = new Rect({
+        position: { x: 0, y: 0 },
+        fillStyle: "#2225",
+        strokeStyle: this.strokeStyle,
+        shape: {
+          width: width + this.labelPadding,
+          height: this.labelSize + this.labelPadding,
+        },
+      });
+      label.addChild(txt);
+      this.labelComponentMap.set(mapId, label);
     }
   }
   private initComps() {
@@ -143,9 +187,14 @@ export class MapChart extends BaseChart {
         fillStyle: this.defaultFill,
         strokeStyle: this.strokeStyle,
       });
-      this.wrapper?.children?.push(path);
+      this.wrapper.children.push(path);
       this.pathComponentMap.set(mapId, path);
     });
+    if (this.showLabel) {
+      for (const labelComp of this.labelComponentMap.values()) {
+        this.wrapper.children.push(labelComp);
+      }
+    }
     if (this.showGraticule) {
       const stroke = color(this.strokeStyle);
       if (stroke) {
@@ -156,7 +205,7 @@ export class MapChart extends BaseChart {
         strokeStyle: stroke?.toString(),
         fillStyle: "#0000",
       });
-      this.wrapper?.children?.push(this.graticulePathComp);
+      this.wrapper.children.push(this.graticulePathComp);
     }
   }
 
@@ -215,6 +264,23 @@ export class MapChart extends BaseChart {
       if (comp && path) {
         comp.path = path;
       }
+      const label = this.labelComponentMap.get(mapId);
+      if (label) {
+        const center = this.geoGener.centroid(feature);
+        const area = this.geoGener.area(feature);
+        label.alpha = path ? this.labelAlphaScale(area) : 0;
+        label.position.x = center[0];
+        label.position.y = center[1];
+      }
+      if (label) {
+        (label.children[0] as Text).text =
+          this.dataScales?.get(mapId)?.(sec) || !this.noDataLabel
+            ? this.labelFormat(mapId)
+            : this.noDataLabel;
+
+        const width = canvasHelper.measure(label.children[0] as Text).width;
+        (label as Rect).shape.width = width + this.labelPadding;
+      }
     }
     for (const [id, data] of this.dataScales) {
       const mapId = this.getMapId(id);
@@ -222,6 +288,8 @@ export class MapChart extends BaseChart {
       const rate = this.scale(currentValue);
       const color = this.visualMap(rate);
       const comp = this.pathComponentMap.get(mapId);
+      const label = this.labelComponentMap.get(mapId);
+
       if (comp) {
         comp.fillStyle = color;
         if (this.useShadow) {

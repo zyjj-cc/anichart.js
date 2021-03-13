@@ -1,7 +1,7 @@
 import { Component } from "../component/Component";
 import { Stage } from "../Stage";
 import { Ani } from "./Ani";
-export interface GridOptions {
+export interface GridAniOptions {
     aniTime?: [number, number];
     col?: number;
     row?: number;
@@ -27,7 +27,7 @@ export declare class GridAni extends Ani {
         width: number;
         height: number;
     };
-    constructor(options?: GridOptions);
+    constructor(options?: GridAniOptions);
     wrapper: Component;
     setup(stage: Stage): void;
     getComponent(sec: number): Component;

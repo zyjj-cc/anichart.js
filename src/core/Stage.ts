@@ -1,15 +1,13 @@
 import { Ani } from "./ani/Ani";
-import { canvasRenderer, CanvasRenderer } from "./CanvasRenderer";
+import { CanvasRenderer } from "./CanvasRenderer";
 import { Component } from "./component/Component";
 import { addFrameToFFmpeg, ffmpeg, outputMP4, removePNG } from "./FFmpeg";
 import { recourse } from "./Recourse";
 import { interval, Timer } from "d3";
 import { eachLimit, eachSeries } from "async";
 export class Stage {
-  aniRoot: Ani = new Ani();
   compRoot: Component = new Component();
   renderer: CanvasRenderer;
-
   options = { sec: 5, fps: 30 };
   outputOptions = {
     fileName: "output",
@@ -49,18 +47,19 @@ export class Stage {
       canvas.height = 1080;
       document.body.appendChild(canvas);
     }
-    this.renderer = canvasRenderer;
+    this.renderer = new CanvasRenderer();
+    this.renderer.stage = this;
     this.renderer.setCanvas(canvas);
     this.sec = 0;
   }
 
   addChild(child: Ani | Component) {
-    this.aniRoot.children.push(child);
+    this.compRoot.children.push(child);
   }
 
   render(sec: number) {
-    this.preRender(sec);
-    this.renderer.render(this.compRoot);
+    this.renderer.clean();
+    this.renderer.render(this.compRoot, this.compRoot.offsetSec);
   }
 
   loadRecourse() {
@@ -96,11 +95,13 @@ export class Stage {
             frames.push(this.cFrame);
           }
           eachLimit(frames, this.outputConcurrency, (f, cb) => {
+            this.cFrame = f;
             this.render(f / this.options.fps);
             const no =
               f - (p - 1) * this.outputOptions.splitSec * this.options.fps;
             picNameList.push(`output-${no}.png`);
-            addFrameToFFmpeg(this.canvas, no).then(() => cb());
+            const imageData = this.canvas.toDataURL("image/png", 0.99);
+            addFrameToFFmpeg(imageData, no).then(() => cb());
           }).then(() => {
             outputMP4(this.options.fps).then(() => {
               removePNG(picNameList);
@@ -127,27 +128,17 @@ export class Stage {
   }
 
   setup() {
-    this.setupChildren(this.aniRoot);
+    this.setupChildren(this.compRoot);
   }
 
-  private preRender(sec: number) {
-    this.compRoot = new Component();
-    this.aniRoot.children.forEach((child) => {
-      if (child instanceof Component) {
-        this.compRoot.children.push(child);
-      } else {
-        this.compRoot.children.push(child.getComponent(sec));
-      }
-    });
-    this.renderer.clean();
-  }
-
-  private setupChildren(ani: Ani) {
+  private setupChildren(ani: Component | Ani) {
     ani.setup(this);
-    ani.children.forEach((child) => {
-      if (child instanceof Ani) {
-        this.setupChildren(child);
-      }
-    });
+    if (ani instanceof Component) {
+      ani.children.forEach((child) => {
+        if (child instanceof Ani) {
+          this.setupChildren(child);
+        }
+      });
+    }
   }
 }

@@ -18,19 +18,17 @@ interface MapChartOptions extends BaseChartOptions {
     mapIdField?: string;
     visualMap?: (t: number) => string;
     getMapId?: (id: string) => string;
-    visualRange?: "total" | "current" | "history" | [number, number];
     strokeStyle?: string;
     defaultFill?: string;
 }
 export declare class MapChart extends BaseChart {
     geoGener: GeoPath<any, GeoPermissibleObjects>;
-    pathMap: Map<string, string>;
+    pathMap: Map<string, string | null>;
     pathComponentMap: Map<string, Path>;
     projection: GeoProjection;
     map: any;
     mapIdField: string;
     visualMap: (t: number) => string;
-    visualRange: "total" | "current" | "history" | [number, number];
     getMapId: (id: string) => string;
     strokeStyle: string;
     defaultFill: string;
@@ -53,7 +51,7 @@ export declare class MapChart extends BaseChart {
     wrapper: Component;
     private init;
     private initGeoPath;
-    private updatePathMap;
+    private initPathMap;
     private initComps;
     getComponent(sec: number): Component;
     updateScale(sec: number): void;
