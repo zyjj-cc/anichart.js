@@ -89,7 +89,7 @@ export class MapChart extends BaseChart {
     this.pathShadowBlur = options.pathShadowBlur ?? 100;
     this.showGraticule = options.showGraticule ?? false;
     this.showLabel = options.showLabel ?? false;
-    this.noDataLabel = options.noDataLabel ?? "No data.";
+    this.noDataLabel = options.noDataLabel ?? undefined;
     this.labelPadding = options.labelPadding ?? 8;
     this.labelSize = options.labelSize ?? 12;
     this.labelAlphaScale =
@@ -202,6 +202,7 @@ export class MapChart extends BaseChart {
       this.graticulePathComp = new Path({
         path: this.graticulePath,
         strokeStyle: stroke?.toString(),
+        fillStyle: "#0000",
       });
       this.wrapper.children.push(this.graticulePathComp);
     }
