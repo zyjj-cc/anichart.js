@@ -5,8 +5,18 @@ export class ImageLoader {
     this.load = (url: string) =>
       new Promise((resolve) => {
         if (typeof window === "undefined") {
-          // TODO: Load image in node.js
-          resolve(null);
+          // Load image in node.js
+          const { loadImage } = require("canvas");
+          loadImage(url).then(
+            (
+              image:
+                | CanvasImageSource
+                | PromiseLike<CanvasImageSource | null>
+                | null
+            ) => {
+              resolve(image);
+            }
+          );
         } else {
           const image = new Image();
           image.onload = () => {

@@ -121,7 +121,7 @@ export class CanvasRenderer implements Renderer {
     }
     if (image.sliceShape) {
       this.ctx.drawImage(
-        src,
+        image,
         image.slicePosition.x,
         image.slicePosition.y,
         image.sliceShape.width,
