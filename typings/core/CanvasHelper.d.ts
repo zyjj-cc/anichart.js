@@ -4,7 +4,7 @@ export declare class CanvasHelper {
     isPointInPath(area: Path2D | string, x: number, d: number): any;
     renderer: CanvasRenderer;
     constructor();
-    measure<T extends Component>(c: T): TextMetrics;
+    measure<T extends Component>(c: T): any;
     private measureText;
 }
 export declare const canvasHelper: CanvasHelper;

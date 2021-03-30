@@ -4,16 +4,21 @@ export class ImageLoader {
   constructor() {
     this.load = (url: string) =>
       new Promise((resolve) => {
-        const image = new Image();
-        image.onload = () => {
-          resolve(image);
-        };
-        image.onerror = () => {
-          // if error, still accept the result but not load this image
+        if (typeof window === "undefined") {
+          // TODO: Load image in node.js
           resolve(null);
-        };
-        image.src = url;
-        image.crossOrigin = "anonymous";
+        } else {
+          const image = new Image();
+          image.onload = () => {
+            resolve(image);
+          };
+          image.onerror = () => {
+            // if error, still accept the result but not load this image
+            resolve(null);
+          };
+          image.src = url;
+          image.crossOrigin = "anonymous";
+        }
       });
   }
 }

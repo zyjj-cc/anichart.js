@@ -2,7 +2,7 @@ import * as ani from "../src/index";
 import * as d3 from "d3";
 const stage = new ani.Stage();
 stage.options.fps = 30;
-stage.options.sec = 60 * 4;
+stage.options.sec = 10;
 stage.output = false;
 
 const bgAni = new ani.RectAni();
@@ -153,15 +153,15 @@ stage.addChild(bgAni);
 
 stage.addChild(a);
 stage.addChild(logoCenter);
-stage.addChild(textLinesAni);
+// stage.addChild(textLinesAni);
 stage.addChild(rectAni);
-stage.addChild(logoAni);
+// stage.addChild(logoAni);
 
 const map = new ani.MapChart({
   showLabel: true,
   projectionType: "orthographic",
 });
-stage.addChild(map);
+// stage.addChild(map);
 
 stage.addChild(barChart);
 stage.addChild(lineChart);
@@ -176,7 +176,7 @@ const pie = new ani.PieChart({
   position: { x: stage.canvas.width / 2, y: stage.canvas.height / 2 },
 });
 stage.addChild(pie);
-stage.addChild(progress);
+// stage.addChild(progress);
 const img = ani.showImage({
   src: "./data/ANI.png",
 });
@@ -185,13 +185,15 @@ ani.recourse.loadJSON(
   `https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json`,
   "map"
 );
-stage.addChild(img);
+// stage.addChild(img);
 async function start() {
-  const img = await d3.image("./pic/pattern.png");
-  const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
-  map.defaultFill = pattern!;
+  // const img = await d3.image("./pic/pattern.png");
+  // const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
+  // map.defaultFill = pattern!;
   stage.play();
 }
-start();
-(window as any).stage = stage;
-(window as any).d3 = d3;
+start().then(() => console.log("finished"));
+if (typeof window !== "undefined") {
+  (window as any).stage = stage;
+  (window as any).d3 = d3;
+}

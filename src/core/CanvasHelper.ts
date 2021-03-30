@@ -1,3 +1,4 @@
+import { createCanvas } from "canvas";
 import { canvasRenderer, CanvasRenderer } from "./CanvasRenderer";
 import { Component } from "./component/Component";
 import { Text } from "./component/Text";
@@ -6,16 +7,24 @@ export class CanvasHelper {
     if (typeof area == "string") {
       area = new Path2D(area);
     }
-    return this.renderer.canvas.getContext("2d")?.isPointInPath(area, x, d);
+    return this.renderer.ctx?.isPointInPath(area, x, d);
   }
   renderer: CanvasRenderer = canvasRenderer;
   constructor() {
-    var canvas = document.querySelector("canvas");
-    if (!canvas) {
-      canvas = document.createElement("canvas");
+    if (typeof window == "undefined") {
+      // node
+      var nodeCanvas = createCanvas(1920, 1080);
+      this.renderer.canvas = nodeCanvas;
+      this.renderer.ctx = nodeCanvas.getContext("2d");
+    } else {
+      // browser
+      var canvas = document.querySelector("canvas");
+      if (!canvas) {
+        canvas = document.createElement("canvas");
+      }
+      this.renderer.canvas = canvas;
+      this.renderer.ctx = canvas.getContext("2d")!;
     }
-    this.renderer.canvas = canvas;
-    this.renderer.ctx = canvas.getContext("2d")!;
   }
 
   measure<T extends Component>(c: T) {
@@ -28,9 +37,7 @@ export class CanvasHelper {
   }
   private measureText(c: Text) {
     this.renderer.prerenderText(c);
-    const res = this.renderer.canvas
-      .getContext("2d")!
-      .measureText(c.text ?? "");
+    const res = this.renderer.ctx.measureText(c.text ?? "");
     this.renderer.ctx.restore();
     return res;
   }

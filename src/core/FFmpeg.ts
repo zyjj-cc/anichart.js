@@ -10,13 +10,21 @@ export type Preset =
   | "slower"
   | "veryslow"
   | "placebo ";
-export const ffmpeg = createFFmpeg({ log: true });
+const ffmpeg = createFFmpeg({ log: true });
+export async function loadffmpeg() {
+  return ffmpeg.load();
+}
 export async function addFrameToFFmpeg(
   imageData: string,
   frame: number,
   name = "output"
 ) {
-  ffmpeg.FS("writeFile", `${name}-${frame}.png`, await fetchFile(imageData));
+  try {
+    ffmpeg.FS("writeFile", `${name}-${frame}.png`, await fetchFile(imageData));
+  } catch (err) {
+    console.log(`${name}-${frame}.png`);
+    console.error(err);
+  }
 }
 export function removePNG(list: string[]) {
   for (const name of list) {

@@ -2,7 +2,6 @@ import { Component } from "../component/Component";
 import { Image } from "../component/Image";
 import { Rect } from "../component/Rect";
 import { Text, TextOptions } from "../component/Text";
-import * as _ from "lodash-es";
 import { colorPicker } from "../ColorPicker";
 import { canvasHelper } from "../CanvasHelper";
 import { Stage } from "../Stage";

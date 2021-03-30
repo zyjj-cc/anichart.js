@@ -140,7 +140,7 @@ export class Progress extends Ani implements ProgressOptions {
       .interpolate(easeInterpolate(easePolyOut.exponent(5)))(sec);
 
     const label = format("d")(val);
-    const res = this.ani.getComponent(sec)!;
+    const res = this.ani.getComponent(sec);
     const textLabel = new Text({
       text: val === 100 ? `` : `Loading ${label} %`,
       font,
@@ -150,7 +150,7 @@ export class Progress extends Ani implements ProgressOptions {
       position: { x: 0, y: this.shape.height },
       fillStyle: "#fff",
     });
-    res.children.push(textLabel);
+    res?.children.push(textLabel);
     return res;
   }
 }

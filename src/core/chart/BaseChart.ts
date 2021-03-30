@@ -8,7 +8,6 @@ import {
   scaleLinear,
   ScaleLinear,
 } from "d3";
-import * as _ from "lodash-es";
 import moment from "moment";
 import { Ani } from "../ani/Ani";
 import { canvasHelper } from "../CanvasHelper";
@@ -17,6 +16,7 @@ import { Text, TextOptions } from "../component/Text";
 import { font } from "../Constant";
 import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
+import { cloneDeep } from "lodash";
 export interface BaseChartOptions {
   interpolateInitValue?: number;
   aniTime?: [number, number];
@@ -148,7 +148,7 @@ export abstract class BaseChart extends Ani {
     }
   }
   private setData() {
-    this.data = _.cloneDeep(recourse.data.get(this.dataName));
+    this.data = cloneDeep(recourse.data.get(this.dataName));
     this.data.forEach((d: any) => {
       Object.keys(d).forEach((k) => {
         switch (k) {
@@ -256,7 +256,7 @@ export abstract class BaseChart extends Ani {
   setMeta() {
     if (recourse.data.get(this.metaName)) {
       this.meta = rollup(
-        _.cloneDeep(recourse.data.get(this.metaName)),
+        cloneDeep(recourse.data.get(this.metaName)),
         (v) => v[0],
         (d) => (d as any)[this.idField]
       );
