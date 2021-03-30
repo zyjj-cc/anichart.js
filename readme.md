@@ -16,7 +16,7 @@
 
 Easily create data visualization animated video.
 
-## 示例
+## DEMO
 
 ![anichart-preview](/public/image/anichart-preview.png)
 
@@ -34,7 +34,7 @@ Easily create data visualization animated video.
 
 [Click to go to the sample project](https://jannchie.github.io/anichart.io/en/demo-list)
 
-## 写在前面
+## TJDXT
 
 This project is open source, free and free.
 
