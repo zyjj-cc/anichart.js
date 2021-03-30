@@ -170,10 +170,13 @@ npm run serve
 
 #### Node.js环境
 
-**不建议使用**：Node.js 的版本在未来被暂时移除。因为相关依赖的包安装速度过于缓慢，使用体验较差。同时Browser版本的导出速度得到了极大的提升，这使得node版本显得不是特别重要了。之后Node.js版本将来会作为独立的版本进行安装。
+该项目现已提供 node.js 的相关支持，你可以直接使用 node 运行该项目，无需任何配置，你将能够直接导出 PNG 序列，以便于在 FFmpeg 等工具中整合成视频。但是 node 环境并不是主要开发测试环境，在该环境下进行开发可能会遇到未知的 BUG。
 
-如果有特殊需求，比如服务器端定时导出视频的用户，请等待正式版本。
+如果有特殊需求，比如服务器端定时导出视频的用户。
+
+你可以使用下列命令测试 Node.js 下的 Anichart：
 
 ```bash
-node --experimental-wasm-threads --experimental-wasm-bulk-memory index.js
+cd test
+ts-node index.ts
 ```

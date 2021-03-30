@@ -82,7 +82,6 @@ export class Stage {
 
   play(): void {
     this.loadRecourse().then(() => {
-      console.log(recourse);
       this.doPlay();
     });
   }
