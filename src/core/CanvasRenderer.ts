@@ -7,18 +7,30 @@ import { Path } from "./component/Path";
 import { Arc } from "./component/Arc";
 import { Ani } from "./ani/Ani";
 import { Stage } from "./Stage";
-import { Scene } from "./ani/Series";
-export class CanvasRenderer {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
+import { Renderer } from "./Renderer";
+import { Canvas } from "canvas";
+
+export class CanvasRenderer implements Renderer {
+  getImageData() {
+    return this.canvas.toDataURL("image/png", 0.99);
+  }
+  getImageBuffer() {
+    if (this.canvas instanceof Canvas) {
+      return this.canvas.toBuffer("image/jpeg");
+    } else {
+      throw new Error("image buffer only be supported in node.js");
+    }
+  }
+  canvas: HTMLCanvasElement | Canvas;
+  ctx: CanvasRenderingContext2D | any;
   stage: Stage;
-  constructor(canvas?: HTMLCanvasElement) {
+  constructor(canvas?: HTMLCanvasElement | Canvas) {
     if (canvas) this.setCanvas(canvas);
   }
   clean() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
-  setCanvas(canvas: HTMLCanvasElement) {
+  setCanvas(canvas: HTMLCanvasElement | Canvas) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d")!;
   }
@@ -109,7 +121,7 @@ export class CanvasRenderer {
     }
     if (image.sliceShape) {
       this.ctx.drawImage(
-        src,
+        image,
         image.slicePosition.x,
         image.slicePosition.y,
         image.sliceShape.width,

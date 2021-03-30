@@ -1,13 +1,19 @@
 import { Ani } from "./ani/Ani";
 import { CanvasRenderer } from "./CanvasRenderer";
+import { Renderer } from "./Renderer";
 import { Component } from "./component/Component";
-import { addFrameToFFmpeg, ffmpeg, outputMP4, removePNG } from "./FFmpeg";
+import { addFrameToFFmpeg, loadffmpeg, outputMP4, removePNG } from "./FFmpeg";
 import { recourse } from "./Recourse";
 import { interval, Timer } from "d3";
 import { eachLimit, eachSeries } from "async";
+import { Canvas, createCanvas } from "canvas";
+
+// Enable Path2D
+require("canvas-5-polyfill");
+
 export class Stage {
   compRoot: Component = new Component();
-  renderer: CanvasRenderer;
+  renderer: Renderer;
   options = { sec: 5, fps: 30 };
   outputOptions = {
     fileName: "output",
@@ -41,15 +47,20 @@ export class Stage {
     return this.renderer.canvas;
   }
   constructor(canvas?: HTMLCanvasElement) {
-    if (!canvas) {
-      canvas = document.createElement("canvas");
-      canvas.width = 1920;
-      canvas.height = 1080;
-      document.body.appendChild(canvas);
-    }
     this.renderer = new CanvasRenderer();
     this.renderer.stage = this;
-    this.renderer.setCanvas(canvas);
+    if (typeof window === "undefined") {
+      var c = createCanvas(1920, 1080);
+      this.renderer.setCanvas(c);
+    } else {
+      if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.width = 1920;
+        canvas.height = 1080;
+        document.body.appendChild(canvas);
+      }
+      this.renderer.setCanvas(canvas);
+    }
     this.sec = 0;
   }
 
@@ -57,7 +68,10 @@ export class Stage {
     this.compRoot.children.push(child);
   }
 
-  render(sec: number) {
+  render(sec?: number) {
+    if (sec) {
+      this.sec = sec;
+    }
     this.renderer.clean();
     this.renderer.render(this.compRoot, this.compRoot.offsetSec);
   }
@@ -67,15 +81,33 @@ export class Stage {
   }
 
   play(): void {
-    this.loadRecourse().then(() => this.doPlay());
+    this.loadRecourse().then(() => {
+      this.doPlay();
+    });
   }
   private doPlay() {
     this.setup();
     if (this.interval) {
       this.interval.stop();
       this.interval = null;
+    } else if (typeof window === "undefined") {
+      // node
+      let f = 0;
+      const fs = require("fs");
+      while (f < this.totalFrames) {
+        this.render(f / this.options.fps);
+        const data = this.canvas.toBuffer("image/png");
+        const outDir = `out`;
+        if (!fs.existsSync(outDir)) {
+          fs.mkdirSync(outDir);
+        }
+        const p = `${outDir}/${this.outputOptions.fileName}-${f}.png`;
+        fs.writeFileSync(p, data);
+        console.log(p);
+        f++;
+      }
     } else if (this.output) {
-      ffmpeg.load().then(() => {
+      loadffmpeg().then(() => {
         const partCount =
           Math.floor(this.options.sec / this.outputOptions.splitSec) + 1;
         let part = 0;
@@ -96,11 +128,11 @@ export class Stage {
           }
           eachLimit(frames, this.outputConcurrency, (f, cb) => {
             this.cFrame = f;
-            this.render(f / this.options.fps);
+            this.render();
             const no =
               f - (p - 1) * this.outputOptions.splitSec * this.options.fps;
             picNameList.push(`output-${no}.png`);
-            const imageData = this.canvas.toDataURL("image/png", 0.99);
+            const imageData = this.renderer.getImageData();
             addFrameToFFmpeg(imageData, no).then(() => cb());
           }).then(() => {
             outputMP4(this.options.fps).then(() => {
@@ -119,7 +151,7 @@ export class Stage {
         } else {
           this.cFrame = Math.floor((elapsed / 1000) * this.options.fps);
         }
-        this.render(this.cFrame / this.options.fps);
+        this.render();
         if (this.cFrame >= this.totalFrames) {
           this.interval!.stop();
         }

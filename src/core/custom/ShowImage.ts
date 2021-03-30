@@ -5,7 +5,12 @@ import { customInOut } from "../util/Ease";
 import { getFadeWrapped } from "../wrapper/Fade";
 import { getScaleWrapped } from "../wrapper/Scale";
 
-export function showImage({
+/**
+ * @deprecated
+ * Generating animations using this method will result in rendering errors in the Node environment.
+ */
+function showImage({
+  // FIXME: Generating animations using this method will result in rendering errors in the Node environment.
   src = "",
   position = { x: 250, y: 250 },
   shape = { width: 500, height: 500 },
@@ -51,3 +56,4 @@ export function showImage({
   };
   return ani;
 }
+export { showImage };

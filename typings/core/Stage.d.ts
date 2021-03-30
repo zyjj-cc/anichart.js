@@ -1,10 +1,10 @@
 import { Ani } from "./ani/Ani";
-import { CanvasRenderer } from "./CanvasRenderer";
+import { Renderer } from "./Renderer";
 import { Component } from "./component/Component";
 import { Timer } from "d3";
 export declare class Stage {
     compRoot: Component;
-    renderer: CanvasRenderer;
+    renderer: Renderer;
     options: {
         sec: number;
         fps: number;
@@ -23,10 +23,10 @@ export declare class Stage {
     get sec(): number;
     set sec(val: number);
     get totalFrames(): number;
-    get canvas(): HTMLCanvasElement;
+    get canvas(): any;
     constructor(canvas?: HTMLCanvasElement);
     addChild(child: Ani | Component): void;
-    render(sec: number): void;
+    render(sec?: number): void;
     loadRecourse(): Promise<any[]>;
     play(): void;
     private doPlay;

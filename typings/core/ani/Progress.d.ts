@@ -32,5 +32,5 @@ export declare class Progress extends Ani implements ProgressOptions {
     };
     color: string;
     constructor(options?: ProgressOptions);
-    getComponent(sec: number): Component;
+    getComponent(sec: number): Component | null;
 }

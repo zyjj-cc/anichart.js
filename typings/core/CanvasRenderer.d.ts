@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { Component } from "./component/Component";
 import { Rect } from "./component/Rect";
 import { Text } from "./component/Text";
@@ -6,13 +7,17 @@ import { Path } from "./component/Path";
 import { Arc } from "./component/Arc";
 import { Ani } from "./ani/Ani";
 import { Stage } from "./Stage";
-export declare class CanvasRenderer {
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
+import { Renderer } from "./Renderer";
+import { Canvas } from "canvas";
+export declare class CanvasRenderer implements Renderer {
+    getImageData(): string;
+    getImageBuffer(): Buffer;
+    canvas: HTMLCanvasElement | Canvas;
+    ctx: CanvasRenderingContext2D | any;
     stage: Stage;
-    constructor(canvas?: HTMLCanvasElement);
+    constructor(canvas?: HTMLCanvasElement | Canvas);
     clean(): void;
-    setCanvas(canvas: HTMLCanvasElement): void;
+    setCanvas(canvas: HTMLCanvasElement | Canvas): void;
     render(child: Component | Ani | null, offset?: number): void;
     renderArc(arc: Arc): void;
     renderPath(line: Path): void;

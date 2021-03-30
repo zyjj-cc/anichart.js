@@ -2,7 +2,7 @@ import * as ani from "../src/index";
 import * as d3 from "d3";
 const stage = new ani.Stage();
 stage.options.fps = 30;
-stage.options.sec = 60 * 4;
+stage.options.sec = 10;
 stage.output = false;
 
 const bgAni = new ani.RectAni();
@@ -161,7 +161,7 @@ const map = new ani.MapChart({
   showLabel: true,
   projectionType: "orthographic",
 });
-stage.addChild(map);
+// stage.addChild(map);
 
 stage.addChild(barChart);
 stage.addChild(lineChart);
@@ -177,21 +177,24 @@ const pie = new ani.PieChart({
 });
 stage.addChild(pie);
 stage.addChild(progress);
-const img = ani.showImage({
-  src: "./data/ANI.png",
-});
+// Don't use it. Generating animations using this method will result in rendering errors in the Node environment.
+// const img = ani.showImage({
+//   src: "./data/ANI.png",
+// });
+// stage.addChild(img);
 
 ani.recourse.loadJSON(
   `https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json`,
   "map"
 );
-stage.addChild(img);
 async function start() {
-  const img = await d3.image("./pic/pattern.png");
-  const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
-  map.defaultFill = pattern!;
+  // const img = await d3.image("./pic/pattern.png");
+  // const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
+  // map.defaultFill = pattern!;
   stage.play();
 }
-start();
-(window as any).stage = stage;
-(window as any).d3 = d3;
+start().then(() => console.log("finished"));
+if (typeof window !== "undefined") {
+  (window as any).stage = stage;
+  (window as any).d3 = d3;
+}
