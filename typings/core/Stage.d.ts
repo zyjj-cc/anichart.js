@@ -26,7 +26,7 @@ export declare class Stage {
     get canvas(): any;
     constructor(canvas?: HTMLCanvasElement);
     addChild(child: Ani | Component): void;
-    render(sec: number): void;
+    render(sec?: number): void;
     loadRecourse(): Promise<any[]>;
     play(): void;
     private doPlay;

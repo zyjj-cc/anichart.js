@@ -1,5 +1,9 @@
 import { Ani } from "../ani/Ani";
-export declare function showImage({ src, position, shape, time, freezeTime, center, animation, animationTime, ease, }: {
+/**
+ * @deprecated
+ * Generating animations using this method will result in rendering errors in the Node environment.
+ */
+declare function showImage({ src, position, shape, time, freezeTime, center, animation, animationTime, ease, }: {
     src?: string | undefined;
     position?: {
         x: number;
@@ -16,3 +20,4 @@ export declare function showImage({ src, position, shape, time, freezeTime, cent
     animationTime?: number | undefined;
     ease?: import("d3-ease").ElasticEasingFactory | undefined;
 }): Ani;
+export { showImage };

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { Component } from "./component/Component";
 import { Rect } from "./component/Rect";
 import { Text } from "./component/Text";
@@ -10,6 +11,7 @@ import { Renderer } from "./Renderer";
 import { Canvas } from "canvas";
 export declare class CanvasRenderer implements Renderer {
     getImageData(): string;
+    getImageBuffer(): Buffer;
     canvas: HTMLCanvasElement | Canvas;
     ctx: CanvasRenderingContext2D | any;
     stage: Stage;
