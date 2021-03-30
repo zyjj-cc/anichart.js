@@ -12,80 +12,78 @@
     <a href="https://lgtm.com/projects/g/Jannchie/anichart.js/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/Jannchie/anichart.js.svg?style=flat-square&logo=lgtm&logoWidth=18"/></a>
 </p>
 
-轻松地制作数据可视化动画视频。
+[中文](/README-CN.md) | English
+
+Easily create data visualization animated video.
 
 ## 示例
 
 ![anichart-preview](/public/image/anichart-preview.png)
 
-### 在线编辑（v2.x）
+### Online editable DEMO（v2.x）
 
 [![Edit anichart 2.x](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/anichart-2x-m3xbz?fontsize=14&hidenavigation=1&theme=dark)
 
-### 在线编辑（v1.x）
+### Online editable DEMO（v1.x）
 
 <a href="https://codesandbox.io/s/dreamy-microservice-e8em0?fontsize=14&hidenavigation=1&theme=dark&view=preview">
     <img alt="Edit e8em0" src="https://codesandbox.io/static/img/play-codesandbox.svg">
 </a>
 
-### 效果展示
+### Effect Show
 
-[点击前往示例项目](https://jannchie.github.io/anichart.io/en/demo-list)
+[Click to go to the sample project](https://jannchie.github.io/anichart.io/en/demo-list)
 
 ## 写在前面
 
-**开发过程中我认识到架构上的不合理之处，API正在重构中，仅有测试用例，没有项目文档。请谨慎使用。**
+This project is open source, free and free.
 
-本项目开源、自由、免费。
+This is a Web, Node and other environments, using TypeScript or JavaScript programming animation library. It can be used in data visualization, video animation display, opening and ending and other fields.
 
-这是一个Web、Node等环境下，利用TypeScript或者JavaScript编程的动画库。可用于数据可视化、视频动画展示、片头片尾等领域。
+Currently under development, although the functions have been implemented, but there is no friendly interface, to make their own works need to read the source code and understand JavaScript programming.
 
-目前正在开发中，虽然该有的功能已经实现了，但是没有提供友好的接口，想要做出自己的作品需要阅读源代码并了解JavaScript编程。
+At present, both front-end and back-end exported video use built-in FFMPEG. Ability to export MP4 directly. If the WASM version of FFMPEG is too slow, it also supports exporting PNG sequences and calling local FFMPEG to generate video.
 
-目前前端、后端导出视频均使用内置的FFmpeg。能够直接导出MP4。如果觉得wasm版本的FFmpeg速度过慢，也支持导出Png序列，调用本地FFmpeg生成视频。
+The construction of a human-computer friendly website is already underway, but it will be a long time before it is complete.
 
-人机交互友好的网站建设已经在搞了（指建好了仓库），还要较长一段时间才能完成。
+This project needs the technical support of all the technical personnel. But if you're just a regular user, you can also support it through sponsorship. You can use Alipay or WeChat to support through [AZZ](https://azz.net/jannchie). It can also be supported by GitHub Sponsor (one credit card is required).
 
-本项目需要各位技术人员的技术支持。但如果你只是一个普通的使用者，也能通过赞助的方式支持。你可以通过[爱赞助](https://azz.net/jannchie)利用支付宝或者微信进行支持。也能通过GitHub Sponsor功能支持（需要信用卡一张）。
+## Brief
 
-## 简介
+This is a better template for visualization.
 
-这是一个更好的可视化模板。
+Compared with its [predecessor](https://github.com/Jannchie/Historical-ranking-data-visualization-based-on-js)，the main advantage lies in:
 
-相较于它的[前身](https://github.com/Jannchie/Historical-ranking-data-visualization-based-on-js)，主要优势在于：
+- Programmable: Open interfaces that allow the insertion of custom code, data calculated by the framework, drawing based on the Canvas API.
+- Straight out video: Video can be rendered directly from each image frame without any screen recording tools. Maintains FPS stability and rendering speed.And thanks to this, you can now export any resolution, regardless of the screen range displayed. At the same time through the built-in API to achieve the progress of the drag, easy debugging.
+- Convention over configuration: simplifies the user's configuration to the greatest extent, without too many complex Settings you can get a beautiful chart.
+- Virtual components: Similar to virtual DOM, it further enhances extensibility by splitting components and renderers. Ease of porting to more platforms and support for more efficient WebGL rendering in the future.
 
-- 可编程化：开放接口，允许插入自定义的代码，利用框架计算的数据，基于Canvas Api进行绘图。
-- 直出视频：可以直接通过每一帧的图像渲染视频，无需借助任何录屏工具。保持了FPS的稳定和渲染的速度。并且归功于此，现在能够导出任何分辨率而不依赖于显示的屏幕范围。同时能够通过内置的API实现进度的拖动，便于调试。
-- 约定优于配置：最大程度简化了用户的配置，无需太多复杂的设定便可以获得美观的图表。
-- 虚拟组件：类似于虚拟DOM，通过拆分组件和渲染器，进一步增强了扩展能力。便于移植到更多的平台，以后会支持使用效率更高的webgl进行渲染。
+## Setup
 
-## 安装
-
-### 使用Yarn
+### Via Yarn
 
 ```bash
 yarn add anichart
 ```
 
-### 使用Npm
+### Via Npm
 
 ```bash
 npm i anichart
 ```
 
-### 标签导入
+### Via HTML tags
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/anichart@1.1.12/dist/anichart.min.js"></script>
 ```
 
-## 用法
+## Usage
 
-**即将过时**：以下用法为1.x版本的API，2.x版本正在开发中，暂无API文档，但可以通过test文件夹的测试用例浏览用法。
+### Use Npm or Yarn imports
 
-### 使用Npm或者Yarn导入
-
-如果使用标签导入可以跳过这一步，如果使用npm或者Yarn需要通过以下代码引入包：
+You can skip this step if you are using label imports, but if you are using NPM or Yarn you need to import the package with the following code:
 
 ``` js
 const anichart = require("anichart");
@@ -97,9 +95,9 @@ const anichart = require("anichart");
 import * as anichart from "anichart";
 ```
 
-### 准备数据
+### Prepare Data
 
-以CSV文件为例。
+For example, use CSV file.
 
 ``` csv
 name,date,value,channel,other
@@ -116,67 +114,61 @@ Cake47,2020-01-09,3,生活,other
 Cake47,2020-01-11,4,生活,other
 ```
 
-### 载入数据
+### Load Data
 
 ```js
-// 默认情况下，需要通过内置的recourse对象载入数据
-// 第一个参数是数据的路径，第二个参数是数据的名称
+// Recourse By default, data needs to be loaded through a built-in recourse object
+// The first argument is the path of the data, and the second argument is the name of the data
 anichart.recourse.loadData("path/to/data.csv", "data")
 ```
 
-### 创建对象
+### Create the Object
 
 ```js
-// 创建一个舞台
+// Create a Stage
 let stage = new anichart.Stage();
-// 创建一个图表，默认情况下会载入名称为data的数据
+// Create a chart that loads data named "data" by default
 let chart = new anichart.BarChart();
-// 挂载图表
+// Mount the chart
 stage.addChild(chart);
 ```
 
-### 播放动画
+### Play the Animation
 
-可以使用代码控制播放。
+You can use code to control playback.
 
 ```js
 stage.play();
 ```
 
-### 导出视频
+### Output Video
 
-内置了ffmpeg进行导出。输出信息会在console中打印。
+Built-in FFMPEG for export. The output is printed in the Console.
 
 ```js
-// 配置导出视频
+// Configure to export video
 stage.output = true;
 ```
 
-### 测试
+### Test
 
-#### Browser环境
+#### Browser
 
-使用yarn:
-
-```bash
+``` bash
 yarn serve
-```
-
-或者npn：
-
-```bash
+# or
 npm run serve
 ```
 
-#### Node.js环境
+#### Node.js
 
-如果有特殊需求，比如服务器端定时导出视频的用户，可以使用 Node.js 环境。
+If you have special needs, such as server side users who regularly export video, you can use the Node.js environment.
 
-该项目现已提供 node.js 的相关支持，你可以直接使用 node 运行该项目，无需任何配置，你将能够直接导出 PNG 序列，以便于在 FFmpeg 等工具中整合成视频（暂时没有提供调用本地 FFmpeg 功能的计划，期待开发者提出 PR）。但是 node 环境并不是主要开发测试环境，在该环境下进行开发可能会遇到未知的 BUG。我的精力有限，不一定能够及时给予反馈，希望有能力的开发者能够一起维护。
+Node.js support is now available, you can run the project with Node without any configuration, you will be able to export PNG sequences directly for video integration in tools like FFmpeg (there are no plans to call native FFmpeg functionality at this time, we look forward to the developer coming up with PR). However, the Node environment is not the primary development test environment, and you may encounter unknown bugs while developing in this environment. My energy is limited and I may not be able to give feedback in time. I hope capable developers can work with me to maintain it.
 
-你可以使用下列命令测试 Node.js 下的 anichart：
+You can test Anichart under Node.js using the following command:
 
 ```bash
 cd test
-ts-node index.ts # 该项目使用 Typescript 编写，因此需要 ts-node 环境，你也可以先编译成 js 后测试编译好的文件。
+ts-node index.ts # This project is written in TypeScript, so it requires a TS-Node environment. You can also compile it into JS and test the compiled file.
 ```
