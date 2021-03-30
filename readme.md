@@ -89,7 +89,7 @@ You can skip this step if you are using label imports, but if you are using NPM 
 const anichart = require("anichart");
 ```
 
-或者
+OR
 
 ``` js
 import * as anichart from "anichart";
