@@ -102,10 +102,9 @@ export class Stage {
         if (!fs.existsSync(outDir)) {
           fs.mkdirSync(outDir);
         }
-        fs.writeFileSync(
-          `${outDir}/${this.outputOptions.fileName}-${f}.png`,
-          data
-        );
+        const p = `${outDir}/${this.outputOptions.fileName}-${f}.png`;
+        fs.writeFileSync(p, data);
+        console.log(p);
         f++;
       }
     } else if (this.output) {

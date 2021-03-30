@@ -153,9 +153,9 @@ stage.addChild(bgAni);
 
 stage.addChild(a);
 stage.addChild(logoCenter);
-// stage.addChild(textLinesAni);
+stage.addChild(textLinesAni);
 stage.addChild(rectAni);
-// stage.addChild(logoAni);
+stage.addChild(logoAni);
 
 const map = new ani.MapChart({
   showLabel: true,
@@ -176,16 +176,17 @@ const pie = new ani.PieChart({
   position: { x: stage.canvas.width / 2, y: stage.canvas.height / 2 },
 });
 stage.addChild(pie);
-// stage.addChild(progress);
-const img = ani.showImage({
-  src: "./data/ANI.png",
-});
+stage.addChild(progress);
+// Don't use it. Generating animations using this method will result in rendering errors in the Node environment.
+// const img = ani.showImage({
+//   src: "./data/ANI.png",
+// });
+// stage.addChild(img);
 
 ani.recourse.loadJSON(
   `https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json`,
   "map"
 );
-// stage.addChild(img);
 async function start() {
   // const img = await d3.image("./pic/pattern.png");
   // const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
