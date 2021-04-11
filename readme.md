@@ -36,7 +36,7 @@ Easily create data visualization animated video.
 
 ## TJDXT
 
-This project is open source, free and free.
+This project is open source and free.
 
 This is a Web, Node and other environments, using TypeScript or JavaScript programming animation library. It can be used in data visualization, video animation display, opening and ending and other fields.
 
