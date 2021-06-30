@@ -1,9 +1,7 @@
 import { Ani } from "../ani/Ani";
 import { Component } from "../component/Component";
-import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
 import { BarChart, BarChartOptions } from "./BarChart";
-import { BaseChart } from "./BaseChart";
 
 interface MultiColumnBarBarOptions extends BarChartOptions {
   cols?: number;
@@ -12,10 +10,11 @@ export class MultiColumnBarChart extends BarChart {
   cols: number = 2;
 
   c: Component = new Component();
-  itemCount: number = 20;
+  itemCount: number;
   constructor(options?: MultiColumnBarBarOptions) {
     super(options);
     if (!options) return;
+    this.itemCount = options.itemCount ?? 20;
     for (let i = 0; i < this.cols; i++) {
       let bar = new BarChart(options);
       this.c.addChild(bar);
@@ -38,8 +37,8 @@ export class MultiColumnBarChart extends BarChart {
       v.position = { x: (stage.canvas.width / this.cols) * i, y: 0 };
       v.itemCount = this.itemCount * this.cols;
 
-      v.indexToDate = this.indexToDate;
       v.nonstandardDate = this.nonstandardDate;
+      console.log(v.indexToDate);
       v.setup(stage);
       v.itemCount = this.itemCount;
       v.getCurrentData = (sec) => {
@@ -52,6 +51,10 @@ export class MultiColumnBarChart extends BarChart {
   }
   getComponent(sec) {
     let barchart = this.c.children[1] as BarChart;
+    let first = this.c.children[0] as BarChart;
+    barchart.getScaleX = (c) => {
+      return first.getScaleX(first.getCurrentData(sec));
+    };
     // console.log(barchart.getCurrentData(sec));
     // console.log(barchart);
     return this.c;
