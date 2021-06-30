@@ -17,6 +17,9 @@ import { font } from "../Constant";
 import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
 import { cloneDeep } from "lodash";
+function isValidDate(date: any) {
+  return date instanceof Date && !isNaN(date.getTime());
+}
 export interface BaseChartOptions {
   interpolateInitValue?: number;
   aniTime?: [number, number];
@@ -65,6 +68,8 @@ export abstract class BaseChart extends Ani {
   dataGroupByDate: Map<any, any[]>;
   visualRange: "total" | "current" | "history" | [number, number];
   interpolateInitValue: number;
+  indexToDate: Map<number, string>;
+  nonstandardDate: any;
   constructor(options?: BaseChartOptions) {
     super();
     if (!options) return;
@@ -149,12 +154,27 @@ export abstract class BaseChart extends Ani {
   }
   private setData() {
     this.data = cloneDeep(recourse.data.get(this.dataName));
+    let dateSet = new Set();
+    let dateIndex = 0;
+    this.indexToDate = new Map<number, string>();
     this.data.forEach((d: any) => {
+      if (!dateSet.has(d[this.dateField])) {
+        dateSet.add(d[this.dateField]);
+        dateIndex++;
+        this.indexToDate.set(dateIndex, d[this.dateField]);
+      }
       Object.keys(d).forEach((k) => {
         switch (k) {
           case this.dateField:
             // 日期字符串转成日期
-            d[k] = moment(d[this.dateField]).toDate();
+            let date = moment(d[this.dateField]).toDate();
+            if (isValidDate(date)) {
+              d[k] = date;
+              this.nonstandardDate = false;
+            } else {
+              this.nonstandardDate = true;
+              d[k] = new Date(dateIndex);
+            }
             break;
           case this.idField:
             // ID保持不变

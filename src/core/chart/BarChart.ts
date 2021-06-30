@@ -227,8 +227,9 @@ export class BarChart extends BaseChart {
     });
 
     if (this.showDateLabel) {
+      let dateLabelText = this.getDateLabelText(sec);
       const dateLabel = new Text({
-        text: timeFormat(this.dateFormat)(this.secToDate(sec)),
+        text: dateLabelText,
         font,
         fontSize: this.dateLabelSize,
         fillStyle: "#777",
@@ -243,6 +244,14 @@ export class BarChart extends BaseChart {
       res.children.push(dateLabel);
     }
     return res;
+  }
+
+  getDateLabelText(sec: number): string {
+    if (this.nonstandardDate) {
+      let index = Math.floor(this.secToDate(sec).getTime());
+      return this.indexToDate.get(index) ?? "";
+    }
+    return timeFormat(this.dateFormat)(this.secToDate(sec));
   }
   private get barHeight() {
     return (
@@ -343,8 +352,7 @@ export class BarChart extends BaseChart {
       },
       fontSize: options.shape.height * 0.8,
       font,
-      fontWeight: "bolder",
-      fillStyle: "#1e1e1e",
+      fillStyle: "#fff",
     });
     if (options.image && recourse.images.get(options.image)) {
       const img = new Image({
