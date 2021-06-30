@@ -160,7 +160,7 @@ export abstract class BaseChart extends Ani {
     this.data.forEach((d: any) => {
       if (!dateSet.has(d[this.dateField])) {
         dateSet.add(d[this.dateField]);
-        dateIndex += 1000;
+        dateIndex += 1;
         this.indexToDate.set(dateIndex, d[this.dateField]);
       }
       Object.keys(d).forEach((k) => {
