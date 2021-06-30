@@ -18,7 +18,7 @@ import {
   timeFormat,
 } from "d3";
 
-interface BarChartOptions extends BaseChartOptions {
+export interface BarChartOptions extends BaseChartOptions {
   itemCount?: number;
   barPadding?: number;
   barGap?: number;
@@ -27,7 +27,7 @@ interface BarChartOptions extends BaseChartOptions {
   showDateLabel?: boolean;
 }
 
-interface BarOptions {
+export interface BarOptions {
   id: string;
   data: any;
   value: number;
@@ -88,6 +88,7 @@ export class BarChart extends BaseChart {
     this.setShowingIDList();
     this.labelPlaceholder = this.maxLabelWidth;
     this.valuePlaceholder = this.maxValueLabelWidth;
+    console.log(this.maxValueLabelWidth);
     this.setHistoryIndex();
   }
 
@@ -133,7 +134,7 @@ export class BarChart extends BaseChart {
     }, new Map());
   }
 
-  private get maxValueLabelWidth() {
+  get maxValueLabelWidth() {
     const d = [...this.data.values()];
     const maxWidth =
       max(d, (item) => {
@@ -149,7 +150,7 @@ export class BarChart extends BaseChart {
       }) ?? 0;
     return maxWidth;
   }
-  private get maxLabelWidth() {
+  get maxLabelWidth() {
     const maxWidth =
       max(this.IDList, (id) => {
         const text = new Text(
@@ -166,7 +167,7 @@ export class BarChart extends BaseChart {
   }
 
   getComponent(sec: number) {
-    const currentData = this.getCurrentData(sec);
+    let currentData = this.getCurrentData(sec);
     currentData.forEach((d, i) => {
       const index = Number.isNaN(d[this.valueField]) ? this.itemCount : i;
       this.historyIndex.get(d[this.idField])?.push(index);

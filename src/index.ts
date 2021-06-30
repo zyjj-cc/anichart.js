@@ -27,6 +27,7 @@ export * from "./core/chart/ItemChart";
 export * from "./core/chart/BaseChart";
 export * from "./core/chart/PieChart";
 export * from "./core/chart/MapChart";
+export * from "./core/chart/MultiColumnBarChart";
 
 export * from "./core/ani/Effector";
 export * from "./core/ani/Series";

@@ -152,7 +152,7 @@ export abstract class BaseChart extends Ani {
       };
     }
   }
-  private setData() {
+  setData() {
     this.data = cloneDeep(recourse.data.get(this.dataName));
     let dateSet = new Set();
     let dateIndex = 0;
@@ -160,7 +160,7 @@ export abstract class BaseChart extends Ani {
     this.data.forEach((d: any) => {
       if (!dateSet.has(d[this.dateField])) {
         dateSet.add(d[this.dateField]);
-        dateIndex++;
+        dateIndex += 1000;
         this.indexToDate.set(dateIndex, d[this.dateField]);
       }
       Object.keys(d).forEach((k) => {
@@ -181,7 +181,10 @@ export abstract class BaseChart extends Ani {
             break;
           default:
             // 数值转成数字
-            if (this.valueKeys.includes(k) || this.valueField === k) {
+            if (
+              typeof d[k] == "string" &&
+              (this.valueKeys.includes(k) || this.valueField === k)
+            ) {
               d[k] = +d[k].replace(/,/g, "");
             }
         }
@@ -212,7 +215,6 @@ export abstract class BaseChart extends Ani {
       this.insertNaN(dataList, dateExtent);
       const dateList = dataList.map((d) => d[this.dateField]);
       const secList = dateList.map((d) => this.secToDate.invert(d));
-
       // 线性插值
       const dataScale = scaleLinear(secList, dataList).clamp(true);
       dataScales.set(k, dataScale);
@@ -229,7 +231,7 @@ export abstract class BaseChart extends Ani {
       // 在后面插入NaN
       const last = dataList[dataList.length - 1];
       if (
-        dateExtent[1].getTime() - last[this.dateField].getTime() >=
+        dateExtent[1].getTime() - last[this.dateField].getTime() >
         this.maxIntervalMS
       ) {
         const obj = Object.assign({}, last);
@@ -241,7 +243,7 @@ export abstract class BaseChart extends Ani {
       // 在前面插入NaN
       const first = dataList[0];
       if (
-        first[this.dateField].getTime() - dateExtent[0].getTime() >=
+        first[this.dateField].getTime() - dateExtent[0].getTime() >
         this.maxIntervalMS
       ) {
         const obj = Object.assign({}, first);
@@ -253,7 +255,7 @@ export abstract class BaseChart extends Ani {
       for (let i = 0; i < dataList.length - 1; i++) {
         const prev = dataList[i];
         const next = dataList[i + 1];
-        if (next[this.dateField] - prev[this.dateField] >= this.maxIntervalMS) {
+        if (next[this.dateField] - prev[this.dateField] > this.maxIntervalMS) {
           const obj = Object.assign({}, prev);
           obj[this.valueField] = NaN;
           obj[this.dateField] = new Date(obj[this.dateField].getTime() + 1);
