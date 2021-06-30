@@ -23,8 +23,8 @@ export interface BarChartOptions extends BaseChartOptions {
   barPadding?: number;
   barGap?: number;
   barInfoFormat?: KeyGenerate;
-  dateLabelSize?: number;
   showDateLabel?: boolean;
+  dateLabelOptions?: TextOptions;
 }
 
 export interface BarOptions {
@@ -39,6 +39,7 @@ export interface BarOptions {
   image?: string;
 }
 export class BarChart extends BaseChart {
+  dateLabelOptions: TextOptions | undefined;
   constructor(options?: BarChartOptions) {
     super(options);
     if (!options) return;
@@ -47,10 +48,9 @@ export class BarChart extends BaseChart {
     if (options.barGap !== undefined) this.barGap = options.barGap;
     if (options.barInfoFormat !== undefined)
       this.barInfoFormat = options.barInfoFormat;
-    if (options.dateLabelSize !== undefined)
-      this.dateLabelSize = options.dateLabelSize;
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
+    this.dateLabelOptions = options.dateLabelOptions;
   }
 
   itemCount = 20;
@@ -61,7 +61,6 @@ export class BarChart extends BaseChart {
   lastValue = new Map<string, number>();
   labelPlaceholder: number;
   valuePlaceholder: number;
-  dateLabelSize: number = 60;
   showDateLabel: boolean = true;
 
   get sampling() {
@@ -179,14 +178,50 @@ export class BarChart extends BaseChart {
       }
       history.shift();
     }
-    const indexes = this.IDList.reduce(
-      (map, id) =>
-        map.set(
-          id,
-          mean(this.historyIndex.get(id).map((data: unknown) => data))
-        ),
-      new Map()
+    const indexes = this.IDList.reduce((map, id) => {
+      console.log(this.historyIndex.get(id));
+      return map.set(
+        id,
+        mean(this.historyIndex.get(id).map((data: unknown) => data))
+      );
+    }, new Map());
+    let scaleX: ScaleLinear<number, number, never> = this.getScaleX(
+      currentData
     );
+    const res = new Component({
+      alpha: this.alphaScale(sec),
+      position: this.position,
+    });
+    currentData.forEach((data) => {
+      const barOptions = this.getBarOptions(data, scaleX, indexes);
+      if (barOptions.alpha > 0) {
+        res.children.push(this.getBarComponent(barOptions));
+      }
+    });
+
+    if (this.showDateLabel) {
+      let dateLabelText = this.getDateLabelText(sec);
+
+      let dateLabelOptions = this.dateLabelOptions ?? {
+        font,
+        fontSize: 60,
+        fillStyle: "#777",
+        textAlign: "right",
+        fontWeight: "bolder",
+        textBaseline: "bottom",
+        position: {
+          x: this.shape.width - this.margin.right,
+          y: this.shape.height - this.margin.bottom,
+        },
+      };
+      dateLabelOptions.text = dateLabelText;
+      const dateLabel = new Text(dateLabelOptions);
+      res.children.push(dateLabel);
+    }
+    return res;
+  }
+
+  getScaleX(currentData: any[]) {
     let scaleX: ScaleLinear<number, number, never>;
     if (this.visualRange != "history") {
       const [_, max] = extent(currentData, (d) => d[this.valueField]);
@@ -216,35 +251,7 @@ export class BarChart extends BaseChart {
         ]
       );
     }
-    const res = new Component({
-      alpha: this.alphaScale(sec),
-      position: this.position,
-    });
-    currentData.forEach((data) => {
-      const barOptions = this.getBarOptions(data, scaleX, indexes);
-      if (barOptions.alpha > 0) {
-        res.children.push(this.getBarComponent(barOptions));
-      }
-    });
-
-    if (this.showDateLabel) {
-      let dateLabelText = this.getDateLabelText(sec);
-      const dateLabel = new Text({
-        text: dateLabelText,
-        font,
-        fontSize: this.dateLabelSize,
-        fillStyle: "#777",
-        textAlign: "right",
-        fontWeight: "bolder",
-        textBaseline: "bottom",
-        position: {
-          x: this.shape.width - this.margin.right,
-          y: this.shape.height - this.margin.bottom,
-        },
-      });
-      res.children.push(dateLabel);
-    }
-    return res;
+    return scaleX;
   }
 
   getDateLabelText(sec: number): string {
