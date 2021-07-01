@@ -19,6 +19,7 @@ import {
 } from "d3";
 
 export interface BarChartOptions extends BaseChartOptions {
+  barFontSizeScale?: number;
   itemCount?: number;
   barPadding?: number;
   barGap?: number;
@@ -40,12 +41,15 @@ export interface BarOptions {
 }
 export class BarChart extends BaseChart {
   dateLabelOptions: TextOptions | undefined;
+  barFontSizeScale: number = 0.9;
   constructor(options?: BarChartOptions) {
     super(options);
     if (!options) return;
     if (options.itemCount) this.itemCount = options.itemCount;
     if (options.barPadding !== undefined) this.barPadding = options.barPadding;
     if (options.barGap !== undefined) this.barGap = options.barGap;
+    if (options.barFontSizeScale !== undefined)
+      this.barFontSizeScale = options.barFontSizeScale;
     if (options.barInfoFormat !== undefined)
       this.barInfoFormat = options.barInfoFormat;
     if (options.showDateLabel !== undefined)
@@ -87,7 +91,6 @@ export class BarChart extends BaseChart {
     this.setShowingIDList();
     this.labelPlaceholder = this.maxLabelWidth;
     this.valuePlaceholder = this.maxValueLabelWidth;
-    console.log(this.maxValueLabelWidth);
     this.setHistoryIndex();
   }
 
@@ -141,7 +144,7 @@ export class BarChart extends BaseChart {
           this.getLabelTextOptions(
             this.valueFormat(item),
             "#FFF",
-            this.barHeight * 0.8
+            this.barHeight
           )
         );
         const result = canvasHelper.measure(text);
@@ -156,7 +159,7 @@ export class BarChart extends BaseChart {
           this.getLabelTextOptions(
             this.labelFormat(id, this.meta, this.dataGroupByID),
             "#FFF",
-            this.barHeight * 0.8
+            this.barHeight
           )
         );
         const result = canvasHelper.measure(text);
@@ -168,7 +171,11 @@ export class BarChart extends BaseChart {
   getComponent(sec: number) {
     let currentData = this.getCurrentData(sec);
     currentData.forEach((d, i) => {
-      const index = Number.isNaN(d[this.valueField]) ? this.itemCount : i;
+      const index = Number.isNaN(d[this.valueField])
+        ? this.itemCount
+        : i > this.itemCount
+        ? this.itemCount
+        : i;
       this.historyIndex.get(d[this.idField])?.push(index);
     });
     for (const history of this.historyIndex.values()) {
@@ -179,12 +186,19 @@ export class BarChart extends BaseChart {
       history.shift();
     }
     const indexes = this.IDList.reduce((map, id) => {
-      console.log(this.historyIndex.get(id));
-      return map.set(
-        id,
-        mean(this.historyIndex.get(id).map((data: unknown) => data))
-      );
+      let h = this.historyIndex.get(id) as number[];
+      if (h.includes(0) && h.includes(this.itemCount)) {
+        for (let idx = 0; idx < h.length; idx++) {
+          const element = h[idx];
+          if (element === this.itemCount) {
+            h[idx] = -1;
+          }
+        }
+      }
+      let m = mean(h);
+      return map.set(id, m);
     }, new Map());
+
     let scaleX: ScaleLinear<number, number, never> = this.getScaleX(
       currentData
     );
@@ -280,9 +294,9 @@ export class BarChart extends BaseChart {
       this.lastValue.set(data[this.idField], data[this.valueField]);
     }
     data[this.valueField] = this.lastValue.get(data[this.idField]);
-    const alpha = scaleLinear(
-      [this.itemCount - 1, this.itemCount],
-      [1, 0]
+    let alpha = scaleLinear(
+      [-1, 0, this.itemCount - 1, this.itemCount],
+      [0, 1, 1, 0]
     ).clamp(true)(indexes.get(data[this.idField])!);
     let color: string;
     if (typeof this.colorField === "string") {
@@ -298,13 +312,18 @@ export class BarChart extends BaseChart {
       typeof this.imageField === "string"
         ? data[this.imageField]
         : this.imageField(data[this.idField], this.meta, this.dataGroupByID);
+    var idx: number;
+    if (data[this.valueField] !== undefined) {
+      idx = indexes.get(data[this.idField])!;
+    } else {
+      idx = this.itemCount;
+      alpha = 0;
+    }
     return {
       id: data[this.idField],
       pos: {
         x: this.margin.left + this.barPadding + this.labelPlaceholder,
-        y:
-          this.margin.top +
-          indexes.get(data[this.idField])! * (this.barHeight + this.barGap),
+        y: this.margin.top + idx * (this.barHeight + this.barGap),
       },
       alpha,
       data,
@@ -325,24 +344,24 @@ export class BarChart extends BaseChart {
       shape: options.shape,
       fillStyle: options.color,
       radius: options.radius,
-      clip: true,
+      clip: false,
     });
     const label = new Text(
       this.getLabelTextOptions(
         this.labelFormat(options.id, this.meta, this.dataGroupByID),
         options.color,
-        options.shape.height * 0.8
+        options.shape.height
       )
     );
     const valueLabel = new Text({
-      textBaseline: "bottom",
+      textBaseline: "middle",
       text: `${this.valueFormat(options.data)}`,
       textAlign: "left",
       position: {
         x: options.shape.width + this.barPadding,
-        y: options.shape.height,
+        y: (options.shape.height * this.barFontSizeScale * 0.9) / 2,
       },
-      fontSize: options.shape.height * 0.8,
+      fontSize: options.shape.height * this.barFontSizeScale,
       font,
       fillStyle: options.color,
     });
@@ -358,9 +377,11 @@ export class BarChart extends BaseChart {
         x: options.shape.width - this.barPadding - imagePlaceholder,
         y: options.shape.height,
       },
-      fontSize: options.shape.height * 0.8,
+      fontSize: options.shape.height * this.barFontSizeScale,
       font,
       fillStyle: "#fff",
+      strokeStyle: options.color,
+      lineWidth: 4,
     });
     if (options.image && recourse.images.get(options.image)) {
       const img = new Image({
@@ -391,10 +412,13 @@ export class BarChart extends BaseChart {
     return {
       text: `${text}`,
       textAlign: "right",
-      textBaseline: "bottom",
-      fontSize,
+      textBaseline: "middle",
+      fontSize: fontSize * this.barFontSizeScale,
       font,
-      position: { x: 0 - this.barPadding, y: fontSize / 0.8 },
+      position: {
+        x: 0 - this.barPadding,
+        y: (fontSize * this.barFontSizeScale * 0.9) / 2,
+      },
       fillStyle: color,
     };
   }
