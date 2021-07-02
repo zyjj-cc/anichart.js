@@ -1,4 +1,3 @@
-import { Ani } from "../ani/Ani";
 import { Component } from "../component/Component";
 import { Stage } from "../Stage";
 import { BarChart, BarChartOptions } from "./BarChart";
@@ -35,12 +34,11 @@ export class MultiColumnBarChart extends BarChart {
         height: stage.canvas.height,
       };
       v.position = { x: (stage.canvas.width / this.cols) * i, y: 0 };
-      v.itemCount = this.itemCount * this.cols;
 
       v.nonstandardDate = this.nonstandardDate;
-      console.log(v.indexToDate);
+      v.reduceID = false;
       v.setup(stage);
-      v.itemCount = this.itemCount;
+      v.rankOffset = 1 + i * this.itemCount;
       v.getCurrentData = (sec) => {
         let list = this.getCurrentData(sec);
         return list.splice(i * this.itemCount);

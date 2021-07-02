@@ -26,6 +26,7 @@ export interface BarChartOptions extends BaseChartOptions {
   barInfoFormat?: KeyGenerate;
   showDateLabel?: boolean;
   dateLabelOptions?: TextOptions;
+  showRankLabel?: boolean;
 }
 
 export interface BarOptions {
@@ -42,6 +43,17 @@ export interface BarOptions {
 export class BarChart extends BaseChart {
   dateLabelOptions: TextOptions | undefined;
   barFontSizeScale: number = 0.9;
+  showRankLabel: boolean;
+  private readonly rankPadding = 10;
+  rankLabelPlaceholder: number;
+  reduceID = true;
+  get maxRankLabelWidth(): number {
+    console.log(this.barHeight);
+    return canvasHelper.measure(
+      new Text(this.getRankLabelOptions(this.itemCount))
+    ).width;
+  }
+
   constructor(options?: BarChartOptions) {
     super(options);
     if (!options) return;
@@ -55,6 +67,7 @@ export class BarChart extends BaseChart {
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
     this.dateLabelOptions = options.dateLabelOptions;
+    this.showRankLabel = options.showRankLabel ?? false;
   }
 
   itemCount = 20;
@@ -62,6 +75,7 @@ export class BarChart extends BaseChart {
   barPadding = 8;
   barGap = 8;
   swap = 0.25;
+  rankOffset = 1;
   lastValue = new Map<string, number>();
   labelPlaceholder: number;
   valuePlaceholder: number;
@@ -89,6 +103,7 @@ export class BarChart extends BaseChart {
     super.setup(stage);
     // 获得曾出现过的Label集合
     this.setShowingIDList();
+    this.rankLabelPlaceholder = this.maxRankLabelWidth;
     this.labelPlaceholder = this.maxLabelWidth;
     this.valuePlaceholder = this.maxValueLabelWidth;
     this.setHistoryIndex();
@@ -98,19 +113,27 @@ export class BarChart extends BaseChart {
     const idSet = new Set<string>();
     this.dataGroupByDate.forEach((_, date) => {
       const dt = this.secToDate.invert(date);
-      [...this.dataScales.entries()]
+      let tmp = [...this.dataScales.entries()]
         .filter((d) => {
           const data = d[1](dt);
           return data != undefined && !isNaN(data[this.valueField]);
         })
         .sort((a, b) => {
           return b[1](dt)[this.valueField] - a[1](dt)[this.valueField];
-        })
-        .slice(0, this.itemCount)
-        .forEach((item) => {
+        });
+      if (this.reduceID) {
+        tmp.slice(0, this.itemCount);
+        tmp.forEach((item) => {
           let id = item[0];
           idSet.add(id);
         });
+      } else {
+        tmp.forEach((item) => {
+          let id = item[0];
+          idSet.add(id);
+        });
+        tmp.slice(0, this.itemCount);
+      }
     });
     this.IDList = [...idSet.values()];
   }
@@ -151,6 +174,11 @@ export class BarChart extends BaseChart {
         return result.width;
       }) ?? 0;
     return maxWidth;
+  }
+
+  get totalRankPlaceHolder() {
+    if (this.showRankLabel) return this.rankPadding + this.rankLabelPlaceholder;
+    else return 0;
   }
   get maxLabelWidth() {
     const maxWidth =
@@ -212,6 +240,9 @@ export class BarChart extends BaseChart {
         res.children.push(this.getBarComponent(barOptions));
       }
     });
+    if (this.showRankLabel) {
+      this.appendRankLabels(res);
+    }
 
     if (this.showDateLabel) {
       let dateLabelText = this.getDateLabelText(sec);
@@ -235,6 +266,28 @@ export class BarChart extends BaseChart {
     return res;
   }
 
+  private appendRankLabels(res: Component) {
+    const rankLabelGroup = new Component();
+    for (let idx = 0; idx < this.itemCount; idx++) {
+      let text = new Text(this.getRankLabelOptions(idx));
+      rankLabelGroup.addChild(text);
+    }
+    res.addChild(rankLabelGroup);
+  }
+
+  private getRankLabelOptions(idx: number): TextOptions | undefined {
+    return {
+      text: `${idx + this.rankOffset}`,
+      textBaseline: "middle",
+      textAlign: "right",
+      fontSize: this.barHeight * this.barFontSizeScale,
+      position: {
+        x: this.getBarX() - this.labelPlaceholder - this.rankPadding,
+        y: this.getBarY(idx) + this.barHeight / 2,
+      },
+    };
+  }
+
   getScaleX(currentData: any[]) {
     let scaleX: ScaleLinear<number, number, never>;
     if (this.visualRange != "history") {
@@ -247,6 +300,7 @@ export class BarChart extends BaseChart {
             this.margin.left -
             this.barPadding -
             this.labelPlaceholder -
+            this.totalRankPlaceHolder -
             this.margin.right -
             this.valuePlaceholder,
         ]
@@ -260,6 +314,7 @@ export class BarChart extends BaseChart {
             this.margin.left -
             this.barPadding -
             this.labelPlaceholder -
+            this.totalRankPlaceHolder -
             this.margin.right -
             this.valuePlaceholder,
         ]
@@ -322,8 +377,8 @@ export class BarChart extends BaseChart {
     return {
       id: data[this.idField],
       pos: {
-        x: this.margin.left + this.barPadding + this.labelPlaceholder,
-        y: this.margin.top + idx * (this.barHeight + this.barGap),
+        x: this.getBarX(),
+        y: this.getBarY(idx),
       },
       alpha,
       data,
@@ -333,6 +388,19 @@ export class BarChart extends BaseChart {
       color: colorPicker.getColor(color),
       radius: 4,
     };
+  }
+
+  private getBarX(): number {
+    return (
+      this.margin.left +
+      this.barPadding +
+      this.labelPlaceholder +
+      this.totalRankPlaceHolder
+    );
+  }
+
+  private getBarY(idx: number): number {
+    return this.margin.top + idx * (this.barHeight + this.barGap);
   }
 
   private getBarComponent(options: BarOptions) {
