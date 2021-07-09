@@ -19,6 +19,7 @@ import {
 } from "d3";
 
 export interface BarChartOptions extends BaseChartOptions {
+  dy?: number;
   barFontSizeScale?: number;
   itemCount?: number;
   barPadding?: number;
@@ -47,6 +48,7 @@ export class BarChart extends BaseChart {
   private readonly rankPadding = 10;
   rankLabelPlaceholder: number;
   reduceID = true;
+  dy: number;
   get maxRankLabelWidth(): number {
     console.log(this.barHeight);
     return canvasHelper.measure(
@@ -68,6 +70,7 @@ export class BarChart extends BaseChart {
       this.showDateLabel = options.showDateLabel;
     this.dateLabelOptions = options.dateLabelOptions;
     this.showRankLabel = options.showRankLabel ?? false;
+    this.dy = options.dy ?? 0;
   }
 
   itemCount = 20;
@@ -234,10 +237,10 @@ export class BarChart extends BaseChart {
       alpha: this.alphaScale(sec),
       position: this.position,
     });
-    currentData.forEach((data) => {
+    currentData.forEach((data, index) => {
       const barOptions = this.getBarOptions(data, scaleX, indexes);
       if (barOptions.alpha > 0) {
-        res.children.push(this.getBarComponent(barOptions));
+        res.children.push(this.getBarComponent(barOptions, index));
       }
     });
     if (this.showRankLabel) {
@@ -247,7 +250,7 @@ export class BarChart extends BaseChart {
     if (this.showDateLabel) {
       let dateLabelText = this.getDateLabelText(sec);
 
-      let dateLabelOptions = this.dateLabelOptions ?? {
+      let dateLabelOptions = Object.assign(this.dateLabelOptions, {
         font,
         fontSize: 60,
         fillStyle: "#777",
@@ -258,7 +261,7 @@ export class BarChart extends BaseChart {
           x: this.shape.width - this.margin.right,
           y: this.shape.height - this.margin.bottom,
         },
-      };
+      });
       dateLabelOptions.text = dateLabelText;
       const dateLabel = new Text(dateLabelOptions);
       res.children.push(dateLabel);
@@ -403,7 +406,7 @@ export class BarChart extends BaseChart {
     return this.margin.top + idx * (this.barHeight + this.barGap);
   }
 
-  private getBarComponent(options: BarOptions) {
+  private getBarComponent(options: BarOptions, index: number) {
     const res = new Component({
       position: options.pos,
       alpha: options.alpha,
@@ -412,7 +415,7 @@ export class BarChart extends BaseChart {
       shape: options.shape,
       fillStyle: options.color,
       radius: options.radius,
-      clip: false,
+      clip: true,
     });
     const label = new Text(
       this.getLabelTextOptions(
@@ -421,13 +424,14 @@ export class BarChart extends BaseChart {
         options.shape.height
       )
     );
+
     const valueLabel = new Text({
       textBaseline: "middle",
       text: `${this.valueFormat(options.data)}`,
       textAlign: "left",
       position: {
         x: options.shape.width + this.barPadding,
-        y: (options.shape.height * this.barFontSizeScale * 0.9) / 2,
+        y: (options.shape.height * this.barFontSizeScale) / 2 + this.dy,
       },
       fontSize: options.shape.height * this.barFontSizeScale,
       font,
@@ -465,6 +469,21 @@ export class BarChart extends BaseChart {
       });
       bar.children.push(img);
     }
+    // const rank = new Text({
+    //   textAlign: "left",
+    //   textBaseline: "bottom",
+    //   text: `${index + this.rankOffset}`,
+    //   position: {
+    //     x: this.barPadding - imagePlaceholder,
+    //     y: options.shape.height,
+    //   },
+    //   fontSize: options.shape.height * this.barFontSizeScale,
+    //   font,
+    //   fillStyle: "#fff",
+    //   strokeStyle: options.color,
+    //   lineWidth: 4,
+    // });
+    // bar.children.push(rank);
     bar.children.push(barInfo);
     res.children.push(bar);
     res.children.push(valueLabel);
@@ -485,7 +504,7 @@ export class BarChart extends BaseChart {
       font,
       position: {
         x: 0 - this.barPadding,
-        y: (fontSize * this.barFontSizeScale * 0.9) / 2,
+        y: (fontSize * this.barFontSizeScale) / 2 + this.dy,
       },
       fillStyle: color,
     };
