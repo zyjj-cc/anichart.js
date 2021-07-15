@@ -118,6 +118,11 @@ const barChart = new ani.BarChart({
     return id;
     // return meta.get(id).name;
   },
+  dy: 5,
+  barInfoOptions: {
+    fillStyle: "#222",
+    strokeStyle: undefined,
+  },
   dateFormat: "%Y-%m-%d %H:%M:%S",
   aniTime: [4, 10],
 });

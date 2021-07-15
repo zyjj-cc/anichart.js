@@ -13,6 +13,7 @@ export interface BarChartOptions extends BaseChartOptions {
     showDateLabel?: boolean;
     dateLabelOptions?: TextOptions;
     showRankLabel?: boolean;
+    barInfoOptions?: TextOptions;
 }
 export interface BarOptions {
     id: string;
@@ -39,6 +40,7 @@ export declare class BarChart extends BaseChart {
     rankLabelPlaceholder: number;
     reduceID: boolean;
     dy: number;
+    barInfoOptions: any;
     get maxRankLabelWidth(): number;
     constructor(options?: BarChartOptions);
     itemCount: number;

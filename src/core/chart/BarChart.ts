@@ -28,6 +28,7 @@ export interface BarChartOptions extends BaseChartOptions {
   showDateLabel?: boolean;
   dateLabelOptions?: TextOptions;
   showRankLabel?: boolean;
+  barInfoOptions?: TextOptions;
 }
 
 export interface BarOptions {
@@ -49,6 +50,7 @@ export class BarChart extends BaseChart {
   rankLabelPlaceholder: number;
   reduceID = true;
   dy: number;
+  barInfoOptions: any;
   get maxRankLabelWidth(): number {
     console.log(this.barHeight);
     return canvasHelper.measure(
@@ -68,7 +70,8 @@ export class BarChart extends BaseChart {
       this.barInfoFormat = options.barInfoFormat;
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
-    this.dateLabelOptions = options.dateLabelOptions;
+    this.dateLabelOptions = options.dateLabelOptions ?? {};
+    this.barInfoOptions = options.barInfoOptions ?? {};
     this.showRankLabel = options.showRankLabel ?? false;
     this.dy = options.dy ?? 0;
   }
@@ -441,10 +444,10 @@ export class BarChart extends BaseChart {
       options.image && recourse.images.get(options.image)
         ? options.shape.height
         : 0;
-    const barInfo = new Text({
+
+    let defaultBarInfoOptions = {
       textAlign: "right",
       textBaseline: "bottom",
-      text: this.barInfoFormat(options.id, this.meta),
       position: {
         x: options.shape.width - this.barPadding - imagePlaceholder,
         y: options.shape.height,
@@ -454,7 +457,14 @@ export class BarChart extends BaseChart {
       fillStyle: "#fff",
       strokeStyle: options.color,
       lineWidth: 4,
-    });
+    };
+
+    let barInfoOptions = Object.assign(
+      defaultBarInfoOptions,
+      this.barInfoOptions
+    );
+    barInfoOptions.text = this.barInfoFormat(options.id, this.meta);
+    const barInfo = new Text(barInfoOptions);
     if (options.image && recourse.images.get(options.image)) {
       const img = new Image({
         src: options.image,
