@@ -46,6 +46,8 @@ export declare abstract class BaseChart extends Ani {
     dataGroupByDate: Map<any, any[]>;
     visualRange: "total" | "current" | "history" | [number, number];
     interpolateInitValue: number;
+    indexToDate: Map<number, string>;
+    nonstandardDate: any;
     constructor(options?: BaseChartOptions);
     tickKeyFrameDuration: number;
     dataScales: Map<string, any>;
@@ -94,7 +96,7 @@ export declare abstract class BaseChart extends Ani {
     historyMax: number;
     historyMin: number;
     setup(stage: Stage): void;
-    private setData;
+    setData(): void;
     private setDataScales;
     private insertNaN;
     getComponent(sec: number): Component | null;
