@@ -68,7 +68,7 @@ export class BarChart extends BaseChart {
       this.barInfoFormat = options.barInfoFormat;
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
-    this.dateLabelOptions = options.dateLabelOptions;
+    this.dateLabelOptions = options.dateLabelOptions ?? Object();
     this.showRankLabel = options.showRankLabel ?? false;
     this.dy = options.dy ?? 0;
   }
