@@ -19,6 +19,7 @@ import {
 } from "d3";
 
 export interface BarChartOptions extends BaseChartOptions {
+  domain?: (data: any) => [number, number];
   dy?: number;
   barFontSizeScale?: number;
   itemCount?: number;
@@ -51,6 +52,7 @@ export class BarChart extends BaseChart {
   reduceID = true;
   dy: number;
   barInfoOptions: any;
+  domain: (data: any) => [number, number];
   get maxRankLabelWidth(): number {
     console.log(this.barHeight);
     return canvasHelper.measure(
@@ -74,6 +76,7 @@ export class BarChart extends BaseChart {
     this.barInfoOptions = options.barInfoOptions ?? {};
     this.showRankLabel = options.showRankLabel ?? false;
     this.dy = options.dy ?? 0;
+    if (options.domain) this.domain = options.domain;
   }
 
   itemCount = 20;
@@ -296,36 +299,25 @@ export class BarChart extends BaseChart {
 
   getScaleX(currentData: any[]) {
     let scaleX: ScaleLinear<number, number, never>;
-    if (this.visualRange != "history") {
+    let domain: number[];
+    if (this.domain != undefined) {
+      domain = this.domain(currentData);
+    } else if (this.visualRange != "history") {
       const [_, max] = extent(currentData, (d) => d[this.valueField]);
-      scaleX = scaleLinear(
-        [0, max],
-        [
-          0,
-          this.shape.width -
-            this.margin.left -
-            this.barPadding -
-            this.labelPlaceholder -
-            this.totalRankPlaceHolder -
-            this.margin.right -
-            this.valuePlaceholder,
-        ]
-      );
+      domain = [0, max];
     } else {
-      scaleX = scaleLinear(
-        [0, max(this.data, (d) => d[this.valueField])],
-        [
-          0,
-          this.shape.width -
-            this.margin.left -
-            this.barPadding -
-            this.labelPlaceholder -
-            this.totalRankPlaceHolder -
-            this.margin.right -
-            this.valuePlaceholder,
-        ]
-      );
+      domain = [0, max(this.data, (d) => d[this.valueField])];
     }
+    scaleX = scaleLinear(domain, [
+      0,
+      this.shape.width -
+        this.margin.left -
+        this.barPadding -
+        this.labelPlaceholder -
+        this.totalRankPlaceHolder -
+        this.margin.right -
+        this.valuePlaceholder,
+    ]);
     return scaleX;
   }
 
