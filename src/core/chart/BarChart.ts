@@ -54,7 +54,6 @@ export class BarChart extends BaseChart {
   barInfoOptions: any;
   domain: (data: any) => [number, number];
   get maxRankLabelWidth(): number {
-    console.log(this.barHeight);
     return canvasHelper.measure(
       new Text(this.getRankLabelOptions(this.itemCount))
     ).width;
@@ -353,7 +352,7 @@ export class BarChart extends BaseChart {
     ).clamp(true)(indexes.get(data[this.idField])!);
     let color: string;
     if (typeof this.colorField === "string") {
-      color = data[this.idField];
+      color = data[this.colorField];
     } else {
       color = this.colorField(
         data[this.idField],
