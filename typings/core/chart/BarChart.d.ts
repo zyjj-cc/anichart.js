@@ -4,6 +4,7 @@ import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions, KeyGenerate } from "./BaseChart";
 import { ScaleLinear } from "d3";
 export interface BarChartOptions extends BaseChartOptions {
+    domain?: (data: any) => [number, number];
     dy?: number;
     barFontSizeScale?: number;
     itemCount?: number;
@@ -41,6 +42,7 @@ export declare class BarChart extends BaseChart {
     reduceID: boolean;
     dy: number;
     barInfoOptions: any;
+    domain: (data: any) => [number, number];
     get maxRankLabelWidth(): number;
     constructor(options?: BarChartOptions);
     itemCount: number;

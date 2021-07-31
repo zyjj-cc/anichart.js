@@ -226,6 +226,18 @@ export abstract class BaseChart extends Ani {
     dataList: any[],
     dateExtent: [undefined, undefined] | [any, any]
   ) {
+    // 在前面插入NaN
+    const first = dataList[0];
+    // if (
+    //   first[this.dateField].getTime() - dateExtent[0].getTime() >
+    //   this.maxIntervalMS
+    // ) {
+    const obj = Object.assign({}, first);
+    obj[this.valueField] = this.interpolateInitValue;
+    obj[this.dateField] = new Date(obj[this.dateField].getTime() - 1);
+    // console.log(obj);
+    dataList.unshift(obj);
+    // }
     if (this.maxIntervalMS !== Number.MAX_VALUE) {
       // 如果间隔时间大于一定值，则插入一个 NaN
       // 在后面插入NaN
@@ -240,18 +252,7 @@ export abstract class BaseChart extends Ani {
         // console.log(obj);
         dataList.push(obj);
       }
-      // 在前面插入NaN
-      const first = dataList[0];
-      if (
-        first[this.dateField].getTime() - dateExtent[0].getTime() >
-        this.maxIntervalMS
-      ) {
-        const obj = Object.assign({}, first);
-        obj[this.valueField] = this.interpolateInitValue;
-        obj[this.dateField] = new Date(obj[this.dateField].getTime() - 1);
-        // console.log(obj);
-        dataList.unshift(obj);
-      }
+
       for (let i = 0; i < dataList.length - 1; i++) {
         const prev = dataList[i];
         const next = dataList[i + 1];
