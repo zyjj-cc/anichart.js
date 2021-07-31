@@ -6,7 +6,7 @@ class ColorPicker {
     "#27C",
     "#FB0",
     "#2C8",
-    "#FFF",
+    "#569",
     "#0CE",
     "#E8A",
     "#DDA",
