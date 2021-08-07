@@ -3,14 +3,14 @@ import { Component } from "./component/Component";
 import { Text } from "./component/Text";
 export class CanvasHelper {
   isPointInPath(area: Path2D | string, x: number, d: number): any {
-    if (typeof area == "string") {
+    if (typeof area === "string") {
       area = new Path2D(area);
     }
     return this.renderer.ctx?.isPointInPath(area, x, d);
   }
   renderer: CanvasRenderer = canvasRenderer;
   constructor() {
-    if (typeof window == "undefined") {
+    if (typeof window === "undefined") {
       // node
       let { createCanvas } = require("canvas");
       var nodeCanvas = createCanvas(1920, 1080);

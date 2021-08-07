@@ -24,7 +24,7 @@ export class MultiColumnBarChart extends BarChart {
     super.setup(stage);
 
     this.c.children.forEach((v: BarChart, i) => {
-      if (i == this.cols - 1) {
+      if (i === this.cols - 1) {
         v.showDateLabel = true;
       } else {
         v.showDateLabel = false;

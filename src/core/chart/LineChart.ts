@@ -165,7 +165,7 @@ export class LineChart extends BaseChart {
   protected getScalesBySec(sec: number) {
     const currentData = this.getCurrentData(sec);
     let valueRange = extent(currentData, (d) => d[this.valueField] as number);
-    if (valueRange[0] == undefined) {
+    if (valueRange[0] === undefined) {
       valueRange = [0, 0];
     }
     if (this.historyMax > valueRange[1]) {

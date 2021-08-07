@@ -178,7 +178,7 @@ export abstract class BaseChart extends Ani {
           default:
             // 数值转成数字
             if (
-              typeof d[k] == "string" &&
+              typeof d[k] === "string" &&
               (this.valueKeys.includes(k) || this.valueField === k)
             ) {
               d[k] = +d[k].replace(/,/g, "");

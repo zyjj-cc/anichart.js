@@ -17,7 +17,7 @@ export function getFadeWrapped(
   } else {
     ani.getComponent = (sec) => {
       const c = child.getComponent(sec);
-      if (c == null) return null;
+      if (c === null) return null;
       const a = alpha(sec);
       c.alpha = a;
       comp.children = [c];
