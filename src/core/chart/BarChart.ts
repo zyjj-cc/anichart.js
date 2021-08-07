@@ -71,11 +71,11 @@ export class BarChart extends BaseChart {
       this.barInfoFormat = options.barInfoFormat;
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
+    if (options.domain) this.domain = options.domain;
     this.dateLabelOptions = options.dateLabelOptions ?? {};
     this.barInfoOptions = options.barInfoOptions ?? {};
     this.showRankLabel = options.showRankLabel ?? false;
     this.dy = options.dy ?? 0;
-    if (options.domain) this.domain = options.domain;
   }
 
   itemCount = 20;
