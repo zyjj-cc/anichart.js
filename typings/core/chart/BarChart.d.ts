@@ -34,14 +34,14 @@ export interface BarOptions {
     image?: string;
 }
 export declare class BarChart extends BaseChart {
-    dateLabelOptions: TextOptions | undefined;
+    dateLabelOptions: TextOptions;
     barFontSizeScale: number;
     showRankLabel: boolean;
     private readonly rankPadding;
     rankLabelPlaceholder: number;
     reduceID: boolean;
     dy: number;
-    barInfoOptions: any;
+    barInfoOptions: TextOptions;
     domain: (data: any) => [number, number];
     get maxRankLabelWidth(): number;
     constructor(options?: BarChartOptions);
