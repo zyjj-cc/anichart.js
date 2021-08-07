@@ -22,13 +22,10 @@ Easily create data visualization animated video.
 
 ### Online editable DEMO（v2.x）
 
+> **Warning**
+> Due to a browser security policy update, online editing is now only supported for browsing, and no longer directly supports video export.
+
 [![Edit anichart 2.x](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/anichart-2x-m3xbz?fontsize=14&hidenavigation=1&theme=dark)
-
-### Online editable DEMO（v1.x）
-
-<a href="https://codesandbox.io/s/dreamy-microservice-e8em0?fontsize=14&hidenavigation=1&theme=dark&view=preview">
-    <img alt="Edit e8em0" src="https://codesandbox.io/static/img/play-codesandbox.svg">
-</a>
 
 ### Effect Show
 
@@ -59,17 +56,34 @@ Compared with its [predecessor](https://github.com/Jannchie/Historical-ranking-d
 - Convention over configuration: simplifies the user's configuration to the greatest extent, without too many complex Settings you can get a beautiful chart.
 - Virtual components: Similar to virtual DOM, it further enhances extensibility by splitting components and renderers. Ease of porting to more platforms and support for more efficient WebGL rendering in the future.
 
-## Setup
+## Use
 
-### Via Yarn
+Currently, anichart for general users is under development, and what is described below is geared towards developers and is more hardcore. If you have data visualization needs right now, you can use the [predecessor](https://github.com/Jannchie/Historical-ranking-data-visualization-based-on-js) project, or use the aforementioned [online editing project](https://) codesandbox.io/s/anichart-2x-m3xbz?fontsize=14&hidenavigation=1&theme=dark).
+
+---
+
+For general developers, you can use [this repository](https://github.com/Jannchie/anichart-template) as a template for data visualization projects. You need to have some basic development in Javascript or Typescript.
+
+### Steps
+
+```bash
+yarn install
+```
+
+```bash
+yarn start
+```
+
+## Installation
+
+For advanced developers who want to use anichart in their projects, you can install it as follows.
+
+### Via Package Manager
 
 ```bash
 yarn add anichart
-```
 
-### Via Npm
-
-```bash
+# or
 npm i anichart
 ```
 

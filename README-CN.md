@@ -22,17 +22,10 @@
 
 ### 在线编辑（v2.x）
 
+> **警告**
+> 由于浏览器安全策略的更新，在线编辑目前仅支持浏览，而不再直接支持视频导出。
+
 [![Edit anichart 2.x](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/anichart-2x-m3xbz?fontsize=14&hidenavigation=1&theme=dark)
-
-### 在线编辑（v1.x）
-
-<a href="https://codesandbox.io/s/dreamy-microservice-e8em0?fontsize=14&hidenavigation=1&theme=dark&view=preview">
-    <img alt="Edit e8em0" src="https://codesandbox.io/static/img/play-codesandbox.svg">
-</a>
-
-### 效果展示
-
-[点击前往示例项目](https://jannchie.github.io/anichart.io/en/demo-list)
 
 ## 写在前面
 
@@ -61,24 +54,41 @@
 - 约定优于配置：最大程度简化了用户的配置，无需太多复杂的设定便可以获得美观的图表。
 - 虚拟组件：类似于虚拟DOM，通过拆分组件和渲染器，进一步增强了扩展能力。便于移植到更多的平台，以后会支持使用效率更高的webgl进行渲染。
 
+## 使用
+
+目前，针对普通用户的 anichart 正在开发中，下面要介绍的内容面向开发者，比较硬核。如果目前就有数据可视化需求，可以使用[前身](https://github.com/Jannchie/Historical-ranking-data-visualization-based-on-js)项目，或者使用前述[在线编辑项目](https://codesandbox.io/s/anichart-2x-m3xbz?fontsize=14&hidenavigation=1&theme=dark)。
+
+---
+
+针对一般开发人员，可以使用[这个仓库](https://github.com/Jannchie/anichart-template)作为模板，进行数据可视化项目的开发。你需要有一定的 Javascript 或者 Typescript 的开发基础。
+
+### 步骤
+
+```bash
+yarn install
+```
+
+```bash
+yarn start
+```
+
 ## 安装
 
-### 使用Yarn
+针对高级开发人员，如果想要把 anichart 用于自己的项目中，可以进行如下操作进行安装。
+
+### 通过包管理器
 
 ```bash
 yarn add anichart
-```
 
-### 使用Npm
-
-```bash
+# 或者
 npm i anichart
 ```
 
 ### 标签导入
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/anichart@1.1.12/dist/anichart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anichart@latest/dist/anichart.min.js"></script>
 ```
 
 ## 用法
