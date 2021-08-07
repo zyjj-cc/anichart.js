@@ -8,29 +8,28 @@ import { Arc } from "./component/Arc";
 import { Ani } from "./ani/Ani";
 import { Stage } from "./Stage";
 import { Renderer } from "./Renderer";
-import { Canvas } from "canvas";
 
 export class CanvasRenderer implements Renderer {
   getImageData() {
     return this.canvas.toDataURL("image/png", 0.99);
   }
   getImageBuffer() {
-    if (this.canvas instanceof Canvas) {
-      return this.canvas.toBuffer("image/jpeg");
-    } else {
+    try {
+      return (this.canvas as any).toBuffer("image/jpeg");
+    } catch {
       throw new Error("image buffer only be supported in node.js");
     }
   }
-  canvas: HTMLCanvasElement | Canvas;
+  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | any;
   stage: Stage;
-  constructor(canvas?: HTMLCanvasElement | Canvas) {
+  constructor(canvas?: HTMLCanvasElement) {
     if (canvas) this.setCanvas(canvas);
   }
   clean() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
-  setCanvas(canvas: HTMLCanvasElement | Canvas) {
+  setCanvas(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d")!;
   }

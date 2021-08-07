@@ -1,4 +1,3 @@
-import { createCanvas } from "canvas";
 import { canvasRenderer, CanvasRenderer } from "./CanvasRenderer";
 import { Component } from "./component/Component";
 import { Text } from "./component/Text";
@@ -13,6 +12,7 @@ export class CanvasHelper {
   constructor() {
     if (typeof window == "undefined") {
       // node
+      let { createCanvas } = require("canvas");
       var nodeCanvas = createCanvas(1920, 1080);
       this.renderer.canvas = nodeCanvas;
       this.renderer.ctx = nodeCanvas.getContext("2d");

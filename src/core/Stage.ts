@@ -6,7 +6,6 @@ import { addFrameToFFmpeg, loadffmpeg, outputMP4, removePNG } from "./FFmpeg";
 import { recourse } from "./Recourse";
 import { interval, Timer } from "d3";
 import { eachLimit, eachSeries } from "async";
-import { createCanvas } from "canvas";
 import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
 
 // Enable Path2D
@@ -51,6 +50,7 @@ export class Stage {
     this.renderer = new CanvasRenderer();
     this.renderer.stage = this;
     if (typeof window === "undefined") {
+      const { createCanvas } = require("canvas");
       var c = createCanvas(1920, 1080);
       this.renderer.setCanvas(c);
     } else {
