@@ -44,14 +44,14 @@ export interface BarOptions {
   image?: string;
 }
 export class BarChart extends BaseChart {
-  dateLabelOptions: TextOptions | undefined;
+  dateLabelOptions: TextOptions = {};
   barFontSizeScale: number = 0.9;
   showRankLabel: boolean;
   private readonly rankPadding = 10;
   rankLabelPlaceholder: number;
   reduceID = true;
   dy: number;
-  barInfoOptions: any;
+  barInfoOptions: TextOptions = {};
   domain: (data: any) => [number, number];
   get maxRankLabelWidth(): number {
     return canvasHelper.measure(
@@ -72,8 +72,10 @@ export class BarChart extends BaseChart {
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
     if (options.domain) this.domain = options.domain;
-    this.dateLabelOptions = options.dateLabelOptions ?? {};
-    this.barInfoOptions = options.barInfoOptions ?? {};
+    if (options.barInfoOptions != undefined)
+      this.barInfoOptions = options.barInfoOptions;
+    if (options.dateLabelOptions != undefined)
+      this.dateLabelOptions = options.dateLabelOptions;
     this.showRankLabel = options.showRankLabel ?? false;
     this.dy = options.dy ?? 0;
   }
