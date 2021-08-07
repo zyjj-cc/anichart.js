@@ -97,12 +97,8 @@ export class BarChart extends BaseChart {
     }
   }
 
-  barInfoFormat = (
-    id: any,
-    data?: Map<string, any>,
-    meta?: Map<string, any>
-  ) => {
-    return this.labelFormat(id, data, meta);
+  barInfoFormat = (id: any, meta: Map<string, any>, data: Map<string, any>) => {
+    return this.labelFormat(id, meta, data);
   };
 
   historyIndex: Map<any, any>;
@@ -454,7 +450,11 @@ export class BarChart extends BaseChart {
       defaultBarInfoOptions,
       this.barInfoOptions
     );
-    barInfoOptions.text = this.barInfoFormat(options.id, this.meta);
+    barInfoOptions.text = this.barInfoFormat(
+      options.id,
+      this.meta,
+      this.dataGroupByID
+    );
     const barInfo = new Text(barInfoOptions);
     if (options.image && recourse.images.get(options.image)) {
       const img = new Image({
