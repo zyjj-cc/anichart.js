@@ -4,6 +4,7 @@
  * @author   Jannchie <https://github.com/Jannchie>
  * @license  MIT
  */
+export * from "./core/Controller";
 export * from "./core/Stage";
 export * from "./core/Recourse";
 export * from "./core/Recorder";

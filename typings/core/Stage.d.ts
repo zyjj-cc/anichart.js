@@ -22,6 +22,7 @@ export declare class Stage {
     set frame(val: number);
     get sec(): number;
     set sec(val: number);
+    get playing(): boolean;
     get totalFrames(): number;
     get canvas(): any;
     constructor(canvas?: HTMLCanvasElement);
