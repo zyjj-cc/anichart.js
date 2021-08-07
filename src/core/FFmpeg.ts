@@ -1,4 +1,4 @@
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { fetchFile, FFmpeg } from "@ffmpeg/ffmpeg";
 export type Preset =
   | "ultrafast"
   | "superfast"
@@ -10,11 +10,11 @@ export type Preset =
   | "slower"
   | "veryslow"
   | "placebo ";
-const ffmpeg = createFFmpeg({ log: true });
-export async function loadffmpeg() {
+export async function loadffmpeg(ffmpeg: FFmpeg) {
   return ffmpeg.load();
 }
 export async function addFrameToFFmpeg(
+  ffmpeg: FFmpeg,
   imageData: string,
   frame: number,
   name = "output"
@@ -26,12 +26,13 @@ export async function addFrameToFFmpeg(
     console.error(err);
   }
 }
-export function removePNG(list: string[]) {
+export function removePNG(ffmpeg: FFmpeg, list: string[]) {
   for (const name of list) {
     ffmpeg.FS("unlink", name);
   }
 }
 export async function outputMP4(
+  ffmpeg: FFmpeg,
   fps: any,
   name = "output",
   preset: Preset = "ultrafast",

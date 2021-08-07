@@ -42,8 +42,8 @@ export interface BaseChartOptions {
   valueFormat?: (cData: any) => string;
   labelFormat?: (
     id: string,
-    meta?: Map<string, any>,
-    data?: Map<string, any>
+    meta: Map<string, any>,
+    data: Map<string, any>
   ) => string;
   dateFormat?: string;
   visualRange?: "total" | "current" | "history" | [number, number];
@@ -53,12 +53,8 @@ export interface BaseChartOptions {
 }
 export type KeyGenerate =
   | ((id: string) => string)
-  | ((id: string, meta?: Map<string, any> | undefined) => string)
-  | ((
-      id: string,
-      meta?: Map<string, any> | undefined,
-      data?: Map<string, any> | undefined
-    ) => string);
+  | ((id: string, meta: Map<string, any>) => string)
+  | ((id: string, meta: Map<string, any>, data: Map<string, any>) => string);
 export abstract class BaseChart extends Ani {
   yAxisWidth: number;
   xAxisHeight: number;
@@ -213,6 +209,18 @@ export abstract class BaseChart extends Ani {
         (a, b) => a[this.dateField].getTime() - b[this.dateField].getTime()
       );
       this.insertNaN(dataList, dateExtent);
+      if (true) {
+        let temp: any[] = [];
+        temp.push(dataList[0]);
+        for (let i = 1; i < dataList.length; i++) {
+          if (
+            dataList[i][this.valueField] != dataList[i - 1][this.valueField]
+          ) {
+            temp.push(dataList[i]);
+          }
+        }
+        dataList = temp;
+      }
       const dateList = dataList.map((d) => d[this.dateField]);
       const secList = dateList.map((d) => this.secToDate.invert(d));
       // 线性插值

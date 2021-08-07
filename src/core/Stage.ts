@@ -6,7 +6,8 @@ import { addFrameToFFmpeg, loadffmpeg, outputMP4, removePNG } from "./FFmpeg";
 import { recourse } from "./Recourse";
 import { interval, Timer } from "d3";
 import { eachLimit, eachSeries } from "async";
-import { Canvas, createCanvas } from "canvas";
+import { createCanvas } from "canvas";
+import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
 
 // Enable Path2D
 require("canvas-5-polyfill");
@@ -107,7 +108,11 @@ export class Stage {
         f++;
       }
     } else if (this.output) {
-      loadffmpeg().then(() => {
+      let ffmpeg = createFFmpeg({
+        log: true,
+        corePath: "/ffmpeg-core.js",
+      });
+      loadffmpeg(ffmpeg).then(() => {
         const partCount =
           Math.floor(this.options.sec / this.outputOptions.splitSec) + 1;
         let part = 0;
@@ -133,10 +138,10 @@ export class Stage {
               f - (p - 1) * this.outputOptions.splitSec * this.options.fps;
             picNameList.push(`output-${no}.png`);
             const imageData = this.renderer.getImageData();
-            addFrameToFFmpeg(imageData, no).then(() => cb());
+            addFrameToFFmpeg(ffmpeg, imageData, no).then(() => cb());
           }).then(() => {
-            outputMP4(this.options.fps).then(() => {
-              removePNG(picNameList);
+            outputMP4(ffmpeg, this.options.fps).then(() => {
+              removePNG(ffmpeg, picNameList);
               callback();
             });
           });

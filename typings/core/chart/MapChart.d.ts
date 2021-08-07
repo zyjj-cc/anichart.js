@@ -62,7 +62,7 @@ export declare class MapChart extends BaseChart {
     wrapper: Component;
     private init;
     private initGeoPath;
-    labelFormat: (id: string) => string;
+    labelFormat: (id: string, meta: any, data: any) => string;
     private initPathMap;
     private initComps;
     getComponent(sec: number): Component;

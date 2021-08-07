@@ -28,7 +28,8 @@
     "serve": "webpack serve --open  --config webpack.dev.js --port 12341",
     "dev": "webpack  --config webpack.dev.js",
     "watch": "webpack --watch  --config webpack.dev.js",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "test-node": "ts-node ./test/index.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -36,7 +37,6 @@
     "@types/lodash-es": "^4.17.4",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^6.1.0",
     "file-loader": "^6.1.0",
     "prettier": "^2.1.2",
     "source-map-loader": "^1.1.2",
@@ -51,11 +51,11 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@ffmpeg/core": "^0.8.5",
-    "@ffmpeg/ffmpeg": "^0.9.7",
+    "@ffmpeg/core": "^0.10.0",
+    "@ffmpeg/ffmpeg": "^0.10.1",
     "@types/d3": "^6.3.0",
     "async": "^3.2.0",
-    "canvas": "^2.7.0",
+    "canvas": "^2.8.0",
     "canvas-5-polyfill": "^0.1.5",
     "d3": "^6.5.0",
     "html-webpack-plugin": "^5.2.0",

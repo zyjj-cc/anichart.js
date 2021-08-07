@@ -146,7 +146,7 @@ export class MapChart extends BaseChart {
     this.initPathMap(map, geoGener);
   }
 
-  labelFormat = (id: string) => {
+  labelFormat = (id: string, meta: any, data: any) => {
     return id;
   };
   private initPathMap(map: any, geoGener: GeoPath<any, GeoPermissibleObjects>) {
@@ -157,7 +157,11 @@ export class MapChart extends BaseChart {
       this.pathMap.set(mapId, path);
       const txt = new Text({
         position: { x: 4, y: 6 },
-        text: this.labelFormat(feature.properties[this.mapIdField]),
+        text: this.labelFormat(
+          feature.properties[this.mapIdField],
+          this.meta,
+          this.dataGroupByID
+        ),
         textAlign: "left",
         textBaseline: "top",
         fillStyle: this.strokeStyle,
@@ -276,7 +280,7 @@ export class MapChart extends BaseChart {
         (label.children[0] as Text).text =
           this.dataScales?.get(mapId)?.(sec)[this.valueField] ||
           !this.noDataLabel
-            ? this.labelFormat(mapId)
+            ? this.labelFormat(mapId, this.meta, this.dataGroupByID)
             : this.noDataLabel;
 
         const width = canvasHelper.measure(label.children[0] as Text).width;
