@@ -192,13 +192,15 @@ ani.recourse.loadJSON(
   `https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json`,
   "map"
 );
+let ctl = new ani.Controller(stage).render();
 async function start() {
   // const img = await d3.image("./pic/pattern.png");
   // const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
   // map.defaultFill = pattern!;
   stage.play();
 }
-start().then(() => console.log("finished"));
+start().then(() => {});
+
 if (typeof window !== "undefined") {
   (window as any).stage = stage;
   (window as any).d3 = d3;

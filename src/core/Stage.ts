@@ -40,6 +40,10 @@ export class Stage {
     this.cFrame = val * this.options.fps;
   }
 
+  get playing() {
+    return this.interval != null;
+  }
+
   get totalFrames() {
     return this.options.sec * this.options.fps;
   }
@@ -158,7 +162,10 @@ export class Stage {
         }
         this.render();
         if (this.cFrame >= this.totalFrames) {
-          this.interval!.stop();
+          if (this.interval) {
+            this.interval.stop();
+            this.interval = null;
+          }
         }
       }, (1 / this.options.fps) * 1000);
     }
