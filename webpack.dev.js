@@ -1,7 +1,6 @@
 const common = require("./webpack.common.js");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 module.exports = merge(common, {
   entry: {
     anichart: "./src/index.ts",
