@@ -40,6 +40,7 @@ export class Controller {
         .attr("max", (d: Stage) => d.options.sec)
         .on("input", function (_, d: Stage) {
           d.sec = Number(this.value);
+          d.render();
         });
       let play = ctrl
         .append("div")

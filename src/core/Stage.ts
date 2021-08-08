@@ -6,7 +6,8 @@ import { addFrameToFFmpeg, loadffmpeg, outputMP4, removePNG } from "./FFmpeg";
 import { recourse } from "./Recourse";
 import { interval, Timer } from "d3";
 import { eachLimit, eachSeries } from "async";
-import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
+import { createFFmpeg } from "@ffmpeg/ffmpeg";
+import { Controller } from "./Controller";
 
 // Enable Path2D
 require("canvas-5-polyfill");
@@ -14,6 +15,8 @@ require("canvas-5-polyfill");
 export class Stage {
   compRoot: Component = new Component();
   renderer: Renderer;
+
+  ctl: Controller;
   options = { sec: 5, fps: 30 };
   outputOptions = {
     fileName: "output",
@@ -68,6 +71,7 @@ export class Stage {
       this.renderer.setCanvas(canvas);
     }
     this.sec = 0;
+    this.ctl = new Controller(this);
   }
 
   addChild(child: Ani | Component) {
@@ -78,11 +82,21 @@ export class Stage {
     if (sec) {
       this.sec = sec;
     }
+    if (!this.alreadySetup) {
+      this.loadRecourse().then(() => {
+        this.compRoot.setup(this);
+        this.alreadySetup = true;
+        this.doRender();
+      });
+    } else {
+      this.doRender();
+    }
+  }
+  private doRender() {
     this.renderer.clean();
     this.renderer.render(this.compRoot, this.compRoot.offsetSec);
   }
-
-  loadRecourse() {
+  async loadRecourse() {
     return recourse.setup();
   }
 
@@ -173,7 +187,12 @@ export class Stage {
   }
 
   setup() {
-    this.compRoot.setup(this);
-    this.alreadySetup = true;
+    this.loadRecourse().then(() => {
+      this.compRoot.setup(this);
+      this.alreadySetup = true;
+    });
+  }
+  renderController() {
+    this.ctl.render();
   }
 }
