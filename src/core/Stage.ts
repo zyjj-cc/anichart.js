@@ -172,17 +172,6 @@ export class Stage {
   }
 
   setup() {
-    this.setupChildren(this.compRoot);
-  }
-
-  private setupChildren(ani: Component | Ani) {
-    ani.setup(this);
-    if (ani instanceof Component) {
-      ani.children.forEach((child) => {
-        if (child instanceof Ani) {
-          this.setupChildren(child);
-        }
-      });
-    }
+    this.compRoot.setup(this);
   }
 }
