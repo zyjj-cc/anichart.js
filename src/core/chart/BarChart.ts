@@ -373,7 +373,7 @@ export class BarChart extends BaseChart {
     scaleX: ScaleLinear<number, number, never>
   ): BarOptions {
     const hisIndex = this.totalHistoryIndex.get(data[this.idField]);
-    let idx = hisIndex ? hisIndex[this.stage!.frame] : this.itemCount;
+    let idx = hisIndex ? hisIndex[this.stage!.frame - 1] : this.itemCount;
     if (!Number.isNaN(data[this.valueField])) {
       this.lastValue.set(data[this.idField], data[this.valueField]);
     }
