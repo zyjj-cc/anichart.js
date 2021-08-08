@@ -15,6 +15,7 @@ import {
   range,
   ScaleLinear,
   scaleLinear,
+  sum,
   timeFormat,
 } from "d3";
 
@@ -30,6 +31,7 @@ export interface BarChartOptions extends BaseChartOptions {
   dateLabelOptions?: TextOptions;
   showRankLabel?: boolean;
   barInfoOptions?: TextOptions;
+  swapDurationMS?: number;
 }
 
 export interface BarOptions {
@@ -53,6 +55,7 @@ export class BarChart extends BaseChart {
   dy: number;
   barInfoOptions: TextOptions = {};
   domain: (data: any) => [number, number];
+  totalHistoryIndex: Map<any, any>;
   get maxRankLabelWidth(): number {
     return canvasHelper.measure(
       new Text(this.getRankLabelOptions(this.itemCount))
@@ -72,10 +75,12 @@ export class BarChart extends BaseChart {
     if (options.showDateLabel !== undefined)
       this.showDateLabel = options.showDateLabel;
     if (options.domain) this.domain = options.domain;
-    if (options.barInfoOptions != undefined)
+    if (options.barInfoOptions !== undefined)
       this.barInfoOptions = options.barInfoOptions;
-    if (options.dateLabelOptions != undefined)
+    if (options.dateLabelOptions !== undefined)
       this.dateLabelOptions = options.dateLabelOptions;
+    if (options.swapDurationMS !== undefined)
+      this.swapDurationMS = options.swapDurationMS;
     this.showRankLabel = options.showRankLabel ?? false;
     this.dy = options.dy ?? 0;
   }
@@ -84,7 +89,7 @@ export class BarChart extends BaseChart {
 
   barPadding = 8;
   barGap = 8;
-  swap = 0.25;
+  swapDurationMS = 300;
   rankOffset = 1;
   lastValue = new Map<string, number>();
   labelPlaceholder: number;
@@ -93,9 +98,9 @@ export class BarChart extends BaseChart {
 
   get sampling() {
     if (this.stage) {
-      return Math.round(this.stage.options.fps * this.swap);
+      return Math.round(this.stage.options.fps * this.swapDurationMS);
     } else {
-      return Math.round(30 * this.swap);
+      return Math.round(30 * this.swapDurationMS);
     }
   }
 
@@ -103,7 +108,6 @@ export class BarChart extends BaseChart {
     return this.labelFormat(id, meta, data);
   };
 
-  historyIndex: Map<any, any>;
   IDList: string[];
   setup(stage: Stage) {
     super.setup(stage);
@@ -112,7 +116,86 @@ export class BarChart extends BaseChart {
     this.rankLabelPlaceholder = this.maxRankLabelWidth;
     this.labelPlaceholder = this.maxLabelWidth;
     this.valuePlaceholder = this.maxValueLabelWidth;
-    this.setHistoryIndex();
+    const historyIndex = this.getTotalHistoryIndex();
+
+    const kernel = this.getConvolveKernel(3);
+    for (let [key, _] of historyIndex) {
+      historyIndex.set(key, this.convolve(historyIndex.get(key), kernel));
+    }
+    this.totalHistoryIndex = historyIndex;
+  }
+  private getConvolveKernel(kw: number) {
+    const normalFunc = function normal(x: number) {
+      return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-(x ** 2 / 2));
+    };
+    let kernel = range(
+      -kw,
+      kw,
+      (((2 * kw) / this.swapDurationMS) * 1000) / this.stage!.options.fps
+    ).map((v) => normalFunc(v));
+    if (kernel.length % 2 !== 1) {
+      kernel.shift();
+    }
+    const ks = sum(kernel);
+    kernel = kernel.map((v) => v / ks);
+    return kernel;
+  }
+
+  private getTotalHistoryIndex() {
+    // TODO: 减少范围
+    const secRange = range(
+      0,
+      this.stage!.options.sec,
+      1 / this.stage!.options.fps
+    );
+    const data = secRange.map((t) =>
+      this.getCurrentData(t)
+        .sort((a, b) => b[this.valueField] - a[this.valueField])
+        .filter((d) => !Number.isNaN(d[this.valueField]))
+        .map((v) => v[this.idField])
+    );
+    return this.IDList.reduce((d, id) => {
+      const indexList: number[] = [];
+      for (const dataList of data) {
+        let index = dataList.indexOf(id);
+        if (index === -1 || index > this.itemCount) index = this.itemCount;
+        indexList.push(index);
+      }
+      d.set(id, indexList);
+      return d;
+    }, new Map());
+  }
+
+  /**
+   * 卷积的一种实现，特别地，这个函数对左右两边进行 padding 处理。
+   *
+   * @param array 被卷数组
+   * @param weights 卷积核
+   * @returns 卷积后的数组，大小和被卷数组一致
+   */
+  private convolve(array: number[], weights: number[]) {
+    if (weights.length % 2 !== 1)
+      throw new Error("weights array must have an odd length");
+
+    let al = array.length;
+    let wl = weights.length;
+    let offset = ~~(wl / 2);
+    let output = new Array<number>(al);
+
+    for (let i = 0; i < al; i++) {
+      let kmin = 0;
+      let kmax = wl - 1;
+
+      output[i] = 0;
+      for (let k = kmin; k <= kmax; k++) {
+        let idx = i - offset + k;
+        if (idx < 0) idx = 0;
+        if (idx >= array.length) idx = array.length - 1;
+        output[i] += array[idx] * weights[k];
+      }
+    }
+
+    return output;
   }
 
   private setShowingIDList() {
@@ -142,27 +225,6 @@ export class BarChart extends BaseChart {
       }
     });
     this.IDList = [...idSet.values()];
-  }
-
-  private setHistoryIndex() {
-    const dataRange = range(
-      this.aniTime[0] - this.swap,
-      this.aniTime[0],
-      this.swap / this.sampling
-    );
-    const data = dataRange.map((t) =>
-      this.getCurrentData(t).map((v) => v[this.idField])
-    );
-    this.historyIndex = this.IDList.reduce((d, id) => {
-      const indexList: number[] = [];
-      for (const dataList of data) {
-        let index = dataList.indexOf(id);
-        if (index === -1) index = this.itemCount;
-        indexList.push(index);
-      }
-      d.set(id, indexList);
-      return d;
-    }, new Map());
   }
 
   get maxValueLabelWidth() {
@@ -204,35 +266,6 @@ export class BarChart extends BaseChart {
 
   getComponent(sec: number) {
     let currentData = this.getCurrentData(sec);
-    currentData.forEach((d, i) => {
-      const index = Number.isNaN(d[this.valueField])
-        ? this.itemCount
-        : i > this.itemCount
-        ? this.itemCount
-        : i;
-      this.historyIndex.get(d[this.idField])?.push(index);
-    });
-    for (const history of this.historyIndex.values()) {
-      const len = history.length;
-      if (len === this.sampling) {
-        history.push(this.itemCount);
-      }
-      history.shift();
-    }
-    const indexes = this.IDList.reduce((map, id) => {
-      let h = this.historyIndex.get(id) as number[];
-      if (h.includes(0) && h.includes(this.itemCount)) {
-        for (let idx = 0; idx < h.length; idx++) {
-          const element = h[idx];
-          if (element === this.itemCount) {
-            h[idx] = -1;
-          }
-        }
-      }
-      let m = mean(h);
-      return map.set(id, m);
-    }, new Map());
-
     let scaleX: ScaleLinear<number, number, never> = this.getScaleX(
       currentData
     );
@@ -241,7 +274,7 @@ export class BarChart extends BaseChart {
       position: this.position,
     });
     currentData.forEach((data, index) => {
-      const barOptions = this.getBarOptions(data, scaleX, indexes);
+      const barOptions = this.getBarOptions(data, scaleX);
       if (barOptions.alpha > 0) {
         res.children.push(this.getBarComponent(barOptions, index));
       }
@@ -337,9 +370,10 @@ export class BarChart extends BaseChart {
 
   private getBarOptions(
     data: any,
-    scaleX: ScaleLinear<number, number, never>,
-    indexes: Map<string, number>
+    scaleX: ScaleLinear<number, number, never>
   ): BarOptions {
+    const hisIndex = this.totalHistoryIndex.get(data[this.idField]);
+    let idx = hisIndex ? hisIndex[this.stage!.frame] : this.itemCount;
     if (!Number.isNaN(data[this.valueField])) {
       this.lastValue.set(data[this.idField], data[this.valueField]);
     }
@@ -347,7 +381,7 @@ export class BarChart extends BaseChart {
     let alpha = scaleLinear(
       [-1, 0, this.itemCount - 1, this.itemCount],
       [0, 1, 1, 0]
-    ).clamp(true)(indexes.get(data[this.idField])!);
+    ).clamp(true)(idx);
     let color: string;
     if (typeof this.colorField === "string") {
       color = data[this.colorField];
@@ -362,13 +396,6 @@ export class BarChart extends BaseChart {
       typeof this.imageField === "string"
         ? data[this.imageField]
         : this.imageField(data[this.idField], this.meta, this.dataGroupByID);
-    var idx: number;
-    if (data[this.valueField] !== undefined) {
-      idx = indexes.get(data[this.idField])!;
-    } else {
-      idx = this.itemCount;
-      alpha = 0;
-    }
     return {
       id: data[this.idField],
       pos: {

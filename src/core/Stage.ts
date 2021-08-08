@@ -24,6 +24,7 @@ export class Stage {
   outputConcurrency = 128;
   mode = "output";
   private cFrame = 0;
+  private alreadySetup: boolean;
 
   get frame(): number {
     return this.cFrame;
@@ -37,7 +38,7 @@ export class Stage {
   }
 
   set sec(val: number) {
-    this.cFrame = val * this.options.fps;
+    this.cFrame = ~~(val * this.options.fps);
   }
 
   get playing() {
@@ -91,7 +92,7 @@ export class Stage {
     });
   }
   private doPlay() {
-    this.setup();
+    if (!this.alreadySetup) this.setup();
     if (this.interval) {
       this.interval.stop();
       this.interval = null;
@@ -173,5 +174,6 @@ export class Stage {
 
   setup() {
     this.compRoot.setup(this);
+    this.alreadySetup = true;
   }
 }

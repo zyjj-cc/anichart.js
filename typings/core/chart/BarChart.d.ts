@@ -15,6 +15,7 @@ export interface BarChartOptions extends BaseChartOptions {
     dateLabelOptions?: TextOptions;
     showRankLabel?: boolean;
     barInfoOptions?: TextOptions;
+    swapDurationMS?: number;
 }
 export interface BarOptions {
     id: string;
@@ -43,12 +44,13 @@ export declare class BarChart extends BaseChart {
     dy: number;
     barInfoOptions: TextOptions;
     domain: (data: any) => [number, number];
+    totalHistoryIndex: Map<any, any>;
     get maxRankLabelWidth(): number;
     constructor(options?: BarChartOptions);
     itemCount: number;
     barPadding: number;
     barGap: number;
-    swap: number;
+    swapDurationMS: number;
     rankOffset: number;
     lastValue: Map<string, number>;
     labelPlaceholder: number;
@@ -56,11 +58,19 @@ export declare class BarChart extends BaseChart {
     showDateLabel: boolean;
     get sampling(): number;
     barInfoFormat: (id: any, meta: Map<string, any>, data: Map<string, any>) => string;
-    historyIndex: Map<any, any>;
     IDList: string[];
     setup(stage: Stage): void;
+    private getConvolveKernel;
+    private getTotalHistoryIndex;
+    /**
+     * 卷积的一种实现，特别地，这个函数对左右两边进行 padding 处理。
+     *
+     * @param array 被卷数组
+     * @param weights 卷积核
+     * @returns 卷积后的数组，大小和被卷数组一致
+     */
+    private convolve;
     private setShowingIDList;
-    private setHistoryIndex;
     get maxValueLabelWidth(): any;
     get totalRankPlaceHolder(): number;
     get maxLabelWidth(): any;

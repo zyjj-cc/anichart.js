@@ -18,6 +18,7 @@ export declare class Stage {
     outputConcurrency: number;
     mode: string;
     private cFrame;
+    private alreadySetup;
     get frame(): number;
     set frame(val: number);
     get sec(): number;
@@ -32,5 +33,4 @@ export declare class Stage {
     play(): void;
     private doPlay;
     setup(): void;
-    private setupChildren;
 }
