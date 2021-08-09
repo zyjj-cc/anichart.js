@@ -43,6 +43,7 @@ export interface BarOptions {
   radius: number;
   alpha: number;
   image?: string;
+  isUp?: boolean;
 }
 export class BarChart extends BaseChart {
   dateLabelOptions: TextOptions = {};
@@ -253,18 +254,27 @@ export class BarChart extends BaseChart {
     let scaleX: ScaleLinear<number, number, never> = this.getScaleX(
       currentData
     );
-    const res = new Component({
+    const barComponent = new Component({
       alpha: this.alphaScale(sec),
       position: this.position,
     });
-    currentData.forEach((data, index) => {
-      const barOptions = this.getBarOptions(data, scaleX);
-      if (barOptions.alpha > 0) {
-        res.children.push(this.getBarComponent(barOptions, index));
-      }
-    });
+    const barGroup = new Component();
+    barComponent.addChild(barGroup);
+    const options = currentData
+      .map((data) => this.getBarOptions(data, scaleX))
+      .filter((options) => options.alpha > 0)
+      .sort((a, b) => {
+        if (a.isUp && !b.isUp) {
+          return 1;
+        } else if (!a.isUp && b.isUp) {
+          return -1;
+        } else {
+          return a.value - b.value;
+        }
+      });
+    barGroup.children = options.map((o) => this.getBarComponent(o));
     if (this.showRankLabel) {
-      this.appendRankLabels(res);
+      this.appendRankLabels(barComponent);
     }
 
     if (this.showDateLabel) {
@@ -284,9 +294,9 @@ export class BarChart extends BaseChart {
       });
       dateLabelOptions.text = dateLabelText;
       const dateLabel = new Text(dateLabelOptions);
-      res.children.push(dateLabel);
+      barComponent.children.push(dateLabel);
     }
-    return res;
+    return barComponent;
   }
 
   private appendRankLabels(res: Component) {
@@ -357,7 +367,12 @@ export class BarChart extends BaseChart {
     scaleX: ScaleLinear<number, number, never>
   ): BarOptions {
     const hisIndex = this.totalHistoryIndex.get(data[this.idField]);
-    let idx = hisIndex ? hisIndex[this.stage!.frame - 1] : this.itemCount;
+    const cFrame = this.stage!.frame;
+    let idx = hisIndex ? hisIndex[cFrame - 1] : this.itemCount;
+
+    // 判断这一帧，柱状条是否在上升
+    let isUp = this.barIsUp(cFrame, hisIndex);
+
     if (!Number.isNaN(data[this.valueField])) {
       this.lastValue.set(data[this.idField], data[this.valueField]);
     }
@@ -389,11 +404,26 @@ export class BarChart extends BaseChart {
       alpha,
       data,
       image,
+      isUp,
       value: data[this.valueField],
       shape: { width: scaleX(data[this.valueField]), height: this.barHeight },
       color: colorPicker.getColor(color),
       radius: 4,
     };
+  }
+
+  /**
+   * 判断当前帧，柱状条是否在上升
+   *
+   * @param cFrame  当前帧
+   * @param hisIndex  历史排序数据
+   * @returns 是否在上升
+   */
+  private barIsUp(cFrame: number, hisIndex?: number[]) {
+    if (hisIndex && cFrame > 0 && hisIndex[cFrame] < hisIndex[cFrame - 1]) {
+      return true;
+    }
+    return false;
   }
 
   private getBarX(): number {
@@ -409,7 +439,7 @@ export class BarChart extends BaseChart {
     return this.margin.top + idx * (this.barHeight + this.barGap);
   }
 
-  private getBarComponent(options: BarOptions, index: number) {
+  private getBarComponent(options: BarOptions) {
     const res = new Component({
       position: options.pos,
       alpha: options.alpha,
