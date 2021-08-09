@@ -11,7 +11,6 @@ import { font } from "../Constant";
 import {
   extent,
   max,
-  mean,
   range,
   ScaleLinear,
   scaleLinear,
@@ -96,14 +95,6 @@ export class BarChart extends BaseChart {
   valuePlaceholder: number;
   showDateLabel: boolean = true;
 
-  get sampling() {
-    if (this.stage) {
-      return Math.round(this.stage.options.fps * this.swapDurationMS);
-    } else {
-      return Math.round(30 * this.swapDurationMS);
-    }
-  }
-
   barInfoFormat = (id: any, meta: Map<string, any>, data: Map<string, any>) => {
     return this.labelFormat(id, meta, data);
   };
@@ -117,7 +108,6 @@ export class BarChart extends BaseChart {
     this.labelPlaceholder = this.maxLabelWidth;
     this.valuePlaceholder = this.maxValueLabelWidth;
     const historyIndex = this.getTotalHistoryIndex();
-
     const kernel = this.getConvolveKernel(3);
     for (let [key, _] of historyIndex) {
       historyIndex.set(key, this.convolve(historyIndex.get(key), kernel));
@@ -142,17 +132,13 @@ export class BarChart extends BaseChart {
   }
 
   private getTotalHistoryIndex() {
-    // TODO: 减少范围
     const secRange = range(
       0,
       this.stage!.options.sec,
       1 / this.stage!.options.fps
     );
     const data = secRange.map((t) =>
-      this.getCurrentData(t)
-        .sort((a, b) => b[this.valueField] - a[this.valueField])
-        .filter((d) => !Number.isNaN(d[this.valueField]))
-        .map((v) => v[this.idField])
+      this.getCurrentData(t).map((v) => v[this.idField])
     );
     return this.IDList.reduce((d, id) => {
       const indexList: number[] = [];
@@ -198,6 +184,10 @@ export class BarChart extends BaseChart {
     return output;
   }
 
+  /**
+   * 获得所有能显示在图表上的数据 ID 列表。
+   * 这个列表可以用于筛去无用数据。
+   */
   private setShowingIDList() {
     const idSet = new Set<string>();
     this.dataGroupByDate.forEach((_, date) => {
@@ -211,18 +201,12 @@ export class BarChart extends BaseChart {
           return b[1](dt)[this.valueField] - a[1](dt)[this.valueField];
         });
       if (this.reduceID) {
-        tmp.slice(0, this.itemCount);
-        tmp.forEach((item) => {
-          let id = item[0];
-          idSet.add(id);
-        });
-      } else {
-        tmp.forEach((item) => {
-          let id = item[0];
-          idSet.add(id);
-        });
-        tmp.slice(0, this.itemCount);
+        tmp = tmp.slice(0, this.itemCount);
       }
+      tmp.forEach((item) => {
+        let id = item[0];
+        idSet.add(id);
+      });
     });
     this.IDList = [...idSet.values()];
   }
@@ -265,7 +249,7 @@ export class BarChart extends BaseChart {
   }
 
   getComponent(sec: number) {
-    let currentData = this.getCurrentData(sec);
+    let currentData = this.getCurrentData(sec).splice(0, this.itemCount);
     let scaleX: ScaleLinear<number, number, never> = this.getScaleX(
       currentData
     );
@@ -472,7 +456,7 @@ export class BarChart extends BaseChart {
       font,
       fillStyle: "#fff",
       strokeStyle: options.color,
-      lineWidth: 4,
+      lineWidth: 0,
     };
 
     let barInfoOptions = Object.assign(
