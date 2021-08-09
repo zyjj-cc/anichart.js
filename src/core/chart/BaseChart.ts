@@ -204,23 +204,27 @@ export abstract class BaseChart extends Ani {
     const g = group(this.data, (d) => d[this.idField]);
     const dataScales = new Map();
     g.forEach((dataList, k) => {
-      // 如果设置了 maxInterval 则需要插入 NaN
       dataList.sort(
         (a, b) => a[this.dateField].getTime() - b[this.dateField].getTime()
       );
+      // 插入 NaN
       this.insertNaN(dataList, dateExtent);
-      if (true) {
-        let temp: any[] = [];
-        temp.push(dataList[0]);
-        for (let i = 1; i < dataList.length; i++) {
-          if (
-            dataList[i][this.valueField] != dataList[i - 1][this.valueField]
-          ) {
-            temp.push(dataList[i]);
-          }
-        }
-        dataList = temp;
-      }
+      // 可优化: 删掉连续的重复值
+      // FIXME: 此处有BUG。目前的实现，会干掉连续两个重复值的后一个。
+      // 然而只有出现连续的三个重复值，才能忽略了中间的一个重复值。
+      // if (true) {
+      //   let temp: any[] = [];
+      //   temp.push(dataList[0]);
+      //   for (let i = 1; i < dataList.length; i++) {
+      //     if (
+      //       dataList[i][this.valueField] != dataList[i - 1][this.valueField]
+      //     ) {
+      //       temp.push(dataList[i]);
+      //     }
+      //   }
+      //   temp.push(dataList[dataList.length - 1]);
+      //   dataList = temp;
+      // }
       const dateList = dataList.map((d) => d[this.dateField]);
       const secList = dateList.map((d) => this.secToDate.invert(d));
       // 线性插值
@@ -230,22 +234,21 @@ export abstract class BaseChart extends Ani {
     this.dataScales = dataScales;
   }
 
-  private insertNaN(
-    dataList: any[],
-    dateExtent: [undefined, undefined] | [any, any]
-  ) {
-    // 在前面插入NaN
+  private insertNaN(dataList: any[], dateExtent: [any, any]) {
+    // 总之，第一次出现之前需要插入NaN
+    console.log(dataList);
     const first = dataList[0];
-    // if (
-    //   first[this.dateField].getTime() - dateExtent[0].getTime() >
-    //   this.maxIntervalMS
-    // ) {
     const obj = Object.assign({}, first);
     obj[this.valueField] = this.interpolateInitValue;
-    obj[this.dateField] = new Date(obj[this.dateField].getTime() - 1);
-    // console.log(obj);
+    // 默认 fade 为 1
+    const fadeDuration =
+      -this.secToDate(this.aniTime[0]).getTime() +
+      this.secToDate(this.aniTime[0] + 1).getTime();
+    obj[this.dateField] = new Date(
+      obj[this.dateField].getTime() - fadeDuration
+    );
     dataList.unshift(obj);
-    // }
+
     if (this.maxIntervalMS !== Number.MAX_VALUE) {
       // 如果间隔时间大于一定值，则插入一个 NaN
       // 在后面插入NaN
@@ -256,7 +259,10 @@ export abstract class BaseChart extends Ani {
       ) {
         const obj = Object.assign({}, last);
         obj[this.valueField] = this.interpolateInitValue;
-        obj[this.dateField] = new Date(obj[this.dateField].getTime() + 1);
+
+        obj[this.dateField] = new Date(
+          obj[this.dateField].getTime() + fadeDuration
+        );
         // console.log(obj);
         dataList.push(obj);
       }
@@ -264,16 +270,41 @@ export abstract class BaseChart extends Ani {
       for (let i = 0; i < dataList.length - 1; i++) {
         const prev = dataList[i];
         const next = dataList[i + 1];
-        if (next[this.dateField] - prev[this.dateField] > this.maxIntervalMS) {
-          const obj = Object.assign({}, prev);
-          obj[this.valueField] = NaN;
-          obj[this.dateField] = new Date(obj[this.dateField].getTime() + 1);
-          // console.log(obj);
-          dataList.splice(i + 1, 0, obj);
-          i++;
+        const delta =
+          next[this.dateField].getTime() - prev[this.dateField].getTime();
+        // 如果间隔比最大允许间隔大，则需要插入
+        if (delta > this.maxIntervalMS) {
+          // 如果大于两倍 fade，则在前后间隔 fade 的地方插入两个默认数据
+          if (delta > 2 * fadeDuration) {
+            const obj = Object.assign({}, prev);
+            obj[this.valueField] = this.interpolateInitValue;
+            obj[this.dateField] = new Date(
+              obj[this.dateField].getTime() + fadeDuration
+            );
+            // console.log(obj);
+            dataList.splice(i + 1, 0, obj);
+            i++;
+            const obj2 = Object.assign({}, obj);
+            obj2[this.dateField] = new Date(
+              next[this.dateField] - fadeDuration
+            );
+            dataList.splice(i + 1, 0, obj2);
+            i++;
+          } else {
+            // 否则，在最中间插入一个默认数据
+            const obj = Object.assign({}, prev);
+            obj[this.valueField] = this.interpolateInitValue;
+            obj[this.dateField] = new Date(
+              obj[this.dateField].getTime() + delta / 2
+            );
+            // console.log(obj);
+            dataList.splice(i + 1, 0, obj);
+            i++;
+          }
         }
       }
     }
+    console.log(dataList);
   }
 
   getComponent(sec: number): Component | null {
