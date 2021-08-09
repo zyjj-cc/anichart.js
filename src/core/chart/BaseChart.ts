@@ -37,6 +37,10 @@ export interface BaseChartOptions {
   dateField?: string;
   valueField?: string;
 
+  /**
+   * 数据消失和进入时的动画时间
+   */
+  dataFadeMS?: number;
   valueKeys?: string[];
 
   valueFormat?: (cData: any) => string;
@@ -66,6 +70,7 @@ export abstract class BaseChart extends Ani {
   interpolateInitValue: number;
   indexToDate: Map<number, string>;
   nonstandardDate: any;
+  dataFadeMS: number;
   constructor(options?: BaseChartOptions) {
     super();
     if (!options) return;
@@ -88,6 +93,7 @@ export abstract class BaseChart extends Ani {
     if (options.visualRange) this.visualRange = options.visualRange;
     if (options.position) this.position = options.position;
     this.interpolateInitValue = options.interpolateInitValue ?? NaN;
+    this.dataFadeMS = options.dataFadeMS ?? 1000;
     this.maxIntervalMS = options.maxIntervalMS ?? Number.MAX_VALUE;
   }
   tickKeyFrameDuration: number = 1;
@@ -236,14 +242,13 @@ export abstract class BaseChart extends Ani {
 
   private insertNaN(dataList: any[], dateExtent: [any, any]) {
     // 总之，第一次出现之前需要插入NaN
-    console.log(dataList);
     const first = dataList[0];
     const obj = Object.assign({}, first);
     obj[this.valueField] = this.interpolateInitValue;
     // 默认 fade 为 1
     const fadeDuration =
       -this.secToDate(this.aniTime[0]).getTime() +
-      this.secToDate(this.aniTime[0] + 1).getTime();
+      this.secToDate(this.aniTime[0] + this.dataFadeMS / 1000).getTime();
     obj[this.dateField] = new Date(
       obj[this.dateField].getTime() - fadeDuration
     );
@@ -263,7 +268,6 @@ export abstract class BaseChart extends Ani {
         obj[this.dateField] = new Date(
           obj[this.dateField].getTime() + fadeDuration
         );
-        // console.log(obj);
         dataList.push(obj);
       }
 
@@ -281,7 +285,6 @@ export abstract class BaseChart extends Ani {
             obj[this.dateField] = new Date(
               obj[this.dateField].getTime() + fadeDuration
             );
-            // console.log(obj);
             dataList.splice(i + 1, 0, obj);
             i++;
             const obj2 = Object.assign({}, obj);
@@ -297,14 +300,12 @@ export abstract class BaseChart extends Ani {
             obj[this.dateField] = new Date(
               obj[this.dateField].getTime() + delta / 2
             );
-            // console.log(obj);
             dataList.splice(i + 1, 0, obj);
             i++;
           }
         }
       }
     }
-    console.log(dataList);
   }
 
   getComponent(sec: number): Component | null {
