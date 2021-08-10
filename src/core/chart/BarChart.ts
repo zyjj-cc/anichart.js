@@ -260,8 +260,11 @@ export class BarChart extends BaseChart {
     });
     const barGroup = new Component();
     barComponent.addChild(barGroup);
+    // 获取非 NaN 的条目数
+    let barCount = currentData.filter((d) => !Number.isNaN(d[this.idField]))
+      .length;
     const options = currentData
-      .map((data) => this.getBarOptions(data, scaleX))
+      .map((data) => this.getBarOptions(data, scaleX, barCount))
       .filter((options) => options.alpha > 0)
       .sort((a, b) => {
         if (a.isUp && !b.isUp) {
@@ -364,7 +367,8 @@ export class BarChart extends BaseChart {
 
   private getBarOptions(
     data: any,
-    scaleX: ScaleLinear<number, number, never>
+    scaleX: ScaleLinear<number, number, never>,
+    count: number
   ): BarOptions {
     const hisIndex = this.totalHistoryIndex.get(data[this.idField]);
     const cFrame = this.stage!.frame;
@@ -373,14 +377,17 @@ export class BarChart extends BaseChart {
     // 判断这一帧，柱状条是否在上升
     let isUp = this.barIsUp(cFrame, hisIndex);
 
+    // 保存非 NaN 数据
     if (!Number.isNaN(data[this.valueField])) {
       this.lastValue.set(data[this.idField], data[this.valueField]);
+    } else {
+      // 如果当前数据就是 NaN，则使用上次的数据
+      data[this.valueField] = this.lastValue.get(data[this.idField]);
     }
-    data[this.valueField] = this.lastValue.get(data[this.idField]);
-    let alpha = scaleLinear(
-      [-1, 0, this.itemCount - 1, this.itemCount],
-      [0, 1, 1, 0]
-    ).clamp(true)(idx);
+
+    let alpha = scaleLinear([-1, 0, count - 2, count - 1], [0, 1, 1, 0]).clamp(
+      true
+    )(idx);
     let color: string;
     if (typeof this.colorField === "string") {
       color = data[this.colorField];
