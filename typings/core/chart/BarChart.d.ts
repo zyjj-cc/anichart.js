@@ -33,6 +33,7 @@ export interface BarOptions {
     radius: number;
     alpha: number;
     image?: string;
+    isUp?: boolean;
 }
 export declare class BarChart extends BaseChart {
     dateLabelOptions: TextOptions;
@@ -56,7 +57,6 @@ export declare class BarChart extends BaseChart {
     labelPlaceholder: number;
     valuePlaceholder: number;
     showDateLabel: boolean;
-    get sampling(): number;
     barInfoFormat: (id: any, meta: Map<string, any>, data: Map<string, any>) => string;
     IDList: string[];
     setup(stage: Stage): void;
@@ -70,6 +70,10 @@ export declare class BarChart extends BaseChart {
      * @returns 卷积后的数组，大小和被卷数组一致
      */
     private convolve;
+    /**
+     * 获得所有能显示在图表上的数据 ID 列表。
+     * 这个列表可以用于筛去无用数据。
+     */
     private setShowingIDList;
     get maxValueLabelWidth(): any;
     get totalRankPlaceHolder(): number;
@@ -81,6 +85,14 @@ export declare class BarChart extends BaseChart {
     getDateLabelText(sec: number): string;
     private get barHeight();
     private getBarOptions;
+    /**
+     * 判断当前帧，柱状条是否在上升
+     *
+     * @param cFrame  当前帧
+     * @param hisIndex  历史排序数据
+     * @returns 是否在上升
+     */
+    private barIsUp;
     private getBarX;
     private getBarY;
     private getBarComponent;

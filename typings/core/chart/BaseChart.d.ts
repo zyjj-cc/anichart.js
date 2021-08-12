@@ -27,6 +27,10 @@ export interface BaseChartOptions {
     imageField?: string | KeyGenerate;
     dateField?: string;
     valueField?: string;
+    /**
+     * 数据消失和进入时的动画时间
+     */
+    dataFadeMS?: number;
     valueKeys?: string[];
     valueFormat?: (cData: any) => string;
     labelFormat?: (id: string, meta: Map<string, any>, data: Map<string, any>) => string;
@@ -48,6 +52,7 @@ export declare abstract class BaseChart extends Ani {
     interpolateInitValue: number;
     indexToDate: Map<number, string>;
     nonstandardDate: any;
+    dataFadeMS: number;
     constructor(options?: BaseChartOptions);
     tickKeyFrameDuration: number;
     dataScales: Map<string, any>;
