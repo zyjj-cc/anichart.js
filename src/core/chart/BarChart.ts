@@ -25,6 +25,8 @@ export interface BarChartOptions extends BaseChartOptions {
   itemCount?: number;
   barPadding?: number;
   barGap?: number;
+
+  clipBar?: boolean;
   barInfoFormat?: KeyGenerate;
   showDateLabel?: boolean;
   dateLabelOptions?: TextOptions;
@@ -56,6 +58,7 @@ export class BarChart extends BaseChart {
   barInfoOptions: TextOptions = {};
   domain: (data: any) => [number, number];
   totalHistoryIndex: Map<any, any>;
+  clipBar: boolean = true;
   get maxRankLabelWidth(): number {
     return canvasHelper.measure(
       new Text(this.getRankLabelOptions(this.itemCount))
@@ -82,6 +85,7 @@ export class BarChart extends BaseChart {
     if (options.swapDurationMS !== undefined)
       this.swapDurationMS = options.swapDurationMS;
     this.showRankLabel = options.showRankLabel ?? false;
+    if (options.clipBar !== undefined) this.clipBar = options.clipBar;
     this.dy = options.dy ?? 0;
   }
 
@@ -145,7 +149,11 @@ export class BarChart extends BaseChart {
       const indexList: number[] = [];
       for (const dataList of data) {
         let index = dataList.indexOf(id);
-        if (index === -1 || index > this.itemCount) index = this.itemCount;
+        if (this.reduceID) {
+          if (index === -1 || index > this.itemCount) index = this.itemCount;
+        } else {
+          if (index === -1) index = this.itemCount;
+        }
         indexList.push(index);
       }
       d.set(id, indexList);
@@ -365,14 +373,18 @@ export class BarChart extends BaseChart {
     );
   }
 
+  getTotalHistoryByID(id: any) {
+    return this.totalHistoryIndex.get(id);
+  }
+
   private getBarOptions(
     data: any,
     scaleX: ScaleLinear<number, number, never>,
     count: number
   ): BarOptions {
-    const hisIndex = this.totalHistoryIndex.get(data[this.idField]);
     const cFrame = this.stage!.frame;
-    let idx = hisIndex ? hisIndex[cFrame - 1] : this.itemCount;
+    const hisIndex = this.getTotalHistoryByID(data[this.idField]);
+    let idx = this.getBarIdx(hisIndex, cFrame);
 
     // 判断这一帧，柱状条是否在上升
     let isUp = this.barIsUp(cFrame, hisIndex);
@@ -384,10 +396,11 @@ export class BarChart extends BaseChart {
       // 如果当前数据就是 NaN，则使用上次的数据
       data[this.valueField] = this.lastValue.get(data[this.idField]);
     }
-
-    let alpha = scaleLinear([-1, 0, count - 2, count - 1], [0, 1, 1, 0]).clamp(
-      true
-    )(idx);
+    data[this.valueField] = this.lastValue.get(data[this.idField]);
+    let alpha = scaleLinear(
+      [-1, 0, this.itemCount - 1, this.itemCount],
+      [0, 1, 1, 0]
+    ).clamp(true)(idx);
     let color: string;
     if (typeof this.colorField === "string") {
       color = data[this.colorField];
@@ -417,6 +430,10 @@ export class BarChart extends BaseChart {
       color: colorPicker.getColor(color),
       radius: 4,
     };
+  }
+
+  getBarIdx(hisIndex: number[], cFrame: number) {
+    return hisIndex ? hisIndex[cFrame - 1] : this.itemCount;
   }
 
   /**
@@ -455,7 +472,7 @@ export class BarChart extends BaseChart {
       shape: options.shape,
       fillStyle: options.color,
       radius: options.radius,
-      clip: true,
+      clip: this.clipBar,
     });
     const label = new Text(
       this.getLabelTextOptions(

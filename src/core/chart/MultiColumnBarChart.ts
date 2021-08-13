@@ -39,6 +39,9 @@ export class MultiColumnBarChart extends BarChart {
       v.reduceID = false;
       v.setup(stage);
       v.rankOffset = 1 + i * this.itemCount;
+      v.getBarIdx = (his: number[], c: number) => {
+        return his[c] - i * this.itemCount;
+      };
       v.getCurrentData = (sec) => {
         let list = this.getCurrentData(sec);
         return list.splice(i * this.itemCount);
@@ -47,7 +50,7 @@ export class MultiColumnBarChart extends BarChart {
       v.valuePlaceholder = v.maxValueLabelWidth;
     });
   }
-  getComponent(sec) {
+  getComponent(sec: number) {
     let barchart = this.c.children[1] as BarChart;
     let first = this.c.children[0] as BarChart;
     barchart.getScaleX = (c) => {
