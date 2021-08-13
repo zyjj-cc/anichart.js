@@ -10,6 +10,7 @@ export interface BarChartOptions extends BaseChartOptions {
     itemCount?: number;
     barPadding?: number;
     barGap?: number;
+    clipBar?: boolean;
     barInfoFormat?: KeyGenerate;
     showDateLabel?: boolean;
     dateLabelOptions?: TextOptions;
@@ -46,6 +47,7 @@ export declare class BarChart extends BaseChart {
     barInfoOptions: TextOptions;
     domain: (data: any) => [number, number];
     totalHistoryIndex: Map<any, any>;
+    clipBar: boolean;
     get maxRankLabelWidth(): number;
     constructor(options?: BarChartOptions);
     itemCount: number;
@@ -84,7 +86,9 @@ export declare class BarChart extends BaseChart {
     getScaleX(currentData: any[]): ScaleLinear<number, number, never>;
     getDateLabelText(sec: number): string;
     private get barHeight();
+    getTotalHistoryByID(id: any): any;
     private getBarOptions;
+    getBarIdx(hisIndex: number[], cFrame: number): number;
     /**
      * 判断当前帧，柱状条是否在上升
      *

@@ -10,6 +10,6 @@ export declare class MultiColumnBarChart extends BarChart {
     itemCount: number;
     constructor(options?: MultiColumnBarBarOptions);
     setup(stage: Stage): void;
-    getComponent(sec: any): Component;
+    getComponent(sec: number): Component;
 }
 export {};

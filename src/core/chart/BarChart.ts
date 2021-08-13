@@ -397,10 +397,9 @@ export class BarChart extends BaseChart {
       data[this.valueField] = this.lastValue.get(data[this.idField]);
     }
     data[this.valueField] = this.lastValue.get(data[this.idField]);
-    let alpha = scaleLinear(
-      [-1, 0, this.itemCount - 1, this.itemCount],
-      [0, 1, 1, 0]
-    ).clamp(true)(idx);
+    let alpha = scaleLinear([-1, 0, count - 2, count - 1], [0, 1, 1, 0]).clamp(
+      true
+    )(idx);
     let color: string;
     if (typeof this.colorField === "string") {
       color = data[this.colorField];
