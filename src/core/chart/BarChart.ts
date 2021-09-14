@@ -290,18 +290,21 @@ export class BarChart extends BaseChart {
     if (this.showDateLabel) {
       let dateLabelText = this.getDateLabelText(sec);
 
-      let dateLabelOptions = Object.assign(this.dateLabelOptions, {
-        font,
-        fontSize: 60,
-        fillStyle: "#777",
-        textAlign: "right",
-        fontWeight: "bolder",
-        textBaseline: "bottom",
-        position: {
-          x: this.shape.width - this.margin.right,
-          y: this.shape.height - this.margin.bottom,
+      let dateLabelOptions = Object.assign(
+        {
+          font,
+          fontSize: 60,
+          fillStyle: "#777",
+          textAlign: "right",
+          fontWeight: "bolder",
+          textBaseline: "bottom",
+          position: {
+            x: this.shape.width - this.margin.right,
+            y: this.shape.height - this.margin.bottom,
+          },
         },
-      });
+        this.dateLabelOptions
+      );
       dateLabelOptions.text = dateLabelText;
       const dateLabel = new Text(dateLabelOptions);
       barComponent.children.push(dateLabel);
