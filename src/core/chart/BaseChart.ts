@@ -71,7 +71,7 @@ export abstract class BaseChart extends Ani {
   indexToDate: Map<number, string>;
   nonstandardDate: any;
   dataFadeMS: number;
-  constructor(options?: BaseChartOptions) {
+  constructor(options: BaseChartOptions = {}) {
     super();
     if (!options) return;
     if (options.fadeTime) this.fadeTime = options.fadeTime;

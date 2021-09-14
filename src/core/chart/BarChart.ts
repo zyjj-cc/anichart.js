@@ -65,9 +65,8 @@ export class BarChart extends BaseChart {
     ).width;
   }
 
-  constructor(options?: BarChartOptions) {
+  constructor(options: BarChartOptions = {}) {
     super(options);
-    if (!options) return;
     if (options.itemCount) this.itemCount = options.itemCount;
     if (options.barPadding !== undefined) this.barPadding = options.barPadding;
     if (options.barGap !== undefined) this.barGap = options.barGap;

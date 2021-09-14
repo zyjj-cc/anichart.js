@@ -33,7 +33,7 @@ export class PieChart extends BaseChart implements PieChartOptions {
   };
   dateLabel: Text;
   showDateLabel: boolean;
-  constructor(options?: PieChartOptions) {
+  constructor(options: PieChartOptions = {}) {
     super(options);
     if (options) {
       Object.assign(this, options);

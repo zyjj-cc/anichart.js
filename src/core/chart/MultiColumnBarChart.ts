@@ -10,9 +10,8 @@ export class MultiColumnBarChart extends BarChart {
 
   c: Component = new Component();
   itemCount: number;
-  constructor(options?: MultiColumnBarBarOptions) {
+  constructor(options: MultiColumnBarBarOptions = {}) {
     super(options);
-    if (!options) return;
     this.itemCount = options.itemCount ?? 20;
     for (let i = 0; i < this.cols; i++) {
       let bar = new BarChart(options);
