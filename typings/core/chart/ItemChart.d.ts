@@ -5,7 +5,7 @@ interface ItemChartOptions extends BaseChartOptions {
     style?: string;
 }
 export declare class ItemChart extends BaseChart {
-    constructor(options: ItemChartOptions);
+    constructor(options?: ItemChartOptions);
     setup(stage: Stage): void;
     getComponent(sec: number): Component;
 }

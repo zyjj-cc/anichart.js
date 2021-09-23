@@ -11,7 +11,7 @@ export declare class LineChart extends BaseChart {
     labelSize: number;
     labelPadding: number;
     topN: number;
-    constructor(options: LineChartOptions);
+    constructor(options?: LineChartOptions);
     scales: {
         x: ScaleLinear<number, number, never>;
         y: ScaleLinear<number, number, never>;
