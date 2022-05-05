@@ -113,12 +113,14 @@ const logoAni = ani.createAni(
 );
 
 const barChart = new ani.BarChart({
-  shape: { width: stage.canvas.width, height: stage.canvas.height },
+  shape: { width: stage.canvas.width, height: 300 },
   labelFormat(id) {
     return id;
     // return meta.get(id).name;
   },
   dy: 5,
+  itemCount: 5,
+
   barInfoOptions: {
     fillStyle: "#222",
     strokeStyle: undefined,
