@@ -390,7 +390,7 @@ export class BarChart extends BaseChart {
 
     // 判断这一帧，柱状条是否在上升
     let isUp = this.barIsUp(cFrame, hisIndex);
-    let alpha = scaleLinear([-1, 0, count - 2, count - 1], [0, 1, 1, 0]).clamp(
+    let alpha = scaleLinear([-1, 0, count - 1, count], [0, 1, 1, 0]).clamp(
       true
     )(idx);
     if (Number.isNaN(data[this.valueField])) {
