@@ -39,7 +39,6 @@ export class LineChart extends BaseChart {
   };
   setup(stage: Stage) {
     super.setup(stage);
-    console.log(this.dateFormat);
     this.xTickFormat = (n: number | { valueOf(): number }) => {
       return timeFormat(this.dateFormat)(this.secToDate(n));
     };
@@ -163,8 +162,10 @@ export class LineChart extends BaseChart {
     });
     res.children.push(lineArea);
     res.children.push(points);
-    res.children.push(xAxis);
-    res.children.push(yAxis);
+    if (this.showAxis) {
+      if (this.showXAxis) res.children.push(xAxis);
+      if (this.showYAxis) res.children.push(yAxis);
+    }
     res.children.push(labels);
     return res;
   }

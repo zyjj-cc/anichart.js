@@ -131,10 +131,6 @@ const barChart = new ani.BarChart({
 
 const lineChart = new ani.LineChart({
   aniTime: [4, 10],
-  yTickFormat: () => {
-    return " ";
-  },
-  dateFormat: " ",
   shape: { width: stage.canvas.width, height: stage.canvas.height / 2 },
   position: { x: 0, y: stage.canvas.height / 2 },
 });
