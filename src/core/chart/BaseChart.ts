@@ -30,6 +30,8 @@ export interface BaseChartOptions {
 
   shape?: { width: number; height: number };
   margin?: { left: number; top: number; bottom: number; right: number };
+  xTickFormat?: (n: number | { valueOf(): number }) => string;
+  yTickFormat?: (n: number | { valueOf(): number }) => string;
 
   idField?: string;
   colorField?: string | KeyGenerate;
@@ -95,6 +97,8 @@ export abstract class BaseChart extends Ani {
     this.interpolateInitValue = options.interpolateInitValue ?? NaN;
     this.dataFadeMS = options.dataFadeMS ?? 1000;
     this.maxIntervalMS = options.maxIntervalMS ?? Number.MAX_VALUE;
+    if (options.xTickFormat) this.xTickFormat = options.xTickFormat;
+    if (options.yTickFormat) this.yTickFormat = options.yTickFormat;
   }
   tickKeyFrameDuration: number = 1;
   dataScales: Map<string, any>;

@@ -39,8 +39,9 @@ export class LineChart extends BaseChart {
   };
   setup(stage: Stage) {
     super.setup(stage);
+    console.log(this.dateFormat);
     this.xTickFormat = (n: number | { valueOf(): number }) => {
-      return timeFormat("%Y-%m-%d")(this.secToDate(n));
+      return timeFormat(this.dateFormat)(this.secToDate(n));
     };
     // Calculate label placeholder
     const textModel = new Text({
@@ -211,8 +212,7 @@ export class LineChart extends BaseChart {
   private findY(area: Path2D | string, x: number) {
     const l = 0;
     const r = this.shape.height;
-    // 9w => 4k
-    // 使用中值优化，提升>22倍的性能
+    // 使用中值优化，O(n^2) -> O(log(n))
     const b = bisector((d: number) => {
       return canvasHelper.isPointInPath(area, x, d);
     }).left;
