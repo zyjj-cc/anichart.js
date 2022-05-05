@@ -144,16 +144,22 @@ export class LineChart extends BaseChart {
       points.children.push(point);
       const data = new Map();
       data.set(this.valueField, maxValue);
-      const label = new Text({
-        text: this.labelFormat(k, this.meta, data),
-        fontSize: this.labelSize,
-        font,
-        textAlign: "left",
-        textBaseline: "middle",
-        position: { x: maxX + this.labelPadding + this.pointerR, y: currentY },
-        fillStyle: color,
-      });
-      labels.children.push(label);
+      // 如果找不到值，则说明此时并没有数据
+      if (currentY) {
+        const label = new Text({
+          text: this.labelFormat(k, this.meta, data),
+          fontSize: this.labelSize,
+          font,
+          textAlign: "left",
+          textBaseline: "middle",
+          position: {
+            x: maxX + this.labelPadding + this.pointerR,
+            y: currentY,
+          },
+          fillStyle: color,
+        });
+        labels.children.push(label);
+      }
     });
     res.children.push(lineArea);
     res.children.push(points);
