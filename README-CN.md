@@ -16,6 +16,8 @@
 
 轻松地制作数据可视化动画视频。
 
+**Version 3.x is currently under development.** Version 3.x will streamline the project by removing the FFMpeg.awsm calling code and the node.js rendering part that you implemented yourself. The online browsing functionality is retained. As for the rendering process, I'm going to use the [Remotion](https://www.remotion.dev/) project. I will develop a template combining Anichart and Remotion for your reference.
+
 ## 示例
 
 ![anichart-preview](/public/image/anichart-preview.png)
@@ -33,13 +35,11 @@
 
 本项目开源、自由、免费。
 
-这是一个Web、Node等环境下，利用TypeScript或者JavaScript编程的动画库。可用于数据可视化、视频动画展示、片头片尾等领域。
+这是一个 Web 等环境下，利用 TypeScript 编程的动画库。可用于数据可视化、视频动画展示、片头片尾等领域。
 
-目前正在开发中，虽然该有的功能已经实现了，但是没有提供友好的接口，想要做出自己的作品需要阅读源代码并了解JavaScript编程。
+目前正在开发中，虽然该有的功能已经实现了，但是没有提供友好的接口，想要做出自己的作品需要阅读源代码并了解 Typescript 编程。
 
 目前前端、后端导出视频均使用内置的FFmpeg。能够直接导出MP4。如果觉得wasm版本的FFmpeg速度过慢，也支持导出Png序列，调用本地FFmpeg生成视频。
-
-人机交互友好的网站建设已经在搞了（指建好了仓库），还要较长一段时间才能完成。
 
 本项目需要各位技术人员的技术支持。但如果你只是一个普通的使用者，也能通过赞助的方式支持。你可以通过[爱赞助](https://azz.net/jannchie)利用支付宝或者微信进行支持。也能通过GitHub Sponsor功能支持（需要信用卡一张）。
 

@@ -35,13 +35,11 @@ Easily create data visualization animated video.
 
 This project is open source and free.
 
-This is a Web, Node and other environments, using TypeScript or JavaScript programming animation library. It can be used in data visualization, video animation display, opening and ending and other fields.
+This is a web environment, using TypeScript programming animation library. It can be used in data visualization, video animation display, opening and ending and other fields.
 
-Currently under development, although the functions have been implemented, but there is no friendly interface, to make their own works need to read the source code and understand JavaScript programming.
+Currently under development, although the features have been implemented, but does not provide a friendly interface, want to make their own work need to read the source code and understand Typescript programming.
 
-At present, both front-end and back-end exported video use built-in FFMPEG. Ability to export MP4 directly. If the WASM version of FFMPEG is too slow, it also supports exporting PNG sequences and calling local FFMPEG to generate video.
-
-The construction of a human-computer friendly website is already underway, but it will be a long time before it is complete.
+If you feel that the wasm version of FFmpeg is too slow, it also supports exporting Png sequences and calling local FFmpeg to generate videos.
 
 This project needs the technical support of all the technical personnel. But if you're just a regular user, you can also support it through sponsorship. You can use Alipay or WeChat to support through [AZZ](https://azz.net/jannchie). It can also be supported by GitHub Sponsor (one credit card is required).
 
