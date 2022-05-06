@@ -9,7 +9,6 @@ export * from "./core/Stage";
 export * from "./core/Recourse";
 export * from "./core/Recorder";
 export * from "./core/ImageLoader";
-export * from "./core/FFmpeg";
 export * from "./core/ColorPicker";
 export * from "./core/CanvasRenderer";
 export * from "./core/CanvasHelper";

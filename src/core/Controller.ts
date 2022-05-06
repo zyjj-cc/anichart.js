@@ -8,66 +8,62 @@ export class Controller {
   }
 
   render() {
-    if (window) {
-      const ctrl = d3
-        .select("body")
-        .insert("div", ":first-child")
-        .attr("id", "anichart-ctrl")
-        .attr(
-          "style",
-          `border-radius:10px; width:300px; position: absolute; z-index: 9;   background: #ffffff55; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); border-width: 1px 1px 5px 1px; border-style: solid; border-color: #d3d3d3; text-align: center;`
-        );
-      ctrl.datum(this.stage);
-      const dragger = ctrl
-        .append("div")
-        .attr(
-          "style",
-          "border-radius:10px 10px 0px 0px; padding: 10px; cursor: move; z-index: 10; background-color: #2196F3DD; color: #fff;"
-        )
-        .attr("id", "anichart-ctrl-dragger");
-      dragger.append("div").text("Anichart Controller");
-      let timeLabel = ctrl.append("div").style("margin-top", "10px");
-      let progresser = ctrl
-        .append("div")
-        .style("padding-left", "10px")
-        .style("padding-right", "10px")
-        .append("input")
-        .attr("type", "range")
-        .attr("style", "width: 100%; ")
-        .attr("step", "any")
-        .attr("min", 0)
-        .attr("value", 0)
-        .attr("max", (d: Stage) => d.options.sec)
-        .on("input", function (_, d: Stage) {
-          d.sec = Number(this.value);
-          d.render();
-        });
-      let play = ctrl
-        .append("div")
-        .style("padding-bottom", "10px")
-        .append("button")
-        .attr(
-          "style",
-          `width: 90px; background-color: #2196F3DD; border: none; border-radius:10px; color: white; padding: 12px 12px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;`
-        )
-        .on("click", function (_, d: Stage) {
-          d.play();
-        });
-      this.makeDraggable("anichart-ctrl", "anichart-ctrl-dragger");
-      d3.timer(() => {
-        timeLabel.text(
-          (d: Stage) =>
-            `${moment(d.sec * 1000).format("mm:ss")} /
-          ${moment(d.options.sec * 1000).format("mm:ss")}`
-        );
-        if (this.stage.playing) {
-          progresser.node()!.value = this.stage.sec.toString();
-        }
-        play.text((d: Stage) => (d.playing ? "PAUSE" : "PLAY"));
+    const ctrl = d3
+      .select("body")
+      .insert("div", ":first-child")
+      .attr("id", "anichart-ctrl")
+      .attr(
+        "style",
+        `border-radius:10px; width:300px; position: absolute; z-index: 9;   background: #ffffff55; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); border-width: 1px 1px 5px 1px; border-style: solid; border-color: #d3d3d3; text-align: center;`
+      );
+    ctrl.datum(this.stage);
+    const dragger = ctrl
+      .append("div")
+      .attr(
+        "style",
+        "border-radius:10px 10px 0px 0px; padding: 10px; cursor: move; z-index: 10; background-color: #2196F3DD; color: #fff;"
+      )
+      .attr("id", "anichart-ctrl-dragger");
+    dragger.append("div").text("Anichart Controller");
+    let timeLabel = ctrl.append("div").style("margin-top", "10px");
+    let progresser = ctrl
+      .append("div")
+      .style("padding-left", "10px")
+      .style("padding-right", "10px")
+      .append("input")
+      .attr("type", "range")
+      .attr("style", "width: 100%; ")
+      .attr("step", "any")
+      .attr("min", 0)
+      .attr("value", 0)
+      .attr("max", (d: Stage) => d.options.sec)
+      .on("input", function (_, d: Stage) {
+        d.sec = Number(this.value);
+        d.render();
       });
-    } else {
-      console.log("Not in browser!");
-    }
+    let play = ctrl
+      .append("div")
+      .style("padding-bottom", "10px")
+      .append("button")
+      .attr(
+        "style",
+        `width: 90px; background-color: #2196F3DD; border: none; border-radius:10px; color: white; padding: 12px 12px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;`
+      )
+      .on("click", function (_, d: Stage) {
+        d.play();
+      });
+    this.makeDraggable("anichart-ctrl", "anichart-ctrl-dragger");
+    d3.timer(() => {
+      timeLabel.text(
+        (d: Stage) =>
+          `${moment(d.sec * 1000).format("mm:ss")} /
+          ${moment(d.options.sec * 1000).format("mm:ss")}`
+      );
+      if (this.stage.playing) {
+        progresser.node()!.value = this.stage.sec.toString();
+      }
+      play.text((d: Stage) => (d.playing ? "PAUSE" : "PLAY"));
+    });
   }
 
   makeDraggable(contentID: string, draggerID: string) {

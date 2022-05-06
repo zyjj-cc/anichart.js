@@ -19,17 +19,6 @@ module.exports = merge(common, {
       "Cross-Origin-Opener-Policy": "same-origin",
     },
   },
-  module: {
-    rules: [
-      {
-        test: /\.csv/,
-        loader: "file-loader",
-        options: {
-          outputPath: "data",
-        },
-      },
-    ],
-  },
   plugins: [
     new HtmlWebpackPlugin({
       title: "Test",
