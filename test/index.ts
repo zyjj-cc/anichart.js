@@ -168,7 +168,7 @@ const map = new ani.MapChart({
   showLabel: true,
   projectionType: "orthographic",
 });
-// stage.addChild(map);
+stage.addChild(map);
 
 stage.addChild(barChart);
 stage.addChild(lineChart);
@@ -194,7 +194,7 @@ ani.recourse.loadJSON(
   `https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json`,
   "map"
 );
-let ctl = new ani.Controller(stage).render();
+new ani.Controller(stage).render();
 async function start() {
   // const img = await d3.image("./pic/pattern.png");
   // const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
@@ -206,4 +206,6 @@ start().then(() => {});
 if (typeof window !== "undefined") {
   (window as any).stage = stage;
   (window as any).d3 = d3;
+  (window as any).ani = ani;
+  (window as any).map = map;
 }
