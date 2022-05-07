@@ -13,7 +13,6 @@ import {
   extent,
   scaleLinear,
   geoGraticule10,
-  geoCentroid,
 } from "d3";
 import { canvasHelper } from "../CanvasHelper";
 import { Component, ShadowOptions } from "../component/Component";
@@ -264,16 +263,24 @@ export class MapChart extends BaseChart {
       const mapId = feature.properties[this.mapIdField];
       const path = this.geoGener(feature);
       const comp = this.pathComponentMap.get(mapId);
-      if (comp && path) {
+      if (comp) {
         comp.path = path;
       }
       const label = this.labelComponentMap.get(mapId);
       if (label) {
-        const center = this.geoGener.centroid(feature);
+        // Read center point of country
+        let cp: [number, number];
+        if (feature.properties.cp) cp = feature.properties.cp;
+        else cp = feature.properties.center;
+        const center = this.projection(cp);
         const area = this.geoGener.area(feature);
         label.alpha = path ? this.labelAlphaScale(area) : 0;
-        label.position.x = center[0];
-        label.position.y = center[1];
+        if (center) {
+          label.position.x = center[0];
+          label.position.y = center[1];
+        } else {
+          label.alpha = 0;
+        }
       }
       if (label) {
         (label.children[0] as Text).text =
@@ -292,7 +299,6 @@ export class MapChart extends BaseChart {
       const rate = this.scale(currentValue);
       const color = this.visualMap(rate);
       const comp = this.pathComponentMap.get(mapId);
-
       if (comp) {
         comp.fillStyle = currentValue ? color : this.defaultFill;
         if (this.useShadow) {
