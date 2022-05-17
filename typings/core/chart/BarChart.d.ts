@@ -2,7 +2,7 @@ import { Component } from "../component/Component";
 import { TextOptions } from "../component/Text";
 import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions, KeyGenerate } from "./BaseChart";
-import { ScaleLinear } from "d3";
+import { ScaleLinear } from "d3-scale";
 export interface BarChartOptions extends BaseChartOptions {
     domain?: (data: any) => [number, number];
     dy?: number;

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "lib",
     "declarationDir": "typings",
-    "target": "es5",
+    "target": "ES6",
     "declarationMap": false,
     "declaration": true,
     "inlineSourceMap": true,
@@ -27,5 +27,7 @@
     "noImplicitThis": true
   },
   "compileOnSave": true,
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

@@ -1,4 +1,5 @@
-import { easeCubicOut, scaleLinear } from "d3";
+import { easeCubicOut } from "d3-ease";
+import { scaleLinear } from "d3-scale";
 import { easeInterpolate } from "../ani/AniCreator";
 export function customInOut(
   time: [number, number, number, number],

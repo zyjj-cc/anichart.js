@@ -1,4 +1,3 @@
-import { scaleLinear } from "d3";
 import { Component } from "../component/Component";
 import { Ani } from "./Ani";
 type Scale = (sec: number) => number;

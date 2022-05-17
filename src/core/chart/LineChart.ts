@@ -8,18 +8,10 @@ import { Text } from "../component/Text";
 import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions } from "./BaseChart";
 import { font } from "../Constant";
-import {
-  area,
-  bisector,
-  curveMonotoneX,
-  extent,
-  line,
-  max,
-  range,
-  scaleLinear,
-  ScaleLinear,
-  timeFormat,
-} from "d3";
+import { bisector, extent, max, range } from "d3-array";
+import { curveMonotoneX, line, area } from "d3-shape";
+import { scaleLinear, ScaleLinear } from "d3-scale";
+import { timeFormat } from "d3-time-format";
 interface LineChartOptions extends BaseChartOptions {
   pointerR?: number;
 }

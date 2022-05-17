@@ -3,7 +3,7 @@ import { CanvasRenderer } from "./CanvasRenderer";
 import { Renderer } from "./Renderer";
 import { Component } from "./component/Component";
 import { recourse } from "./Recourse";
-import { interval, Timer } from "d3";
+import { interval, Timer } from "d3-timer";
 import { Controller } from "./Controller";
 
 export class Stage {

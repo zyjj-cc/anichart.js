@@ -1,4 +1,4 @@
-import { ScaleLinear } from "d3";
+import { ScaleLinear } from "d3-scale";
 import { Ani } from "../ani/Ani";
 import { Component } from "../component/Component";
 import { TextOptions } from "../component/Text";

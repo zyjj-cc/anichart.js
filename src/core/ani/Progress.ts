@@ -4,7 +4,10 @@ import { Rect } from "../component/Rect";
 import { Ani } from "./Ani";
 import { customAni, easeInterpolate } from "./AniCreator";
 import { font } from "../Constant";
-import { easeExpOut, easePolyOut, format, scaleLinear } from "d3";
+import { easeExpOut, easePolyOut } from "d3-ease";
+import { format } from "d3-format";
+import { scaleLinear } from "d3-scale";
+
 export interface ProgressOptions {
   position?: { x: number; y: number };
   shape?: { width: number; height: number };

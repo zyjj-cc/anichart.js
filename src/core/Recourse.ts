@@ -1,5 +1,5 @@
 import { imageLoader } from "./ImageLoader";
-import { csv, json } from "d3";
+import { csv, json } from "d3-fetch";
 export class Recourse {
   constructor() {}
   setup() {

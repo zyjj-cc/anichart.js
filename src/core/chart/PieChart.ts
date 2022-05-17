@@ -3,7 +3,10 @@ import { Path } from "../component/Path";
 import { colorPicker } from "../ColorPicker";
 import { FontWeight, Text } from "../component/Text";
 import { font } from "../Constant";
-import { arc, max, pie, scaleLinear, sum, timeFormat } from "d3";
+import { max, sum } from "d3-array";
+import { arc, pie } from "d3-shape";
+import { scaleLinear } from "d3-scale";
+import { timeFormat } from "d3-time-format";
 interface PieChartOptions extends BaseChartOptions {
   radius?: [number, number];
   labelTextStyle?: {

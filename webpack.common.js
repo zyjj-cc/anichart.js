@@ -28,7 +28,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|zh-cn/),
-  ],
 };

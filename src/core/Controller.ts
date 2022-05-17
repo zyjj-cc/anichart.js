@@ -1,6 +1,7 @@
 import { Stage } from "./Stage";
-import * as d3 from "d3";
-import moment from "moment";
+import { select } from "d3-selection";
+import { timer } from "d3-timer";
+import dayjs from "dayjs";
 export class Controller {
   stage: Stage;
   constructor(stage: Stage) {
@@ -8,8 +9,7 @@ export class Controller {
   }
 
   render() {
-    const ctrl = d3
-      .select("body")
+    const ctrl = select("body")
       .insert("div", ":first-child")
       .attr("id", "anichart-ctrl")
       .attr(
@@ -53,11 +53,11 @@ export class Controller {
         d.play();
       });
     this.makeDraggable("anichart-ctrl", "anichart-ctrl-dragger");
-    d3.timer(() => {
+    timer(() => {
       timeLabel.text(
         (d: Stage) =>
-          `${moment(d.sec * 1000).format("mm:ss")} /
-          ${moment(d.options.sec * 1000).format("mm:ss")}`
+          `${dayjs(d.sec * 1000).format("mm:ss")} /
+          ${dayjs(d.options.sec * 1000).format("mm:ss")}`
       );
       if (this.stage.playing) {
         progresser.node()!.value = this.stage.sec.toString();

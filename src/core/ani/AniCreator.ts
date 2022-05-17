@@ -1,7 +1,10 @@
 import { Component } from "../component/Component";
 import { Ani } from "./Ani";
 import { getFadeWrapped } from "../wrapper/Fade";
-import { bisectLeft, easeLinear, interpolate, scaleLinear } from "d3";
+import { scaleLinear } from "d3-scale";
+import { easeLinear } from "d3-ease";
+import { interpolate } from "d3-interpolate";
+import { bisectLeft } from "d3-array";
 export function easeInterpolate<T extends Component | number>(
   e: (i: number) => number
 ) {

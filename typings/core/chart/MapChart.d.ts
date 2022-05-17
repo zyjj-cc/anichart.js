@@ -1,4 +1,5 @@
-import { GeoPath, GeoPermissibleObjects, GeoProjection, ScaleLinear } from "d3";
+import { GeoPath, GeoPermissibleObjects, GeoProjection } from "d3-geo";
+import { ScaleLinear } from "d3-scale";
 import { Component } from "../component/Component";
 import { Path } from "../component/Path";
 import { Stage } from "../Stage";

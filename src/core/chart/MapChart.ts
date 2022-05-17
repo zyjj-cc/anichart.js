@@ -2,18 +2,17 @@ import {
   GeoPath,
   GeoPermissibleObjects,
   GeoProjection,
-  ScaleLinear,
-  interpolateInferno,
   geoOrthographic,
   geoNaturalEarth1,
   geoMercator,
   geoEquirectangular,
   geoPath,
-  color,
-  extent,
-  scaleLinear,
   geoGraticule10,
-} from "d3";
+} from "d3-geo";
+import { scaleLinear, ScaleLinear } from "d3-scale";
+import { color } from "d3-color";
+import { interpolateInferno } from "d3-scale-chromatic";
+import { extent } from "d3-array";
 import { canvasHelper } from "../CanvasHelper";
 import { Component, ShadowOptions } from "../component/Component";
 import { Path } from "../component/Path";

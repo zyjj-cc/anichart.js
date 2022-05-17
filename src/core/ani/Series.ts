@@ -1,4 +1,4 @@
-import { scaleQuantize, scaleThreshold, sum } from "d3";
+import { sum } from "d3-array";
 import { Component } from "../component/Component";
 import { Stage } from "../Stage";
 import { Ani } from "./Ani";

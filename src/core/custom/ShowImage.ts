@@ -1,4 +1,4 @@
-import { easeElasticOut } from "d3";
+import { easeElasticOut } from "d3-ease";
 import { Ani } from "../ani/Ani";
 import { Image } from "../component/Image";
 import { customInOut } from "../util/Ease";
