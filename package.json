@@ -24,7 +24,6 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.json & webpack --config webpack.prod.js",
-    "umd": "tsc --build tsconfig.umd.json",
     "deploy": "npm version prerelease",
     "serve": "webpack serve --open  --config webpack.dev.js --port 12341",
     "dev": "webpack  --config webpack.dev.js",

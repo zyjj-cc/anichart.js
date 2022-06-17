@@ -32,5 +32,8 @@ export class CanvasHelper {
     this.renderer.ctx.restore();
     return res;
   }
+  getPattern(img: CanvasImageSource): CanvasPattern {
+    return this.renderer.ctx?.createPattern(img, "repeat");
+  }
 }
 export const canvasHelper = new CanvasHelper();

@@ -1,3 +1,4 @@
+import { canvasHelper } from "./../CanvasHelper";
 import {
   GeoPath,
   GeoPermissibleObjects,
@@ -13,7 +14,6 @@ import { scaleLinear, ScaleLinear } from "d3-scale";
 import { color } from "d3-color";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { extent } from "d3-array";
-import { canvasHelper } from "../CanvasHelper";
 import { Component, ShadowOptions } from "../component/Component";
 import { Path } from "../component/Path";
 import { Rect } from "../component/Rect";
@@ -79,7 +79,20 @@ export class MapChart extends BaseChart {
     this.getMapId = options.getMapId ?? ((id) => id);
     this.mapIdField = options.mapIdField ?? "alpha3Code";
     this.strokeStyle = options.strokeStyle ?? "#FFF";
-    this.defaultFill = options.defaultFill ?? "#FFF1";
+
+    if (options.defaultFill) {
+      this.defaultFill = options.defaultFill;
+    } else {
+      const svgStr = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 0L0 20H10L20 10V0Z" fill="#4444"/><path d="M10 0H0V10L10 0Z" fill="#4444"/></svg>`;
+      const blob = new Blob([svgStr], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+      recourse.loadImage(url, "_map_default_pattern").then((img) => {
+        if (img) {
+          const ptn = canvasHelper.getPattern(img);
+          this.defaultFill = ptn;
+        }
+      });
+    }
     this.projectionType = options.projectionType ?? "natural";
     this.useShadow = options.useShadow ?? false;
     this.pathShadowColor = options.pathShadowColor;
