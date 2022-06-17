@@ -12,7 +12,7 @@ import { extent, max, range, sum } from "d3-array";
 import { ScaleLinear, scaleLinear } from "d3-scale";
 import { timeFormat } from "d3-time-format";
 export interface BarChartOptions extends BaseChartOptions {
-  domain?: (data: any) => [number, number];
+  domain?: (data: any[]) => [number, number];
   dy?: number;
   barFontSizeScale?: number;
   itemCount?: number;
