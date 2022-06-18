@@ -122,6 +122,7 @@ export class MapChart extends BaseChart {
           break;
         case "equirectangular":
           projection = geoEquirectangular();
+          break;
         default:
           projection = geoNaturalEarth1();
       }
