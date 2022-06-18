@@ -25,12 +25,12 @@
   "scripts": {
     "build": "tsc --build tsconfig.json & webpack --config webpack.prod.js",
     "deploy": "npm version prerelease",
-    "serve": "webpack serve --open  --config webpack.dev.js --port 12341",
+    "serve": "webpack serve --open --config webpack.dev.js --port 12341",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "dev": "webpack  --config webpack.dev.js",
-    "watch": "webpack --watch  --config webpack.dev.js",
+    "dev": "webpack --config webpack.dev.js",
+    "watch": "webpack --watch --config webpack.dev.js",
     "prepublish": "yarn build",
     "test-node": "ts-node ./test/index_for_node.ts",
     "git-patch": "git checkout --patch master ./src"

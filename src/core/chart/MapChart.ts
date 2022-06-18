@@ -29,14 +29,12 @@ interface MapChartOptions extends BaseChartOptions {
   pathShadowColor?: string;
   useShadow?: boolean;
   showGraticule?: boolean;
-  margin?: { top: number; left: number; right: number; bottom: number };
   projectionType?: "orthographic" | "natural" | "mercator" | "equirectangular";
   mapIdField?: string;
   visualMap?: (t: number) => string;
   getMapId?: (id: string) => string;
   strokeStyle?: string;
   defaultFill?: string | CanvasGradient | CanvasPattern;
-
   noDataLabel?: string;
   showLabel?: boolean;
 }
@@ -60,7 +58,7 @@ export class MapChart extends BaseChart {
   graticulePathComp: Path;
 
   pathShadowBlur: number;
-  pathShadowColor: string | undefined;
+  pathShadowColor: string;
   useShadow: boolean;
   showLabel: boolean;
   labelPadding: number;
@@ -95,7 +93,7 @@ export class MapChart extends BaseChart {
     }
     this.projectionType = options.projectionType ?? "natural";
     this.useShadow = options.useShadow ?? false;
-    this.pathShadowColor = options.pathShadowColor;
+    this.pathShadowColor = options.pathShadowColor ?? "#fff2";
     this.pathShadowBlur = options.pathShadowBlur ?? 100;
     this.showGraticule = options.showGraticule ?? false;
     this.showLabel = options.showLabel ?? false;

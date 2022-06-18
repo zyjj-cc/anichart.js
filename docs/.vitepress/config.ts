@@ -1,11 +1,9 @@
-import { BarChart } from "./../../src/core/chart/BarChart";
 const config: import("vitepress").UserConfig = {
   lang: "en-US",
   title: "Anichart.js",
   description: "Easily create data visualization animated video.",
   themeConfig: {
-    logo:
-      "https://raw.githubusercontent.com/Jannchie/anichart.js/master/public/image/ANI.png",
+    logo: "/img/logo.png",
     nav: [
       { text: "Guide", link: "/guide/what-is-anichart" },
       { text: "Config", link: "/config/bar" },
@@ -25,6 +23,7 @@ const config: import("vitepress").UserConfig = {
             { text: "What is anichart?", link: "/guide/what-is-anichart" },
             { text: "Getting started", link: "/guide/getting-started" },
             { text: "Basic bar chart example", link: "/guide/basic-bar-chart" },
+            { text: "Render the chart", link: "/guide/render-the-chart" },
           ],
         },
       ],
@@ -33,6 +32,7 @@ const config: import("vitepress").UserConfig = {
           text: "Charts",
           collapsible: true,
           items: [
+            { text: "Base charts", link: "/config/base" },
             { text: "Bar charts", link: "/config/bar" },
             { text: "Line charts", link: "/config/line" },
             { text: "Pie charts", link: "/config/pie" },
@@ -53,6 +53,11 @@ const config: import("vitepress").UserConfig = {
         },
         {
           text: "Map Charts",
+          collapsible: true,
+          items: [],
+        },
+        {
+          text: "Pie Charts",
           collapsible: true,
           items: [],
         },

@@ -18,7 +18,6 @@ export interface BarChartOptions extends BaseChartOptions {
   itemCount?: number;
   barPadding?: number;
   barGap?: number;
-
   clipBar?: boolean;
   barInfoFormat?: KeyGenerate;
   showDateLabel?: boolean;
@@ -82,7 +81,6 @@ export class BarChart extends BaseChart {
   }
 
   itemCount = 20;
-
   barPadding = 8;
   barGap = 8;
   swapDurationMS = 300;

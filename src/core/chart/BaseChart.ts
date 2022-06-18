@@ -18,14 +18,11 @@ export interface BaseChartOptions {
   aniTime?: [number, number];
   fadeTime?: [number, number];
   freezeTime?: [number, number];
-
   position?: { x: number; y: number };
-
   shape?: { width: number; height: number };
   margin?: { left: number; top: number; bottom: number; right: number };
   xTickFormat?: (n: number | { valueOf(): number }) => string;
   yTickFormat?: (n: number | { valueOf(): number }) => string;
-
   showAxis?: boolean;
   showXAxis?: boolean;
   showYAxis?: boolean;
@@ -64,7 +61,7 @@ export abstract class BaseChart extends Ani {
   xAxisPadding: number = 4;
   maxIntervalMS: number;
   dataGroupByDate: Map<any, any[]>;
-  visualRange: "total" | "current" | "history" | [number, number];
+  visualRange: "total" | "current" | "history" | [number, number] = "current";
   interpolateInitValue: number;
   indexToDate: Map<number, string>;
   nonstandardDate: any;
@@ -335,11 +332,7 @@ export abstract class BaseChart extends Ani {
     return format(",.0f")(cData[this.valueField]);
   };
 
-  labelFormat: KeyGenerate = (
-    id: string,
-    meta?: Map<string, any>,
-    data?: any
-  ) => {
+  labelFormat: KeyGenerate = (id: string, meta?: Map<string, any>) => {
     if (meta && meta.get(id) && meta.get(id).name) {
       return meta.get(id).name;
     } else {
