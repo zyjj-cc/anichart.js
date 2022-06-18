@@ -1,7 +1,6 @@
-const config: import("vitepress").UserConfig = {
+const config = {
   lang: "en-US",
   title: "Anichart.js",
-  base: "/anichart.js/",
   description: "Easily create data visualization animated video.",
   themeConfig: {
     logo: "/img/logo.png",
