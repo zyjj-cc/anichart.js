@@ -1,4 +1,4 @@
-# Render the basic bar chart
+# Render the Basic Bar Chart
 
 The essence of data visualization is to turn data into diagrams (or, in the case of this framework, animations). So the first step is to prepare the data.
 

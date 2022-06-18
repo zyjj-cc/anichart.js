@@ -1,5 +1,7 @@
 # Getting Started
 
+With this tutorial, you can quickly get started with the library.
+
 ## Setup
 
 You can use the tag to import the latest version of the project.

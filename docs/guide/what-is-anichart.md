@@ -1,4 +1,4 @@
-# What is anichart.js?
+# What is Anichart.js?
 
 Anichart.js is a data visualization animation framework for developers. This framework allows you to quickly create dynamic data visualization videos.  Charts such as maps, bar charts, graphs, and pie charts are already supported.  The API provided by Anichart can also be customized or combined to suit your needs.
 
