@@ -1,7 +1,7 @@
 import { Ani } from "./ani/Ani";
 import { Renderer } from "./Renderer";
 import { Component } from "./component/Component";
-import { Timer } from "d3";
+import { Timer } from "d3-timer";
 import { Controller } from "./Controller";
 export declare class Stage {
     compRoot: Component;

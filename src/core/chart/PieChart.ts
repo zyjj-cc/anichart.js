@@ -1,18 +1,15 @@
 import { BaseChartOptions, BaseChart } from "./BaseChart";
 import { Path } from "../component/Path";
 import { colorPicker } from "../ColorPicker";
-import { FontWeight, Text } from "../component/Text";
+import { FontWeight, Text, TextOptions } from "../component/Text";
 import { font } from "../Constant";
-import { arc, max, pie, scaleLinear, sum, timeFormat } from "d3";
+import { max, sum } from "d3-array";
+import { arc, pie } from "d3-shape";
+import { scaleLinear } from "d3-scale";
+import { timeFormat } from "d3-time-format";
 interface PieChartOptions extends BaseChartOptions {
   radius?: [number, number];
-  labelTextStyle?: {
-    font: string;
-    lineWidth: number;
-    fontSize: number;
-    fontWeight: FontWeight;
-    strokeStyle: string;
-  };
+  labelTextStyle?: TextOptions;
   showDateLabel?: boolean;
   cornerRadius?: number;
   padAngle?: number;
@@ -24,7 +21,7 @@ export class PieChart extends BaseChart implements PieChartOptions {
   cornerRadius: number = 4;
   padAngle: number = 5;
   keyDurationSec = 0.25;
-  labelTextStyle = {
+  labelTextStyle: TextOptions = {
     font,
     lineWidth: 6,
     fontSize: 24,

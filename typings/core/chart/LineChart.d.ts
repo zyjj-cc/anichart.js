@@ -1,7 +1,7 @@
 import { Component } from "../component/Component";
 import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions } from "./BaseChart";
-import { ScaleLinear } from "d3";
+import { ScaleLinear } from "d3-scale";
 interface LineChartOptions extends BaseChartOptions {
     pointerR?: number;
 }

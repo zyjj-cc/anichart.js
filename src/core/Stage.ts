@@ -2,15 +2,9 @@ import { Ani } from "./ani/Ani";
 import { CanvasRenderer } from "./CanvasRenderer";
 import { Renderer } from "./Renderer";
 import { Component } from "./component/Component";
-import { addFrameToFFmpeg, loadffmpeg, outputMP4, removePNG } from "./FFmpeg";
 import { recourse } from "./Recourse";
-import { interval, Timer } from "d3";
-import { eachLimit, eachSeries } from "async";
-import { createFFmpeg } from "@ffmpeg/ffmpeg";
+import { interval, Timer } from "d3-timer";
 import { Controller } from "./Controller";
-
-// Enable Path2D
-require("canvas-5-polyfill");
 
 export class Stage {
   compRoot: Component = new Component();
@@ -57,19 +51,13 @@ export class Stage {
   constructor(canvas?: HTMLCanvasElement) {
     this.renderer = new CanvasRenderer();
     this.renderer.stage = this;
-    if (typeof window === "undefined") {
-      const { createCanvas } = require("canvas");
-      var c = createCanvas(1920, 1080);
-      this.renderer.setCanvas(c);
-    } else {
-      if (!canvas) {
-        canvas = document.createElement("canvas");
-        canvas.width = 1920;
-        canvas.height = 1080;
-        document.body.appendChild(canvas);
-      }
-      this.renderer.setCanvas(canvas);
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      canvas.width = 1920;
+      canvas.height = 1080;
+      document.body.appendChild(canvas);
     }
+    this.renderer.setCanvas(canvas);
     this.sec = 0;
     this.ctl = new Controller(this);
   }
@@ -110,64 +98,6 @@ export class Stage {
     if (this.interval) {
       this.interval.stop();
       this.interval = null;
-    } else if (typeof window === "undefined") {
-      // node
-      let f = 0;
-      const fs = require("fs");
-      while (f < this.totalFrames) {
-        this.render(f / this.options.fps);
-        const data = this.canvas.toBuffer("image/png");
-        const outDir = `out`;
-        if (!fs.existsSync(outDir)) {
-          fs.mkdirSync(outDir);
-        }
-        const p = `${outDir}/${this.outputOptions.fileName}-${f}.png`;
-        fs.writeFileSync(p, data);
-        console.log(p);
-        f++;
-      }
-    } else if (this.output) {
-      let ffmpeg = createFFmpeg({
-        log: true,
-        corePath: "/ffmpeg-core.js",
-      });
-      loadffmpeg(ffmpeg).then(() => {
-        const partCount =
-          Math.floor(this.options.sec / this.outputOptions.splitSec) + 1;
-        let part = 0;
-        const parts: number[] = [];
-        while (part++ < partCount) {
-          parts.push(part);
-        }
-
-        eachSeries(parts, (p, callback) => {
-          const frames: number[] = [];
-          const picNameList: string[] = [];
-          while (
-            this.cFrame < this.totalFrames &&
-            this.cFrame < p * this.outputOptions.splitSec * this.options.fps
-          ) {
-            this.cFrame++;
-            frames.push(this.cFrame);
-          }
-          eachLimit(frames, this.outputConcurrency, (f, cb) => {
-            this.cFrame = f;
-            this.render();
-            const no =
-              f - (p - 1) * this.outputOptions.splitSec * this.options.fps;
-            picNameList.push(`output-${no}.png`);
-            const imageData = this.renderer.getImageData();
-            addFrameToFFmpeg(ffmpeg, imageData, no).then(() => cb());
-          }).then(() => {
-            outputMP4(ffmpeg, this.options.fps).then(() => {
-              removePNG(ffmpeg, picNameList);
-              callback();
-            });
-          });
-        })
-          // tslint:disable-next-line:no-console
-          .then(() => console.log("finished!"));
-      });
     } else {
       this.interval = interval((elapsed) => {
         if (this.output || this.mode === "output") {

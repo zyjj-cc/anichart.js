@@ -10,21 +10,12 @@ export class CanvasHelper {
   }
   renderer: CanvasRenderer = canvasRenderer;
   constructor() {
-    if (typeof window === "undefined") {
-      // node
-      let { createCanvas } = require("canvas");
-      var nodeCanvas = createCanvas(1920, 1080);
-      this.renderer.canvas = nodeCanvas;
-      this.renderer.ctx = nodeCanvas.getContext("2d");
-    } else {
-      // browser
-      var canvas = document.querySelector("canvas");
-      if (!canvas) {
-        canvas = document.createElement("canvas");
-      }
-      this.renderer.canvas = canvas;
-      this.renderer.ctx = canvas.getContext("2d")!;
+    var canvas = document.querySelector("canvas");
+    if (!canvas) {
+      canvas = document.createElement("canvas");
     }
+    this.renderer.canvas = canvas;
+    this.renderer.ctx = canvas.getContext("2d")!;
   }
 
   measure<T extends Component>(c: T) {
@@ -40,6 +31,9 @@ export class CanvasHelper {
     const res = this.renderer.ctx.measureText(c.text ?? "");
     this.renderer.ctx.restore();
     return res;
+  }
+  getPattern(img: CanvasImageSource): CanvasPattern {
+    return this.renderer.ctx?.createPattern(img, "repeat");
   }
 }
 export const canvasHelper = new CanvasHelper();

@@ -8,24 +8,16 @@ import { Stage } from "../Stage";
 import { BaseChart, BaseChartOptions, KeyGenerate } from "./BaseChart";
 import { recourse } from "../Recourse";
 import { font } from "../Constant";
-import {
-  extent,
-  max,
-  range,
-  ScaleLinear,
-  scaleLinear,
-  sum,
-  timeFormat,
-} from "d3";
-
+import { extent, max, range, sum } from "d3-array";
+import { ScaleLinear, scaleLinear } from "d3-scale";
+import { timeFormat } from "d3-time-format";
 export interface BarChartOptions extends BaseChartOptions {
-  domain?: (data: any) => [number, number];
+  domain?: (data: any[]) => [number, number];
   dy?: number;
   barFontSizeScale?: number;
   itemCount?: number;
   barPadding?: number;
   barGap?: number;
-
   clipBar?: boolean;
   barInfoFormat?: KeyGenerate;
   showDateLabel?: boolean;
@@ -89,7 +81,6 @@ export class BarChart extends BaseChart {
   }
 
   itemCount = 20;
-
   barPadding = 8;
   barGap = 8;
   swapDurationMS = 300;

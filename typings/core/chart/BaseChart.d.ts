@@ -1,4 +1,4 @@
-import { ScaleLinear } from "d3";
+import { ScaleLinear } from "d3-scale";
 import { Ani } from "../ani/Ani";
 import { Component } from "../component/Component";
 import { TextOptions } from "../component/Text";
@@ -22,6 +22,15 @@ export interface BaseChartOptions {
         bottom: number;
         right: number;
     };
+    xTickFormat?: (n: number | {
+        valueOf(): number;
+    }) => string;
+    yTickFormat?: (n: number | {
+        valueOf(): number;
+    }) => string;
+    showAxis?: boolean;
+    showXAxis?: boolean;
+    showYAxis?: boolean;
     idField?: string;
     colorField?: string | KeyGenerate;
     imageField?: string | KeyGenerate;
@@ -53,6 +62,9 @@ export declare abstract class BaseChart extends Ani {
     indexToDate: Map<number, string>;
     nonstandardDate: any;
     dataFadeMS: number;
+    showAxis: boolean;
+    showXAxis: boolean;
+    showYAxis: boolean;
     constructor(options?: BaseChartOptions);
     tickKeyFrameDuration: number;
     dataScales: Map<string, any>;

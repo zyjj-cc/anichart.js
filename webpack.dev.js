@@ -12,23 +12,12 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
-    contentBase: ["./test", "./node_modules/@ffmpeg/core/dist"],
+    contentBase: ["./test"],
     index: "index.html",
     headers: {
       "Cross-Origin-Embedder-Policy": "require-corp",
       "Cross-Origin-Opener-Policy": "same-origin",
     },
-  },
-  module: {
-    rules: [
-      {
-        test: /\.csv/,
-        loader: "file-loader",
-        options: {
-          outputPath: "data",
-        },
-      },
-    ],
   },
   plugins: [
     new HtmlWebpackPlugin({

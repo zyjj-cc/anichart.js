@@ -13,8 +13,8 @@ export class ItemChart extends BaseChart {
   }
   getComponent(sec: number): Component {
     const components = this.data.map((item) => {
-      const id = item[this.idField];
-      const value = item[this.valueField];
+      // const id = item[this.idField];
+      // const value = item[this.valueField];
       return new Component();
     });
     const res = new Component();

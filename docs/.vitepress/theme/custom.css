@@ -1,0 +1,12 @@
+/* .vitepress/theme/custom.css */
+:root {
+  --vp-c-brand: #27c;
+  --vp-c-brand-light: #27c;
+  --vp-button-brand-bg: #27c;
+  --vp-button-brand-active-border: #04a;
+  --vp-button-brand-hover-border: #04a;
+  --vp-button-brand-border: #04a;
+  --vp-c-brand-dark: #04a;
+  --vp-home-hero-name-background: linear-gradient(47deg, #C23 0%, #27c 46%, #49b 100%);
+  --vp-home-hero-name-color: transparent;
+}

@@ -1,6 +1,6 @@
 import { Ani } from "./Ani";
 import { Text } from "../component/Text";
-import { scaleLinear } from "d3";
+import { scaleLinear } from "d3-scale";
 interface TextAniOptions {
   time?: number;
   last?: number;

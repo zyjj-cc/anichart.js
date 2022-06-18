@@ -1,14 +1,7 @@
-import {
-  extent,
-  format,
-  group,
-  max,
-  min,
-  rollup,
-  scaleLinear,
-  ScaleLinear,
-} from "d3";
-import moment from "moment";
+import dayjs from "dayjs";
+import { scaleLinear, ScaleLinear } from "d3-scale";
+import { extent, group, max, min, rollup } from "d3-array";
+import { format } from "d3-format";
 import { Ani } from "../ani/Ani";
 import { canvasHelper } from "../CanvasHelper";
 import { Component } from "../component/Component";
@@ -16,7 +9,7 @@ import { Text, TextOptions } from "../component/Text";
 import { font } from "../Constant";
 import { recourse } from "../Recourse";
 import { Stage } from "../Stage";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/clonedeep";
 function isValidDate(date: any) {
   return date instanceof Date && !isNaN(date.getTime());
 }
@@ -25,14 +18,11 @@ export interface BaseChartOptions {
   aniTime?: [number, number];
   fadeTime?: [number, number];
   freezeTime?: [number, number];
-
   position?: { x: number; y: number };
-
   shape?: { width: number; height: number };
   margin?: { left: number; top: number; bottom: number; right: number };
   xTickFormat?: (n: number | { valueOf(): number }) => string;
   yTickFormat?: (n: number | { valueOf(): number }) => string;
-
   showAxis?: boolean;
   showXAxis?: boolean;
   showYAxis?: boolean;
@@ -71,7 +61,7 @@ export abstract class BaseChart extends Ani {
   xAxisPadding: number = 4;
   maxIntervalMS: number;
   dataGroupByDate: Map<any, any[]>;
-  visualRange: "total" | "current" | "history" | [number, number];
+  visualRange: "total" | "current" | "history" | [number, number] = "current";
   interpolateInitValue: number;
   indexToDate: Map<number, string>;
   nonstandardDate: any;
@@ -182,7 +172,7 @@ export abstract class BaseChart extends Ani {
         switch (k) {
           case this.dateField:
             // 日期字符串转成日期
-            let date = moment(d[this.dateField]).toDate();
+            let date = dayjs(d[this.dateField]).toDate();
             if (isValidDate(date)) {
               d[k] = date;
               this.nonstandardDate = false;
@@ -342,11 +332,7 @@ export abstract class BaseChart extends Ani {
     return format(",.0f")(cData[this.valueField]);
   };
 
-  labelFormat: KeyGenerate = (
-    id: string,
-    meta?: Map<string, any>,
-    data?: any
-  ) => {
+  labelFormat: KeyGenerate = (id: string, meta?: Map<string, any>) => {
     if (meta && meta.get(id) && meta.get(id).name) {
       return meta.get(id).name;
     } else {

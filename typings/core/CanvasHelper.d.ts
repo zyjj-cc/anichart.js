@@ -6,5 +6,6 @@ export declare class CanvasHelper {
     constructor();
     measure<T extends Component>(c: T): any;
     private measureText;
+    getPattern(img: CanvasImageSource): CanvasPattern;
 }
 export declare const canvasHelper: CanvasHelper;
