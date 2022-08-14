@@ -65,7 +65,7 @@ export class MapChart extends BaseChart {
   labelSize: any;
   labelAlphaScale: ScaleLinear<number, number, never>;
 
-  constructor(options: MapChartOptions = {}) {
+  constructor (options: MapChartOptions = {}) {
     super(options);
     this.margin = options?.margin ?? {
       top: 20,

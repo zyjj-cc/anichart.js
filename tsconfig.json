@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
     "outDir": "lib",
+    "lib": [
+      "ESNext",
+      "DOM",
+    ],
     "declarationDir": "typings",
-    "target": "ES6",
+    "target": "ESNext",
     "declarationMap": false,
     "declaration": true,
     "inlineSourceMap": true,

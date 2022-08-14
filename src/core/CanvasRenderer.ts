@@ -13,13 +13,6 @@ export class CanvasRenderer implements Renderer {
   getImageData() {
     return this.canvas.toDataURL("image/png", 0.99);
   }
-  getImageBuffer() {
-    try {
-      return (this.canvas as any).toBuffer("image/jpeg");
-    } catch {
-      throw new Error("image buffer only be supported in node.js");
-    }
-  }
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | any;
   stage: Stage;

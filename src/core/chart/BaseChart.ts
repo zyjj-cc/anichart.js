@@ -69,7 +69,7 @@ export abstract class BaseChart extends Ani {
   showAxis: boolean;
   showXAxis: boolean;
   showYAxis: boolean;
-  constructor(options: BaseChartOptions = {}) {
+  constructor (options: BaseChartOptions = {}) {
     super();
     if (!options) return;
     if (options.fadeTime) this.fadeTime = options.fadeTime;
@@ -394,8 +394,8 @@ export abstract class BaseChart extends Ani {
       sec < this.aniTime[0]
         ? this.aniTime[0]
         : sec > this.aniTime[1]
-        ? this.aniTime[1]
-        : sec;
+          ? this.aniTime[1]
+          : sec;
     const scales = {
       x: scaleLinear(
         [this.aniTime[0], trueSec],

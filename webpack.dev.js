@@ -1,6 +1,7 @@
 const common = require("./webpack.common.js");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
 module.exports = merge(common, {
   entry: {
     anichart: "./src/index.ts",
@@ -12,8 +13,9 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
-    contentBase: ["./test"],
-    index: "index.html",
+    static: {
+      directory: path.join(__dirname, 'test'),
+    },
     headers: {
       "Cross-Origin-Embedder-Policy": "require-corp",
       "Cross-Origin-Opener-Policy": "same-origin",

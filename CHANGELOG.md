@@ -1,5 +1,12 @@
 # Change Log
 
+## ver 3.0.2 [2022-08-15]
+
+**Chore**
+
+- Clean the code.
+- Use pnpm to manage dependencies.
+
 ## ver 3.0.1 [2022-06-19]
 
 **Fixed**

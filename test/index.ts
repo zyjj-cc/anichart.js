@@ -1,5 +1,5 @@
+import { easeBounce } from "d3-ease";
 import * as ani from "../src/index";
-import * as d3 from "d3";
 const stage = new ani.Stage();
 stage.options.fps = 30;
 stage.options.sec = 10;
@@ -145,7 +145,7 @@ const a = ani
       radius: 150,
     })
   )
-  .duration(1, d3.easeBounce)
+  .duration(1, easeBounce)
   .keyFrame(
     new ani.Rect({
       position: { x: 300, y: 300 },
@@ -205,7 +205,6 @@ start().then(() => {});
 
 if (typeof window !== "undefined") {
   (window as any).stage = stage;
-  (window as any).d3 = d3;
   (window as any).ani = ani;
   (window as any).map = map;
 }

@@ -16,7 +16,7 @@ module.exports = {
       {
         test: /\.ts?$/,
         loader: "ts-loader",
-        options: { configFile: "tsconfig.dev.json" },
+        options: { configFile: "tsconfig.json" },
       },
       {
         test: /\.js$/,
