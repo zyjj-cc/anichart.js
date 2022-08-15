@@ -23,7 +23,7 @@ Easily create data visualization animated video.
 ### Online editable DEMO
 
 > **Warning**
-> 
+>
 > Due to a browser security policy update, online editing is now only supported for browsing, and no longer directly supports video export.
 
 [![Edit anichart 2.x](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/anichart-2x-m3xbz?fontsize=14&hidenavigation=1&theme=dark&resolutionWidth=1920&resolutionHeight=1080)

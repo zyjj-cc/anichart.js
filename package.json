@@ -85,8 +85,7 @@
     "d3-time-format": "^4.1.0",
     "d3-timer": "^3.0.1",
     "dayjs": "^1.11.5",
-    "lodash": "^4.17.21",
-    "pixi.js": "^6.5.1"
+    "lodash": "^4.17.21"
   },
   "keywords": [
     "animation",
