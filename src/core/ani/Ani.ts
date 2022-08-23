@@ -6,7 +6,7 @@ export class Ani {
   parent?: Ani
   children: Ani[] = []
   getComponent (sec: number) {
-    return new Component({}, this.children.map(ani => ani.getComponent(sec)))
+    return new Component({ key: 'ani-root' }, this.children.map(ani => ani.getComponent(sec)))
   }
 
   setup (stage: Stage, parent?: Ani) {

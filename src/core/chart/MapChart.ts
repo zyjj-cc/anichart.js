@@ -165,10 +165,11 @@ export class MapChart extends BaseChart {
   private initPathMap (map: any, geoGener: GeoPath<any, GeoPermissibleObjects>) {
     this.labelComponentMap = new Map<string, Component>()
     for (const feature of map.features) {
-      const mapId = feature.properties[this.mapIdField]
+      const mapId: string = feature.properties[this.mapIdField]
       const path = geoGener(feature)
       this.pathMap.set(mapId, path)
       const txt = new Text({
+        key: `map-text-${mapId}`,
         position: { x: 4, y: 6 },
         text: this.labelFormat(
           feature.properties[this.mapIdField],
@@ -182,6 +183,7 @@ export class MapChart extends BaseChart {
       })
       const width = canvasHelper.measure(txt).width
       const label = new Rect({
+        key: `map-label-${mapId}`,
         position: { x: 0, y: 0 },
         fillStyle: '#2225',
         strokeStyle: this.strokeStyle,
@@ -196,11 +198,14 @@ export class MapChart extends BaseChart {
   }
 
   private initComps () {
-    this.wrapper = new Component()
+    this.wrapper = new Component({
+      key: 'map-wrapper',
+    })
     this.pathComponentMap = new Map<string, Path>()
 
     this.pathMap.forEach((p, mapId) => {
       const path = new Path({
+        key: `map-path-${mapId}`,
         path: p,
         fillStyle: this.defaultFill,
         strokeStyle: this.strokeStyle,
@@ -219,6 +224,7 @@ export class MapChart extends BaseChart {
         stroke.opacity = 0.25
       }
       this.graticulePathComp = new Path({
+        key: 'map-graticule',
         path: this.graticulePath,
         strokeStyle: stroke?.toString(),
         fillStyle: '#0000',

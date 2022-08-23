@@ -14,7 +14,7 @@ export function getScaleWrapped (
     scaleFunc = () => scale
   }
   const ani = new Ani()
-  const wrapper = new Component()
+  const wrapper = new Component({ key: 'scale-wrapper' })
   if (child instanceof Ani) {
     ani.getComponent = (sec) => {
       const comp = child.getComponent(sec)

@@ -14,7 +14,7 @@ export class Image extends Component {
   sliceShape: { width: number, height: number }
   shape: { width: number, height: number }
   constructor (options?: ImageOptions) {
-    super(options)
+    super(options ?? { key: 'image' })
     if (options != null) {
       if (options.src) this.src = options.src
       if (options.shape != null) this.shape = options.shape

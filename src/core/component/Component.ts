@@ -10,6 +10,7 @@ export interface ShadowOptions {
   strokeColor?: string | CanvasGradient | CanvasPattern
 }
 export interface BaseCompOptions {
+  key: string
   shadow?: ShadowOptions
   center?: { x: number, y: number }
   position?: { x: number, y: number }
@@ -49,7 +50,7 @@ export class Component {
     comp.parent = this
   }
 
-  constructor (options?: BaseCompOptions, children?: Component[]) {
+  constructor (options: BaseCompOptions, children?: Component[]) {
     if (options != null) {
       if (options.center != null) this.center = options.center
       if (options.shadow != null) this.shadow = options.shadow

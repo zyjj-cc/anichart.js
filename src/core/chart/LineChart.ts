@@ -39,6 +39,7 @@ export class LineChart extends BaseChart {
     }
     // Calculate label placeholder
     const textModel = new Text({
+      key: 'label-placeholder',
       fontSize: this.labelSize,
       font,
     })
@@ -52,6 +53,7 @@ export class LineChart extends BaseChart {
 
   getComponent (sec: number) {
     const res = new Component({
+      key: 'line-chart',
       position: this.position,
       alpha: this.alphaScale(sec - this.fadeTime[0] - this.freezeTime[0]),
     })
@@ -68,6 +70,7 @@ export class LineChart extends BaseChart {
       .y0(this.shape.height)
       .y1((d: any) => this.scales.y(d[this.valueField]))
     const lineArea = new Rect({
+      key: 'line-area',
       clip: true,
       position: {
         x: this.margin.left + this.yAxisWidth + this.xAxisPadding,
@@ -93,6 +96,7 @@ export class LineChart extends BaseChart {
       fillStyle: '#0000',
     })
     const points = new Component({
+      key: 'points',
       position: {
         x: this.margin.left + this.yAxisWidth + this.yAxisPadding,
         y: this.margin.top + this.xAxisHeight + this.xAxisPadding,
@@ -100,6 +104,7 @@ export class LineChart extends BaseChart {
     })
 
     const labels = new Component({
+      key: 'labels',
       position: {
         x: this.margin.left + this.yAxisWidth + this.yAxisPadding,
         y: this.margin.top + this.xAxisHeight + this.xAxisPadding,
@@ -123,6 +128,7 @@ export class LineChart extends BaseChart {
 
       const currentY = this.findY(areaPath, maxX)
       const point = new Arc({
+        key: `point-${k}`,
         fillStyle: color,
         radius: this.pointerR,
         alpha: currentY !== undefined ? 1 : 0,
@@ -141,6 +147,7 @@ export class LineChart extends BaseChart {
       // 如果找不到值，则说明此时并没有数据
       if (currentY) {
         const label = new Text({
+          key: `label-${k}`,
           text: this.labelFormat(k, this.meta, data),
           fontSize: this.labelSize,
           font,

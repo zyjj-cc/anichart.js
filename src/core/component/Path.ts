@@ -7,7 +7,7 @@ export class Path extends Component {
   readonly type = 'Line'
   path: Path2D | string | null | undefined
   constructor (options?: PathOptions) {
-    super(options)
+    super(options ?? { key: 'path' })
     this.path = options?.path
   }
 }

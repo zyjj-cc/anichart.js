@@ -6,7 +6,7 @@ export function getFadeWrapped (
   alpha: (sec: number) => number,
 ): Ani {
   const ani = new Ani()
-  const comp = new Component()
+  const comp = new Component({ key: 'fade-wrapper' })
   if (child instanceof Component) {
     comp.children.push(child)
     ani.getComponent = (sec) => {

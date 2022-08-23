@@ -31,7 +31,7 @@ export interface TextOptions extends BaseCompOptions {
 export class Text extends Component {
   readonly type = 'Text'
   constructor (options?: TextOptions) {
-    super(options)
+    super(options ?? { key: 'text' })
     if (options != null) {
       this.text = options.text ?? ''
       this.textAlign = options.textAlign ?? 'center'

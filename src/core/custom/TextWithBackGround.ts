@@ -16,9 +16,11 @@ export function getTextWithBackground ({
   padding = { top: 5, bottom: 0, left: 5, right: 5 },
 }): Component {
   const res = new Component({
+    key: 'text-with-background',
     position,
   })
   const text = new Text({
+    key: 'text',
     text: txt,
     position: { x: padding.left, y: padding.top },
     fillStyle: foregroundStyle,
@@ -30,6 +32,7 @@ export function getTextWithBackground ({
   })
   const width = canvasHelper.measure(text)?.width
   const rect = new Rect({
+    key: 'text-with-background-bg',
     clip: true,
     shape: {
       width: width + text.position.x + padding.left + padding.right,

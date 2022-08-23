@@ -22,9 +22,9 @@ export interface BarChartOptions extends BaseChartOptions {
   clipBar?: boolean
   barInfoFormat?: KeyGenerate
   showDateLabel?: boolean
-  dateLabelOptions?: TextOptions
+  dateLabelOptions?: Omit<TextOptions, 'key'>
   showRankLabel?: boolean
-  barInfoOptions?: TextOptions
+  barInfoOptions?: Omit<TextOptions, 'key'>
   swapDurationMS?: number
 }
 
@@ -41,14 +41,14 @@ export interface BarOptions {
   isUp?: boolean
 }
 export class BarChart extends BaseChart {
-  dateLabelOptions: TextOptions = {}
+  dateLabelOptions: Omit<TextOptions, 'key'> = { }
   barFontSizeScale: number = 0.9
   showRankLabel: boolean
   private readonly rankPadding = 10
   rankLabelPlaceholder: number
   reduceID = true
   dy: number
-  barInfoOptions: TextOptions = {}
+  barInfoOptions: Omit<TextOptions, 'key'> = {}
   domain: (data: any) => [number, number]
   totalHistoryIndex: Map<any, any>
   clipBar: boolean = true
@@ -249,10 +249,11 @@ export class BarChart extends BaseChart {
       currentData,
     )
     const barComponent = new Component({
+      key: 'bar-component',
       alpha: this.alphaScale(sec),
       position: this.position,
     })
-    const barGroup = new Component()
+    const barGroup = new Component({ key: 'bar-group' })
     barComponent.addChild(barGroup)
     // 获取非 NaN 的条目数
     const barCount = currentData.filter((d) => !Number.isNaN(d[this.idField]))
@@ -293,14 +294,14 @@ export class BarChart extends BaseChart {
         this.dateLabelOptions,
       )
       dateLabelOptions.text = dateLabelText
-      const dateLabel = new Text(dateLabelOptions)
+      const dateLabel = new Text({ key: 'date-label', ...dateLabelOptions })
       barComponent.children.push(dateLabel)
     }
     return barComponent
   }
 
   private appendRankLabels (res: Component) {
-    const rankLabelGroup = new Component()
+    const rankLabelGroup = new Component({ key: 'rank-label-group' })
     for (let idx = 0; idx < this.itemCount; idx++) {
       const text = new Text(this.getRankLabelOptions(idx))
       rankLabelGroup.addChild(text)
@@ -310,6 +311,7 @@ export class BarChart extends BaseChart {
 
   private getRankLabelOptions (idx: number): TextOptions | undefined {
     return {
+      key: `rank-label-${idx}`,
       text: `${idx + this.rankOffset}`,
       textBaseline: 'middle',
       textAlign: 'right',
@@ -456,10 +458,12 @@ export class BarChart extends BaseChart {
 
   private getBarComponent (options: BarOptions) {
     const res = new Component({
+      key: `bar-wrapper-${options.id}`,
       position: options.pos,
       alpha: options.alpha,
     })
     const bar = new Rect({
+      key: `bar-rect-${options.id}`,
       shape: options.shape,
       fillStyle: options.color,
       radius: options.radius,
@@ -474,6 +478,7 @@ export class BarChart extends BaseChart {
     )
 
     const valueLabel = new Text({
+      key: `bar-value-label-${options.id}`,
       textBaseline: 'middle',
       text: `${this.valueFormat(options.data)}`,
       textAlign: 'left',
@@ -513,9 +518,10 @@ export class BarChart extends BaseChart {
       this.meta,
       this.dataGroupByID,
     )
-    const barInfo = new Text(barInfoOptions)
+    const barInfo = new Text({ key: `bar-info-${barInfoOptions.text}`, ...barInfoOptions })
     if (options.image && (recourse.images.get(options.image) != null)) {
       const img = new Image({
+        key: `bar-image-${options.id}`,
         src: options.image,
         position: {
           x: options.shape.width - options.shape.height,
@@ -556,6 +562,7 @@ export class BarChart extends BaseChart {
     fontSize: number = 16,
   ): TextOptions {
     return {
+      key: `bar-label-${text}`,
       text: `${text}`,
       textAlign: 'right',
       textBaseline: 'middle',

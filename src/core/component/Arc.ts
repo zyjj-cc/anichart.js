@@ -14,7 +14,7 @@ export class Arc extends Component {
   endAngle: number
   anticlockwise: boolean
   constructor (options?: ArcOptions) {
-    super(options)
+    super(options ?? { key: 'arc' })
     if (options == null) return
     this.radius = options.radius ?? 10
     this.startAngle = options.startAngle ?? 0

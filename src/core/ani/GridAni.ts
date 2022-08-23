@@ -41,6 +41,7 @@ export class GridAni extends Ani {
 
   getComponent (sec: number) {
     this.wrapper = new Component({
+      key: 'wrapper',
       position: this.position,
     })
     const height = this.shape.height / this.row

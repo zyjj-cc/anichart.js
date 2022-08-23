@@ -22,7 +22,12 @@ function showImage ({
   ease = easeElasticOut,
 }) {
   const ani = new Ani()
-  const img = new Image({ src, position, shape })
+  const img = new Image({
+    key: 'show-image',
+    src,
+    position,
+    shape,
+  })
   if (!center) img.center = { x: shape.width / 2, y: shape.height / 2 }
   let wrapped: Ani
   if (animation === 'scale') {

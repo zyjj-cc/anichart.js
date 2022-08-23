@@ -33,6 +33,7 @@ export class Progress extends Ani implements ProgressOptions {
       this.color = options.color ?? '#FFF'
     }
     const border0 = new Rect({
+      key: 'progress-border-0',
       shape: {
         width: this.shape.width,
         height: this.shape.height,
@@ -45,6 +46,7 @@ export class Progress extends Ani implements ProgressOptions {
       lineWidth: this.lineWidth,
     })
     const border1 = new Rect({
+      key: 'progress-border-1',
       shape: {
         width: this.shape.width * 1.75,
         height: this.shape.height,
@@ -60,6 +62,7 @@ export class Progress extends Ani implements ProgressOptions {
       lineWidth: this.lineWidth,
     })
     const bar0 = new Rect({
+      key: 'progress-bar-0',
       position: { x: this.padding, y: this.padding },
       center: { x: this.shape.width / 2, y: this.shape.height / 2 },
       shape: { width: 0, height: this.shape.height - this.padding * 2 },
@@ -67,6 +70,7 @@ export class Progress extends Ani implements ProgressOptions {
       fillStyle: this.color,
     })
     const bar1 = new Rect({
+      key: 'progress-bar-1',
       position: { x: this.padding, y: this.padding },
       center: { x: (this.shape.width / 2) * 1.75, y: this.shape.height / 2 },
       shape: {
@@ -78,12 +82,14 @@ export class Progress extends Ani implements ProgressOptions {
     })
 
     const start = new Component({
+      key: 'progress-start',
       position: this.position,
       scale: { x: 2, y: 2 },
     })
     start.children.push(border0)
     start.children.push(bar0)
     const end = new Component({
+      key: 'progress-end',
       position: this.position,
       scale: { x: 1, y: 1 },
     })
@@ -91,6 +97,7 @@ export class Progress extends Ani implements ProgressOptions {
     end.children.push(bar1)
 
     const borderFinished = new Rect({
+      key: 'progress-border-finished',
       shape: {
         width: this.shape.width * 2,
         height: this.shape.height * 2,
@@ -106,6 +113,7 @@ export class Progress extends Ani implements ProgressOptions {
       lineWidth: this.lineWidth,
     })
     const bar2 = new Rect({
+      key: 'progress-bar-2',
       center: { x: this.shape.width / 2, y: this.shape.height / 2 },
       position: { x: this.padding, y: this.padding },
       shape: {
@@ -117,6 +125,7 @@ export class Progress extends Ani implements ProgressOptions {
       fillStyle: '#27C',
     })
     const final = new Component({
+      key: 'progress-final',
       position: this.position,
       alpha: 1,
       scale: { x: 1.2, y: 1.2 },
@@ -137,6 +146,7 @@ export class Progress extends Ani implements ProgressOptions {
     const label = format('d')(val)
     const res = this.ani.getComponent(sec)
     const textLabel = new Text({
+      key: 'progress-label',
       text: val === 100 ? '' : `Loading ${label} %`,
       font,
       fontSize: 24,

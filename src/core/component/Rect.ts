@@ -10,7 +10,7 @@ export class Rect extends Component {
   radius: number
   clip: boolean
   constructor (rect?: RectOptions) {
-    super(rect)
+    super(rect ?? { key: 'rect' })
     if (rect != null) {
       this.shape = rect.shape ?? { width: 20, height: 20 }
       this.radius = rect.radius ?? 0

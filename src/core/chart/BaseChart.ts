@@ -312,6 +312,7 @@ export abstract class BaseChart extends Ani {
 
   getComponent (sec: number): Component | null {
     const res = new Component({
+      key: 'base-chart',
       position: this.position,
       alpha: this.alphaScale(sec - this.fadeTime[0] - this.freezeTime[0]),
     })
@@ -413,6 +414,7 @@ export abstract class BaseChart extends Ani {
   protected getAxis (sec: number, scales: { x: any, y: any }) {
     const size = 30
     const tickComp: TextOptions = {
+      key: 'base-chart-tick',
       text: `${this.yTickFormat(this.currentMax)}`,
       font,
       fillStyle: '#777',
@@ -485,6 +487,7 @@ export abstract class BaseChart extends Ani {
       }
     })
     const res = new Component({
+      key: 'base-chart-axis',
       position: {
         x: this.margin.left + this.yAxisWidth + this.yAxisPadding,
         y: this.margin.top + this.xAxisHeight + this.xAxisPadding,

@@ -18,9 +18,11 @@ export class ItemChart extends BaseChart {
     const components = this.data.map((item) => {
       // const id = item[this.idField];
       // const value = item[this.valueField];
-      return new Component()
+      return new Component({ key: item.id })
     })
-    const res = new Component()
+    const res = new Component({
+      key: 'item-chart',
+    })
     res.children = components
     return res
   }

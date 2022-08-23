@@ -22,6 +22,7 @@ export class PieChart extends BaseChart implements PieChartOptions {
   padAngle: number = 5
   keyDurationSec = 0.25
   labelTextStyle: TextOptions = {
+    key: 'label-text-style',
     font,
     lineWidth: 6,
     fontSize: 24,
@@ -43,6 +44,7 @@ export class PieChart extends BaseChart implements PieChartOptions {
     if (this.showDateLabel) {
       const date = this.secToDate(sec)
       const dateLabel = new Text({
+        key: 'date-label',
         text: timeFormat(this.dateFormat)(date),
         fillStyle: '#FFF',
         fontSize: 30,
@@ -74,6 +76,7 @@ export class PieChart extends BaseChart implements PieChartOptions {
         })
       const centroid = arcGen.centroid(pieData as any)
       const label = new Text({
+        key: `pie-label-${d.data[this.idField] as string}`,
         text: d.data[this.idField],
         fontSize: this.labelTextStyle.fontSize,
         lineWidth: this.labelTextStyle.lineWidth,
@@ -86,6 +89,7 @@ export class PieChart extends BaseChart implements PieChartOptions {
         position: { x: centroid[0], y: centroid[1] },
       })
       const comp = new Path({
+        key: `pie-path-${d.data[this.idField] as string}`,
         fillStyle: colorPicker.getColor(d.data[this.idField]),
         strokeStyle: '#0000',
         path,
