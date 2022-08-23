@@ -1,118 +1,128 @@
-import { Component } from "./component/Component";
-import { Rect } from "./component/Rect";
-import { Text } from "./component/Text";
-import { Image } from "./component/Image";
-import { recourse } from "./Recourse";
-import { Path } from "./component/Path";
-import { Arc } from "./component/Arc";
-import { Ani } from "./ani/Ani";
-import { Stage } from "./Stage";
-import { Renderer } from "./Renderer";
+import { Component } from './component/Component'
+import { Rect } from './component/Rect'
+import { Text } from './component/Text'
+import { Image } from './component/Image'
+import { recourse } from './Recourse'
+import { Path } from './component/Path'
+import { Arc } from './component/Arc'
+import { Ani } from './ani/Ani'
+import { Stage } from './Stage'
+import { Renderer } from './Renderer'
 
 export class CanvasRenderer implements Renderer {
-  getImageData() {
-    return this.canvas.toDataURL("image/png", 0.99);
+  getImageData () {
+    return this.canvas.toDataURL('image/png', 0.99)
   }
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D | any;
-  stage: Stage;
-  constructor(canvas?: HTMLCanvasElement) {
-    if (canvas) this.setCanvas(canvas);
+
+  canvas: HTMLCanvasElement
+  ctx: CanvasRenderingContext2D
+  stage: Stage
+  constructor (canvas?: HTMLCanvasElement) {
+    if (canvas != null) this.setCanvas(canvas)
   }
-  clean() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+  clean () {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
-  setCanvas(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
-    this.ctx = this.canvas.getContext("2d")!;
-  }
-  render(child: Component | Ani | null) {
-    if (!child) return;
-    const sec = this.stage.sec;
-    let comp: Component | Ani | null;
-    if (child instanceof Ani) {
-      comp = child?.getComponent(sec);
-    } else {
-      comp = child;
+
+  setCanvas (canvas: HTMLCanvasElement) {
+    this.canvas = canvas
+    const ctx = this.canvas.getContext('2d')
+    if (ctx) {
+      this.ctx = ctx
     }
-    if (!comp) return;
-    this.ctx.save();
+  }
+
+  render (child: Component | Ani | null) {
+    if (child == null) return
+    const sec = this.stage.sec
+    let comp: Component | Ani | null
+    if (child instanceof Ani) {
+      comp = child?.getComponent(sec)
+    } else {
+      comp = child
+    }
+    if (comp == null) return
+    this.ctx.save()
     // render special component props
     if (this.ctx.globalAlpha > 0) {
       // render itself
       // render base component props
-      this.renderBase(comp);
+      this.renderBase(comp)
       switch (comp.type) {
-        case "Text":
-          this.renderText(comp as Text);
-          break;
-        case "Rect":
-          this.renderRect(comp as Rect);
-          break;
-        case "Image":
-          this.renderImage(comp as Image);
-          break;
-        case "Arc":
-          this.renderArc(comp as Arc);
-          break;
-        case "Line":
-          this.renderPath(comp as Path);
-          break;
+        case 'Text':
+          this.renderText(comp as Text)
+          break
+        case 'Rect':
+          this.renderRect(comp as Rect)
+          break
+        case 'Image':
+          this.renderImage(comp as Image)
+          break
+        case 'Arc':
+          this.renderArc(comp as Arc)
+          break
+        case 'Line':
+          this.renderPath(comp as Path)
+          break
       }
       // render children components
       comp.children.forEach((c) => {
-        if (c) this.render(c);
-      });
+        if (c) this.render(c)
+      })
     }
-    this.ctx.restore();
+    this.ctx.restore()
   }
-  renderArc(arc: Arc) {
-    this.ctx.beginPath();
+
+  renderArc (arc: Arc) {
+    this.ctx.beginPath()
     this.ctx.arc(
       0,
       0,
       arc.radius,
       arc.startAngle,
       arc.endAngle,
-      arc.anticlockwise
-    );
-    if (arc.strokeStyle) this.ctx.stroke();
-    if (arc.fillStyle) this.ctx.fill();
+      arc.anticlockwise,
+    )
+    if (arc.strokeStyle) this.ctx.stroke()
+    if (arc.fillStyle) this.ctx.fill()
   }
-  renderPath(line: Path) {
+
+  renderPath (line: Path) {
     if (!line.path) {
-      return;
+      return
     }
-    let path: Path2D;
-    if (typeof line.path === "string") {
-      path = new Path2D(line.path);
+    let path: Path2D
+    if (typeof line.path === 'string') {
+      path = new Path2D(line.path)
     } else {
-      path = line.path;
+      path = line.path
     }
-    if (this.ctx.fillStyle) this.ctx.fill(path);
-    if (this.ctx.strokeStyle) this.ctx.stroke(path);
+    if (this.ctx.fillStyle) this.ctx.fill(path)
+    if (this.ctx.strokeStyle) this.ctx.stroke(path)
   }
-  renderClipRect(component: Rect) {
-    this.ctx.beginPath();
+
+  renderClipRect (component: Rect) {
+    this.ctx.beginPath()
     this.radiusArea(
       0,
       0,
       component.shape.width,
       component.shape.height,
-      component.radius
-    );
-    this.ctx.clip();
-    this.ctx.closePath();
+      component.radius,
+    )
+    this.ctx.clip()
+    this.ctx.closePath()
   }
 
-  renderImage(image: Image) {
-    const src = recourse.images.get(image.src);
-    if (!src) {
-      return;
+  renderImage (image: Image) {
+    const src = recourse.images.get(image.src)
+    if (src == null) {
+      return
     }
     if (image.sliceShape) {
       this.ctx.drawImage(
-        image,
+        image as any,
         image.slicePosition.x,
         image.slicePosition.y,
         image.sliceShape.width,
@@ -120,28 +130,29 @@ export class CanvasRenderer implements Renderer {
         0,
         0,
         image.shape.width,
-        image.shape.height
-      );
+        image.shape.height,
+      )
     } else if (image.shape) {
-      this.ctx.drawImage(src, 0, 0, image.shape.width, image.shape.height);
+      this.ctx.drawImage(src, 0, 0, image.shape.width, image.shape.height)
     } else {
-      this.ctx.drawImage(src, 0, 0);
+      this.ctx.drawImage(src, 0, 0)
     }
   }
-  renderRect(component: Rect) {
+
+  renderRect (component: Rect) {
     if (component.clip) {
-      this.renderClipRect(component);
+      this.renderClipRect(component)
     }
     if (!component.radius || component.radius <= 0) {
-      this.ctx.fillRect(0, 0, component.shape.width, component.shape.height);
+      this.ctx.fillRect(0, 0, component.shape.width, component.shape.height)
     } else {
       this.fillRadiusRect(
         0,
         0,
         component.shape.width,
         component.shape.height,
-        component.radius
-      );
+        component.radius,
+      )
     }
     if (component.strokeStyle) {
       if (!component.radius || component.radius <= 0) {
@@ -149,85 +160,87 @@ export class CanvasRenderer implements Renderer {
           0,
           0,
           component.shape.width,
-          component.shape.height
-        );
+          component.shape.height,
+        )
       } else {
         this.strokeRadiusRect(
           0,
           0,
           component.shape.width,
           component.shape.height,
-          component.radius
-        );
+          component.radius,
+        )
       }
     }
   }
 
-  renderBase(component: Component) {
-    let position: { x: number; y: number };
+  renderBase (component: Component) {
+    let position: { x: number, y: number }
     if (!component.position) {
-      if (component.type === "Text") {
+      if (component.type === 'Text') {
         position = {
           x: this.canvas.width / 2,
           y: this.canvas.height / 2,
-        };
+        }
       } else {
         position = {
           x: 0,
           y: 0,
-        };
+        }
       }
     } else {
-      position = component.position;
+      position = component.position
     }
     this.ctx.translate(
       position.x - component.center.x,
-      position.y - component.center.y
-    );
+      position.y - component.center.y,
+    )
     if (component.filter) {
-      this.ctx.filter = component.filter;
+      this.ctx.filter = component.filter
     }
     if (component.strokeStyle) {
-      this.ctx.strokeStyle = component.strokeStyle;
+      this.ctx.strokeStyle = component.strokeStyle
     }
     if (component.fillStyle) {
-      this.ctx.fillStyle = component.fillStyle;
+      this.ctx.fillStyle = component.fillStyle
     }
     if (component.lineWidth) {
-      this.ctx.lineWidth = component.lineWidth;
+      this.ctx.lineWidth = component.lineWidth
     }
     if (component.alpha !== undefined) {
-      this.ctx.globalAlpha *= component.alpha;
+      this.ctx.globalAlpha *= component.alpha
     }
     if (component.scale !== undefined) {
-      this.ctx.scale(component.scale.x, component.scale.y);
+      this.ctx.scale(component.scale.x, component.scale.y)
     }
     if (component.shadow?.enable) {
-      this.ctx.shadowBlur = component.shadow?.blur ?? 10;
-      this.ctx.shadowColor = component.shadow?.color ?? "#000";
+      this.ctx.shadowBlur = component.shadow?.blur ?? 10
+      this.ctx.shadowColor = component.shadow?.color ?? '#000'
     }
   }
-  renderText(component: Text) {
-    this.prerenderText(component);
+
+  renderText (component: Text) {
+    this.prerenderText(component)
     if (component.strokeStyle) {
-      this.ctx.strokeText(component.text, 0, 0);
+      this.ctx.strokeText(component.text, 0, 0)
     }
     if (component.fillStyle) {
-      this.ctx.fillText(component.text, 0, 0);
+      this.ctx.fillText(component.text, 0, 0)
     }
   }
-  prerenderText(component: Text) {
+
+  prerenderText (component: Text) {
     if (component.textAlign) {
-      this.ctx.textAlign = component.textAlign;
+      this.ctx.textAlign = component.textAlign
     }
     if (component.textBaseline) {
-      this.ctx.textBaseline = component.textBaseline;
+      this.ctx.textBaseline = component.textBaseline
     }
-    const fontStr = `${component.fontStyle ? component.fontStyle : ""} ${
-      component.fontVariant ? component.fontVariant : ""
-    } ${component.fontWeight ? component.fontWeight : ""} ${
+    const fontStr = `${component.fontStyle ? component.fontStyle : ''} ${
+      component.fontVariant ? component.fontVariant : ''
+    } ${component.fontWeight ? component.fontWeight : ''} ${
       component.fontSize ? component.fontSize : 16
-    }px ${component.font ? component.font : ""}`;
+    }px ${component.font ? component.font : ''}`
     if (
       component.font ||
       component.fontSize ||
@@ -235,47 +248,49 @@ export class CanvasRenderer implements Renderer {
       component.fontStyle ||
       component.fontVariant
     ) {
-      this.ctx.font = fontStr;
+      this.ctx.font = fontStr
     }
   }
 
-  private fillRadiusRect(
+  private fillRadiusRect (
     left: number,
     top: number,
     w: number,
     h: number,
-    r: number
+    r: number,
   ) {
-    this.ctx.beginPath();
-    this.radiusArea(left, top, w, h, r);
-    this.ctx.closePath();
-    this.ctx.fill();
+    this.ctx.beginPath()
+    this.radiusArea(left, top, w, h, r)
+    this.ctx.closePath()
+    this.ctx.fill()
   }
-  private strokeRadiusRect(
+
+  private strokeRadiusRect (
     left: number,
     top: number,
     w: number,
     h: number,
-    r: number
+    r: number,
   ) {
-    this.ctx.beginPath();
-    this.radiusArea(left, top, w, h, r);
-    this.ctx.closePath();
-    this.ctx.stroke();
+    this.ctx.beginPath()
+    this.radiusArea(left, top, w, h, r)
+    this.ctx.closePath()
+    this.ctx.stroke()
   }
-  private radiusArea(
+
+  private radiusArea (
     left: number,
     top: number,
     w: number,
     h: number,
-    r: number
+    r: number,
   ) {
-    this.ctx.lineWidth = 0;
-    const pi = Math.PI;
-    this.ctx.arc(left + r, top + r, r, -pi, -pi / 2);
-    this.ctx.arc(left + w - r, top + r, r, -pi / 2, 0);
-    this.ctx.arc(left + w - r, top + h - r, r, 0, pi / 2);
-    this.ctx.arc(left + r, top + h - r, r, pi / 2, pi);
+    this.ctx.lineWidth = 0
+    const pi = Math.PI
+    this.ctx.arc(left + r, top + r, r, -pi, -pi / 2)
+    this.ctx.arc(left + w - r, top + r, r, -pi / 2, 0)
+    this.ctx.arc(left + w - r, top + h - r, r, 0, pi / 2)
+    this.ctx.arc(left + r, top + h - r, r, pi / 2, pi)
   }
 }
-export const canvasRenderer = new CanvasRenderer();
+export const canvasRenderer = new CanvasRenderer()

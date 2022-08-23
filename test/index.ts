@@ -1,4 +1,3 @@
-import { easeBounce } from "d3-ease";
 import * as ani from "../src/index";
 const stage = new ani.Stage();
 stage.options.fps = 30;
@@ -47,28 +46,6 @@ ani.recourse.loadImage(
 ani.recourse.loadCSV("./data/test.csv", "data");
 // ani.recourse.loadData("./data/test-meta.csv", "meta");
 
-const rectAni = ani.createAni(
-  [
-    new ani.Rect({
-      position: { x: 100, y: 0 },
-      shape: { width: 100, height: 0 },
-      fillStyle: "#d23",
-    }),
-    new ani.Rect({
-      shape: { width: 100, height: 200 },
-      fillStyle: "#2a3",
-      alpha: 1,
-    }),
-    new ani.Rect({
-      shape: { width: 100, height: 0 },
-      fillStyle: "#569",
-      alpha: 0,
-    }),
-  ],
-  [0, 1, 2],
-  ani.ease.easeElastic
-);
-
 const logoCenter = new ani.Image({
   src: "./data/ANI.png",
   position: {
@@ -79,38 +56,6 @@ const logoCenter = new ani.Image({
   center: { x: 128, y: 128 },
   shape: { width: 256, height: 256 },
 });
-const logoAni = ani.createAni(
-  [
-    new ani.Image({
-      src: "./data/ANI.png",
-      position: {
-        x: 0,
-        y: stage.canvas.height - 108,
-      },
-      shape: { width: 128, height: 128 },
-    }),
-    new ani.Image({
-      src: "./data/ANI.png",
-      position: {
-        x: stage.canvas.width - 128,
-        y: stage.canvas.height - 108,
-      },
-      shape: { width: 128, height: 128 },
-      alpha: 1.0,
-    }),
-    new ani.Image({
-      src: "./data/ANI.png",
-      position: {
-        x: stage.canvas.width - 128,
-        y: stage.canvas.height - 108,
-      },
-      shape: { width: 128, height: 128 },
-      alpha: 0,
-    }),
-  ],
-  [0, 1, 2],
-  ani.ease.easeBounce
-);
 
 const barChart = new ani.BarChart({
   shape: { width: stage.canvas.width, height: 300 },
@@ -134,35 +79,11 @@ const lineChart = new ani.LineChart({
   shape: { width: stage.canvas.width, height: stage.canvas.height / 2 },
   position: { x: 0, y: stage.canvas.height / 2 },
 });
-const a = ani
-  .customAni(0)
-  .keyFrame(
-    new ani.Rect({
-      position: { x: 300, y: 300 },
-      center: { x: 150, y: 150 },
-      shape: { width: 300, height: 300 },
-      fillStyle: "#fff",
-      radius: 150,
-    })
-  )
-  .duration(1, easeBounce)
-  .keyFrame(
-    new ani.Rect({
-      position: { x: 300, y: 300 },
-      center: { x: 0, y: 0 },
-      shape: { width: 0, height: 0 },
-      fillStyle: "#d23",
-      radius: 0,
-    })
-  );
 
 stage.addChild(bgAni);
 
-stage.addChild(a);
 stage.addChild(logoCenter);
 stage.addChild(textLinesAni);
-stage.addChild(rectAni);
-stage.addChild(logoAni);
 
 const map = new ani.MapChart({
   showLabel: true,
