@@ -26,13 +26,12 @@ export class CanvasRenderer implements Renderer {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d")!;
   }
-  render(child: Component | Ani | null, offset: number = 0) {
+  render(child: Component | Ani | null) {
     if (!child) return;
-    offset += child.offsetSec;
     const sec = this.stage.sec;
     let comp: Component | Ani | null;
     if (child instanceof Ani) {
-      comp = child?.getComponent(sec - offset);
+      comp = child?.getComponent(sec);
     } else {
       comp = child;
     }
@@ -62,7 +61,7 @@ export class CanvasRenderer implements Renderer {
       }
       // render children components
       comp.children.forEach((c) => {
-        if (c) this.render(c, offset);
+        if (c) this.render(c);
       });
     }
     this.ctx.restore();

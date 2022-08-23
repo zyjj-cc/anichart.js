@@ -3,7 +3,6 @@ import { Stage } from "../Stage";
 
 export class Ani {
   stage: Stage | undefined;
-  offsetSec: number = 0;
   parent: Ani | Component;
   constructor() {}
   getComponent(sec: number): Component | null {

@@ -30,7 +30,6 @@ export * from "./core/chart/MapChart";
 export * from "./core/chart/MultiColumnBarChart";
 
 export * from "./core/ani/Effector";
-export * from "./core/ani/Series";
 export * from "./core/ani/Ani";
 export * from "./core/ani/AniCreator";
 export * from "./core/util/Ease";

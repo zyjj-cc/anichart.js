@@ -82,7 +82,7 @@ export class Stage {
   }
   private doRender() {
     this.renderer.clean();
-    this.renderer.render(this.compRoot, this.compRoot.offsetSec);
+    this.renderer.render(this.compRoot);
   }
   async loadRecourse() {
     return recourse.setup();
