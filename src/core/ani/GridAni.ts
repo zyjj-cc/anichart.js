@@ -8,13 +8,13 @@ export interface GridAniOptions {
   row?: number
   shape?: { width: number, height: number }
   position?: { x: number, y: number }
-  items?: Component[]
+  items?: Ani[]
 }
 
 export class GridAni extends Ani {
   col: number
   row: number
-  items: Component[]
+  items: Ani[]
   position: { x: number, y: number }
   shape: { width: number, height: number }
   constructor (options?: GridAniOptions) {
@@ -29,28 +29,29 @@ export class GridAni extends Ani {
   }
 
   wrapper: Component
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, parent?: Ani) {
+    super.setup(stage, parent)
     if (!this.shape) {
       this.shape = {
         width: stage.canvas.width,
         height: stage.canvas.height,
       }
     }
-    const height = this.shape.height / this.row
-    const width = this.shape.width / this.col
-    this.wrapper = new Component({
-      position: this.position,
-    })
-    this.items.forEach((item, index) => {
-      const col = index % this.col
-      const row = Math.floor(index / this.col)
-      item.position = { x: width * col + width / 2, y: height * row }
-      this.wrapper.addChild(item)
-    })
   }
 
   getComponent (sec: number) {
+    this.wrapper = new Component({
+      position: this.position,
+    })
+    const height = this.shape.height / this.row
+    const width = this.shape.width / this.col
+    this.items.forEach((item, index) => {
+      const col = index % this.col
+      const row = Math.floor(index / this.col)
+      const comp = item.getComponent(sec)
+      comp.position = { x: width * col + width / 2, y: height * row }
+      this.wrapper.addChild(comp)
+    })
     return this.wrapper
   }
 }

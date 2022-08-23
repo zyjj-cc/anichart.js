@@ -46,17 +46,6 @@ ani.recourse.loadImage(
 ani.recourse.loadCSV("./data/test.csv", "data");
 // ani.recourse.loadData("./data/test-meta.csv", "meta");
 
-const logoCenter = new ani.Image({
-  src: "./data/ANI.png",
-  position: {
-    x: stage.canvas.width / 2,
-    y: stage.canvas.height / 2,
-  },
-  alpha: 0.25,
-  center: { x: 128, y: 128 },
-  shape: { width: 256, height: 256 },
-});
-
 const barChart = new ani.BarChart({
   shape: { width: stage.canvas.width, height: 300 },
   labelFormat(id) {
@@ -82,7 +71,6 @@ const lineChart = new ani.LineChart({
 
 stage.addChild(bgAni);
 
-stage.addChild(logoCenter);
 stage.addChild(textLinesAni);
 
 const map = new ani.MapChart({
@@ -94,9 +82,6 @@ stage.addChild(map);
 stage.addChild(barChart);
 stage.addChild(lineChart);
 
-const progress = new ani.Progress({
-  position: { x: stage.canvas.width / 2, y: stage.canvas.height / 2 },
-});
 
 const pie = new ani.PieChart({
   aniTime: [4, 10],
@@ -104,7 +89,6 @@ const pie = new ani.PieChart({
   position: { x: stage.canvas.width / 2, y: stage.canvas.height / 2 },
 });
 stage.addChild(pie);
-stage.addChild(progress);
 // Don't use it. Generating animations using this method will result in rendering errors in the Node environment.
 // const img = ani.showImage({
 //   src: "./data/ANI.png",

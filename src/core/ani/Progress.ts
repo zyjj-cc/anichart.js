@@ -2,11 +2,11 @@ import { Component } from '../component/Component'
 import { Text } from '../component/Text'
 import { Rect } from '../component/Rect'
 import { Ani } from './Ani'
-import { customAni, easeInterpolate } from './AniCreator'
 import { font } from '../Constant'
-import { easeExpOut, easePolyOut } from 'd3-ease'
+import { easePolyOut } from 'd3-ease'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
+import { easeInterpolate } from '../utils/ease'
 
 export interface ProgressOptions {
   position?: { x: number, y: number }
@@ -126,16 +126,7 @@ export class Progress extends Ani implements ProgressOptions {
 
     const objCopy = Object.assign({}, final)
     objCopy.alpha = 0
-    this.ani = customAni(this.aniTime[0])
-      .keyFrame(start)
-      .duration(this.aniTime[1], easePolyOut.exponent(5))
-      .keyFrame(end)
-      .duration(0.25, easeExpOut)
-      .keyFrame(final)
-      .duration(0.5)
-      .keyFrame(final)
-      .duration(0.2)
-      .keyFrame(objCopy)
+    this.ani = new Ani()
   }
 
   getComponent (sec: number) {

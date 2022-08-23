@@ -134,8 +134,8 @@ export abstract class BaseChart extends Ani {
   historyMax: number
   historyMin: number
 
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, parent: Ani) {
+    super.setup(stage, parent)
     this.setData()
     this.setMeta()
     this.setDefaultAniTime(stage)

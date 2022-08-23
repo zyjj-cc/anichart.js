@@ -21,6 +21,7 @@ import { Text } from '../component/Text'
 import { recourse } from '../Recourse'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions } from './BaseChart'
+import { Ani } from '../ani/Ani'
 interface MapChartOptions extends BaseChartOptions {
   labelAlphaScale?: ScaleLinear<number, number, never>
   labelPadding?: number
@@ -106,8 +107,8 @@ export class MapChart extends BaseChart {
   }
 
   margin: { top: number, left: number, right: number, bottom: number }
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, parent: Ani) {
+    super.setup(stage, parent)
     if (stage) {
       const map = recourse.data.get('map')
       let projection: GeoProjection

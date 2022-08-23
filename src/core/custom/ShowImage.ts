@@ -1,7 +1,7 @@
 import { easeElasticOut } from 'd3-ease'
 import { Ani } from '../ani/Ani'
 import { Image } from '../component/Image'
-import { customInOut } from '../util/Ease'
+import { customInOut } from '../utils/ease'
 import { getFadeWrapped } from '../wrapper/Fade'
 import { getScaleWrapped } from '../wrapper/Scale'
 

@@ -1,13 +1,12 @@
 import { Ani } from './ani/Ani'
 import { CanvasRenderer } from './CanvasRenderer'
 import { Renderer } from './Renderer'
-import { Component } from './component/Component'
 import { recourse } from './Recourse'
 import { interval, Timer } from 'd3-timer'
 import { Controller } from './Controller'
 
 export class Stage {
-  compRoot: Component = new Component()
+  root = new Ani()
   renderer: Renderer
 
   ctl: Controller
@@ -66,8 +65,8 @@ export class Stage {
     this.ctl = new Controller(this)
   }
 
-  addChild (child: Ani | Component): void {
-    this.compRoot.children.push(child)
+  addChild (child: Ani): void {
+    this.root.children.push(child)
   }
 
   render (sec?: number): void {
@@ -76,7 +75,7 @@ export class Stage {
     }
     if (!this.alreadySetup) {
       void this.loadRecourse().then(() => {
-        this.compRoot.setup(this)
+        this.root.setup(this)
         this.alreadySetup = true
         this.doRender()
       })
@@ -87,7 +86,7 @@ export class Stage {
 
   private doRender (): void {
     this.renderer.clean()
-    this.renderer.render(this.compRoot)
+    this.renderer.render(this.root)
   }
 
   async loadRecourse (): Promise<any[]> {
@@ -125,7 +124,7 @@ export class Stage {
 
   setup (): void {
     void this.loadRecourse().then(() => {
-      this.compRoot.setup(this)
+      this.root.setup(this)
       this.alreadySetup = true
     })
   }

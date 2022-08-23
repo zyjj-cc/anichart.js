@@ -11,6 +11,7 @@ import { font } from '../Constant'
 import { extent, max, range, sum } from 'd3-array'
 import { ScaleLinear, scaleLinear } from 'd3-scale'
 import { timeFormat } from 'd3-time-format'
+import { Ani } from '../ani/Ani'
 export interface BarChartOptions extends BaseChartOptions {
   domain?: (data: any[]) => [number, number]
   dy?: number
@@ -89,8 +90,8 @@ export class BarChart extends BaseChart {
   }
 
   IDList: string[]
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, ani: Ani) {
+    super.setup(stage, ani)
     // 获得曾出现过的Label集合
     this.setShowingIDList()
     this.rankLabelPlaceholder = this.maxRankLabelWidth

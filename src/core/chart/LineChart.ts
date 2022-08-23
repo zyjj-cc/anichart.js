@@ -12,6 +12,7 @@ import { bisector, extent, max, range } from 'd3-array'
 import { curveMonotoneX, line, area } from 'd3-shape'
 import { scaleLinear, ScaleLinear } from 'd3-scale'
 import { timeFormat } from 'd3-time-format'
+import { Ani } from '../ani/Ani'
 interface LineChartOptions extends BaseChartOptions {
   pointerR?: number
 }
@@ -31,8 +32,8 @@ export class LineChart extends BaseChart {
     y: ScaleLinear<number, number, never>
   }
 
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, parent: Ani) {
+    super.setup(stage, parent)
     this.xTickFormat = (n: number | { valueOf: () => number }) => {
       return timeFormat(this.dateFormat)(this.secToDate(n))
     }

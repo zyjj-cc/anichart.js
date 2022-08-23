@@ -1,8 +1,8 @@
-import { Component } from './component/Component'
+import { Ani } from './ani/Ani'
 import { Stage } from './Stage'
 
 export interface Renderer {
-  render: (compRoot: Component) => void
+  render: (ani?: Ani) => void
   clean: () => void
   getImageData: () => string
   setCanvas: (canvas: any) => void

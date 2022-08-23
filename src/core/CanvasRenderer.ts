@@ -33,16 +33,17 @@ export class CanvasRenderer implements Renderer {
     }
   }
 
-  render (child: Component | Ani | null) {
-    if (child == null) return
+  render (ani?: Ani) {
+    if (!ani) return
     const sec = this.stage.sec
-    let comp: Component | Ani | null
-    if (child instanceof Ani) {
-      comp = child?.getComponent(sec)
-    } else {
-      comp = child
+    const comp = ani.getComponent(sec)
+    if (comp instanceof Component) {
+      this.renderComp(comp)
     }
-    if (comp == null) return
+  }
+
+  private renderComp (comp: Component | null | undefined) {
+    if (!comp) return
     this.ctx.save()
     // render special component props
     if (this.ctx.globalAlpha > 0) {
@@ -66,9 +67,10 @@ export class CanvasRenderer implements Renderer {
           this.renderPath(comp as Path)
           break
       }
-      // render children components
-      comp.children.forEach((c) => {
-        if (c) this.render(c)
+    }
+    if (comp.children) {
+      comp.children.forEach(child => {
+        this.renderComp(child)
       })
     }
     this.ctx.restore()

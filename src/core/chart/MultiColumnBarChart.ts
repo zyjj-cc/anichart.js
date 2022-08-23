@@ -1,4 +1,4 @@
-import { Component } from '../component/Component'
+import { Ani } from '../ani/Ani'
 import { Stage } from '../Stage'
 import { BarChart, BarChartOptions } from './BarChart'
 
@@ -8,19 +8,19 @@ interface MultiColumnBarBarOptions extends BarChartOptions {
 export class MultiColumnBarChart extends BarChart {
   cols: number = 2
 
-  c: Component = new Component()
+  c = new Ani()
   itemCount: number
   constructor (options: MultiColumnBarBarOptions = {}) {
     super(options)
     this.itemCount = options.itemCount ?? 20
     for (let i = 0; i < this.cols; i++) {
       const bar = new BarChart(options)
-      this.c.addChild(bar)
+      this.c.children.push(bar)
     }
   }
 
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, parent: Ani) {
+    super.setup(stage, parent)
 
     this.c.children.forEach((v: BarChart, i) => {
       if (i === this.cols - 1) {
@@ -36,7 +36,7 @@ export class MultiColumnBarChart extends BarChart {
 
       v.nonstandardDate = this.nonstandardDate
       v.reduceID = false
-      v.setup(stage)
+      v.setup(stage, this)
       v.rankOffset = 1 + i * this.itemCount
       v.getBarIdx = (his: number[], c: number) => {
         return his[c] - i * this.itemCount
@@ -53,11 +53,11 @@ export class MultiColumnBarChart extends BarChart {
   getComponent (sec: number) {
     const barchart = this.c.children[1] as BarChart
     const first = this.c.children[0] as BarChart
-    barchart.getScaleX = (c) => {
+    barchart.getScaleX = () => {
       return first.getScaleX(first.getCurrentData(sec))
     }
     // console.log(barchart.getCurrentData(sec));
     // console.log(barchart);
-    return this.c
+    return this.c.getComponent(sec)
   }
 }

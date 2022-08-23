@@ -1,3 +1,4 @@
+import { Ani } from '../..'
 import { Component } from '../component/Component'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions } from './BaseChart'
@@ -9,8 +10,8 @@ export class ItemChart extends BaseChart {
     super(options)
   }
 
-  setup (stage: Stage) {
-    super.setup(stage)
+  setup (stage: Stage, ani: Ani) {
+    super.setup(stage, ani)
   }
 
   getComponent (sec: number): Component {

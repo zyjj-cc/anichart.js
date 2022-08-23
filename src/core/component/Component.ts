@@ -30,7 +30,7 @@ export class Component {
   position: { x: number, y: number }
   offset: { x: number, y: number } = { x: 0, y: 0 }
   scale: { x: number, y: number }
-  children: Array<Component | Ani> = []
+  children: Component[] = []
   alpha: number
   filter: string
   fillStyle: string | CanvasGradient | CanvasPattern
@@ -44,12 +44,12 @@ export class Component {
     })
   }
 
-  addChild (comp: Component | Ani) {
+  addChild (comp: Component) {
     this.children.push(comp)
     comp.parent = this
   }
 
-  constructor (options?: BaseCompOptions) {
+  constructor (options?: BaseCompOptions, children?: Component[]) {
     if (options != null) {
       if (options.center != null) this.center = options.center
       if (options.shadow != null) this.shadow = options.shadow
@@ -62,6 +62,14 @@ export class Component {
       if (options.fillStyle) this.fillStyle = options.fillStyle
       if (options.strokeStyle) this.strokeStyle = options.strokeStyle
       if (options.lineWidth) this.lineWidth = options.lineWidth
+    }
+    if (children) {
+      children.forEach((child: Component) => {
+        if (child) {
+          child.parent = this
+        }
+      })
+      this.children = children
     }
   }
 }
