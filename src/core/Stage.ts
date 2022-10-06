@@ -70,16 +70,15 @@ export class Stage {
     this.root.children.push(child)
   }
 
-  render (sec?: number): void {
+  async render (sec?: number) {
     if (sec !== undefined) {
       this.sec = sec
     }
     if (!this.alreadySetup) {
-      void this.loadRecourse().then(() => {
-        this.root.setup(this)
-        this.alreadySetup = true
-        this.doRender()
-      })
+      await this.loadRecourse()
+      this.root.setup(this)
+      this.alreadySetup = true
+      this.doRender()
     } else {
       this.doRender()
     }
@@ -94,14 +93,13 @@ export class Stage {
     return this.resource.setup()
   }
 
-  play (): void {
-    void this.loadRecourse().then(() => {
-      this.doPlay()
-    })
+  async play () {
+    await this.loadRecourse()
+    await this.doPlay()
   }
 
-  private doPlay (): void {
-    if (!this.alreadySetup) this.setup()
+  private async doPlay () {
+    if (!this.alreadySetup) await this.setup()
     if (this.interval != null) {
       this.interval.stop()
       this.interval = null
@@ -112,7 +110,7 @@ export class Stage {
         } else {
           this.cFrame = Math.floor((elapsed / 1000) * this.options.fps)
         }
-        this.render()
+        void this.render()
         if (this.cFrame >= this.totalFrames) {
           if (this.interval != null) {
             this.interval.stop()
@@ -123,11 +121,10 @@ export class Stage {
     }
   }
 
-  setup (): void {
-    void this.loadRecourse().then(() => {
-      this.root.setup(this)
-      this.alreadySetup = true
-    })
+  async setup () {
+    await this.loadRecourse()
+    this.root.setup(this)
+    this.alreadySetup = true
   }
 
   renderController (): void {
