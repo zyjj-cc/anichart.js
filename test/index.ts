@@ -43,7 +43,6 @@ stage.resource.loadImage(
   "https://avatars3.githubusercontent.com/u/29743310?s=460&u=8e0d49b98c35738afadc04e70c7f3918d6ad8cdb&v=4",
   "jannchie"
 );
-
 stage.resource.loadCSV("./data/test.csv", "data");
 // stage.resource.loadData("./data/test-meta.csv", "meta");
 
@@ -110,7 +109,7 @@ image("./pic/pattern.png").then(d => {
 async function start() {
   stage.play();
 }
-start().then(() => {});
+start().then(() => { });
 
 if (typeof window !== "undefined") {
   (window as any).stage = stage;
