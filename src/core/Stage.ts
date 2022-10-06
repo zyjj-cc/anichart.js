@@ -1,13 +1,14 @@
 import { Ani } from './ani/Ani'
 import { CanvasRenderer } from './CanvasRenderer'
 import { Renderer } from './Renderer'
-import { recourse } from './Recourse'
+import { Resource } from './Resource'
 import { interval, Timer } from 'd3-timer'
 import { Controller } from './Controller'
 
 export class Stage {
   root = new Ani()
   renderer: Renderer
+  resource = new Resource()
 
   ctl: Controller
   options = { sec: 5, fps: 30 }
@@ -90,7 +91,7 @@ export class Stage {
   }
 
   async loadRecourse (): Promise<any[]> {
-    return await recourse.setup()
+    return this.resource.setup()
   }
 
   play (): void {

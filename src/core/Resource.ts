@@ -1,6 +1,6 @@
 import { imageLoader } from './ImageLoader'
 import { csv, json } from 'd3-fetch'
-export class Recourse {
+export class Resource {
   async setup () {
     const promises = [] as Array<Promise<any>>
     for (const [key, promise] of this.imagesPromise) {
@@ -54,4 +54,3 @@ export class Recourse {
     return await promise
   }
 }
-export const recourse = new Recourse()

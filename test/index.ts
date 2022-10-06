@@ -1,3 +1,4 @@
+import { image } from "d3-fetch";
 import * as ani from "../src/index";
 const stage = new ani.Stage();
 stage.options.fps = 30;
@@ -37,14 +38,14 @@ textJannchieStudio.type = "blur";
 // textLinesAni.children.push(textAnichart);
 // textLinesAni.children.push(textJannchieStudio);
 
-ani.recourse.loadImage("./data/ANI.png", "logo");
-ani.recourse.loadImage(
+stage.resource.loadImage("./data/ANI.png", "logo");
+stage.resource.loadImage(
   "https://avatars3.githubusercontent.com/u/29743310?s=460&u=8e0d49b98c35738afadc04e70c7f3918d6ad8cdb&v=4",
   "jannchie"
 );
 
-ani.recourse.loadCSV("./data/test.csv", "data");
-// ani.recourse.loadData("./data/test-meta.csv", "meta");
+stage.resource.loadCSV("./data/test.csv", "data");
+// stage.resource.loadData("./data/test-meta.csv", "meta");
 
 const barChart = new ani.BarChart({
   shape: { width: stage.canvas.width, height: 300 },
@@ -95,15 +96,18 @@ stage.addChild(pie);
 // });
 // stage.addChild(img);
 
-ani.recourse.loadJSON(
+stage.resource.loadJSON(
   `https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json`,
   "map"
 );
 new ani.Controller(stage).render();
+image("./pic/pattern.png").then(d => {
+  const pattern = stage.canvas.getContext("2d")?.createPattern(d, "");
+  if (pattern) {
+    map.defaultFill = pattern!;
+  }
+});
 async function start() {
-  // const img = await d3.image("./pic/pattern.png");
-  // const pattern = stage.canvas.getContext("2d")?.createPattern(img, "");
-  // map.defaultFill = pattern!;
   stage.play();
 }
 start().then(() => {});

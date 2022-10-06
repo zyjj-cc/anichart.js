@@ -6,7 +6,6 @@ import { colorPicker } from '../ColorPicker'
 import { canvasHelper } from '../CanvasHelper'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions, KeyGenerate } from './BaseChart'
-import { recourse } from '../Recourse'
 import { font } from '../Constant'
 import { extent, max, range, sum } from 'd3-array'
 import { ScaleLinear, scaleLinear } from 'd3-scale'
@@ -491,7 +490,7 @@ export class BarChart extends BaseChart {
       fillStyle: options.color,
     })
     const imagePlaceholder =
-      options.image && (recourse.images.get(options.image) != null)
+      options.image && (this.stage?.resource.images.get(options.image) != null)
         ? options.shape.height
         : 0
 
@@ -519,7 +518,7 @@ export class BarChart extends BaseChart {
       this.dataGroupByID,
     )
     const barInfo = new Text({ key: `bar-info-${barInfoOptions.text}`, ...barInfoOptions })
-    if (options.image && (recourse.images.get(options.image) != null)) {
+    if (options.image && (this.stage?.resource.images.get(options.image) != null)) {
       const img = new Image({
         key: `bar-image-${options.id}`,
         src: options.image,

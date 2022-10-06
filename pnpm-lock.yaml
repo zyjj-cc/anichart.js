@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@algolia/client-search': 4.9.1
   '@babel/core': ^7.18.10
+  '@remotion/player': ^3.2.4
   '@types/d3-array': ^3.0.3
   '@types/d3-color': ^3.1.0
   '@types/d3-dsv': ^3.0.0
@@ -47,6 +48,7 @@ specifiers:
   prettier: ^2.7.1
   react: '>= 16.8.0 < 19.0.0'
   react-dom: '>= 16.8.0 < 19.0.0'
+  remotion: ^3.2.4
   ts-loader: ^9.3.1
   typescript: '*'
   vitepress: 1.0.0-alpha.4
@@ -77,6 +79,7 @@ dependencies:
 devDependencies:
   '@algolia/client-search': 4.9.1
   '@babel/core': 7.18.10
+  '@remotion/player': 3.2.4_biqbaboplfbrettd7655fr4n2y
   '@types/d3-array': 3.0.3
   '@types/d3-color': 3.1.0
   '@types/d3-dsv': 3.0.0
@@ -106,6 +109,7 @@ devDependencies:
   prettier: 2.7.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  remotion: 3.2.4_biqbaboplfbrettd7655fr4n2y
   ts-loader: 9.3.1_xnp4kzegbjokq62cajex2ovgkm
   typescript: 4.7.4
   vitepress: 1.0.0-alpha.4_okzaxjm4bj7t5f3yylnur5p2by
@@ -621,6 +625,17 @@ packages:
 
   /@polka/url/1.0.0-next.21:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
+    dev: true
+
+  /@remotion/player/3.2.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-lbl++PL6TE2MOrBfiHmhypCMuoIxHPXQpFapQ5c9wnf5By5U2hAHLCtNKGHE7d5eOFTB4wWMV5cAm76rIW55YQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      remotion: 3.2.4_biqbaboplfbrettd7655fr4n2y
     dev: true
 
   /@types/body-parser/1.19.2:
@@ -4075,6 +4090,16 @@ packages:
   /relateurl/0.2.7:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}
     engines: {node: '>= 0.10'}
+    dev: true
+
+  /remotion/3.2.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Q/FK9tCZiRFY2exzA4tnEx7AHv0op5/E9eSkK/gQX2gl7oyXXeKBqw/LzRJPlsn5ccRe2Kb7T2CMvMZ5tobkuQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: true
 
   /renderkid/3.0.0:

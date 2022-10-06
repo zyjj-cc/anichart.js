@@ -6,7 +6,7 @@
  */
 export * from './core/Controller'
 export * from './core/Stage'
-export * from './core/Recourse'
+export * from './core/Resource'
 export * from './core/Recorder'
 export * from './core/ImageLoader'
 export * from './core/ColorPicker'

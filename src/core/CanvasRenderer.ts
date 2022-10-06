@@ -2,7 +2,6 @@ import { Component } from './component/Component'
 import { Rect } from './component/Rect'
 import { Text } from './component/Text'
 import { Image } from './component/Image'
-import { recourse } from './Recourse'
 import { Path } from './component/Path'
 import { Arc } from './component/Arc'
 import { Ani } from './ani/Ani'
@@ -118,7 +117,7 @@ export class CanvasRenderer implements Renderer {
   }
 
   renderImage (image: Image) {
-    const src = recourse.images.get(image.src)
+    const src = this.stage.resource.images.get(image.src)
     if (src == null) {
       return
     }

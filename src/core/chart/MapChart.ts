@@ -18,7 +18,6 @@ import { Component } from '../component/Component'
 import { Path } from '../component/Path'
 import { Rect } from '../component/Rect'
 import { Text } from '../component/Text'
-import { recourse } from '../Recourse'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions } from './BaseChart'
 import { Ani } from '../ani/Ani'
@@ -85,7 +84,7 @@ export class MapChart extends BaseChart {
       const svgStr = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 0L0 20H10L20 10V0Z" fill="#4444"/><path d="M10 0H0V10L10 0Z" fill="#4444"/></svg>'
       const blob = new Blob([svgStr], { type: 'image/svg+xml' })
       const url = URL.createObjectURL(blob)
-      void recourse.loadImage(url, '_map_default_pattern').then((img) => {
+      void this.stage?.resource.loadImage(url, '_map_default_pattern').then((img) => {
         if (img != null) {
           const ptn = canvasHelper.getPattern(img)
           this.defaultFill = ptn
@@ -110,7 +109,7 @@ export class MapChart extends BaseChart {
   setup (stage: Stage, parent: Ani) {
     super.setup(stage, parent)
     if (stage) {
-      const map = recourse.data.get('map')
+      const map = this.stage?.resource.data.get('map')
       let projection: GeoProjection
       switch (this.projectionType) {
         case 'orthographic':

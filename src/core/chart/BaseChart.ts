@@ -7,7 +7,6 @@ import { canvasHelper } from '../CanvasHelper'
 import { Component } from '../component/Component'
 import { Text, TextOptions } from '../component/Text'
 import { font } from '../Constant'
-import { recourse } from '../Recourse'
 import { Stage } from '../Stage'
 import cloneDeep from 'lodash/clonedeep'
 function isValidDate (date: any) {
@@ -160,7 +159,7 @@ export abstract class BaseChart extends Ani {
   }
 
   setData () {
-    this.data = cloneDeep(recourse.data.get(this.dataName))
+    this.data = cloneDeep(this.stage?.resource.data.get(this.dataName))
     const dateSet = new Set()
     let dateIndex = 0
     this.indexToDate = new Map<number, string>()
@@ -320,9 +319,9 @@ export abstract class BaseChart extends Ani {
   }
 
   setMeta () {
-    if (recourse.data.get(this.metaName)) {
+    if (this.stage?.resource.data.get(this.metaName)) {
       this.meta = rollup(
-        cloneDeep(recourse.data.get(this.metaName)),
+        cloneDeep(this.stage?.resource.data.get(this.metaName)),
         (v) => v[0],
         (d) => (d as any)[this.idField],
       )
