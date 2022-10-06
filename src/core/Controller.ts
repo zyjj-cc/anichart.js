@@ -39,7 +39,7 @@ export class Controller {
       .attr('max', (d: Stage) => d.options.sec)
       .on('input', function (_, d: Stage) {
         d.sec = Number(this.value)
-        d.render()
+        void d.render()
       })
     const play = ctrl
       .append('div')
@@ -50,7 +50,7 @@ export class Controller {
         'width: 90px; background-color: #2196F3DD; border: none; border-radius:10px; color: white; padding: 12px 12px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;',
       )
       .on('click', function (_, d: Stage) {
-        d.play()
+        void d.play()
       })
     this.makeDraggable('anichart-ctrl', 'anichart-ctrl-dragger')
     timer(() => {
@@ -117,9 +117,5 @@ export class Controller {
         document.onmousemove = null
       }
     }
-  }
-
-  play () {
-    this.stage.play()
   }
 }
