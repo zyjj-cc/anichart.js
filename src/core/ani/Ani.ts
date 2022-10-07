@@ -9,9 +9,11 @@ export class Ani {
     return new Component({ key: 'ani-root' }, this.children.map(ani => ani.getComponent(sec)))
   }
 
-  setup (stage: Stage, parent?: Ani) {
+  async setup (stage: Stage, parent?: Ani) {
     this.stage = stage
     this.parent = parent
-    this.children.forEach(ani => { ani.setup(stage, this) })
+    for (const child of this.children) {
+      await child.setup(stage, this)
+    }
   }
 }

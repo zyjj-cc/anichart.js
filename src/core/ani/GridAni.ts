@@ -29,8 +29,8 @@ export class GridAni extends Ani {
   }
 
   wrapper: Component
-  setup (stage: Stage, parent?: Ani) {
-    super.setup(stage, parent)
+  async setup (stage: Stage, parent?: Ani) {
+    await super.setup(stage, parent)
     if (!this.shape) {
       this.shape = {
         width: stage.canvas.width,

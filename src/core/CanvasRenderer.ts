@@ -29,6 +29,7 @@ export class CanvasRenderer implements Renderer {
     const ctx = this.canvas.getContext('2d')
     if (ctx) {
       this.ctx = ctx
+      this.ctx.imageSmoothingEnabled = true
     }
   }
 
@@ -222,7 +223,8 @@ export class CanvasRenderer implements Renderer {
 
   renderText (component: Text) {
     this.prerenderText(component)
-    if (component.strokeStyle) {
+    if (component.strokeStyle && component.lineWidth) {
+      this.ctx.lineJoin = 'round'
       this.ctx.strokeText(component.text, 0, 0)
     }
     if (component.fillStyle) {

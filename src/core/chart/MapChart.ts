@@ -13,7 +13,7 @@ import {
 import { scaleLinear, ScaleLinear } from 'd3-scale'
 import { color } from 'd3-color'
 import { interpolateInferno } from 'd3-scale-chromatic'
-import { extent } from 'd3-array'
+import { extent, range } from 'd3-array'
 import { Component } from '../component/Component'
 import { Path } from '../component/Path'
 import { Rect } from '../component/Rect'
@@ -21,6 +21,7 @@ import { Text } from '../component/Text'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions } from './BaseChart'
 import { Ani } from '../ani/Ani'
+interface UpdateProjectionProps { chart: MapChart, sec: number }
 interface MapChartOptions extends BaseChartOptions {
   labelAlphaScale?: ScaleLinear<number, number, never>
   labelPadding?: number
@@ -37,33 +38,40 @@ interface MapChartOptions extends BaseChartOptions {
   defaultFill?: string | CanvasGradient | CanvasPattern
   noDataLabel?: string
   showLabel?: boolean
+  updateProjection?: (data: UpdateProjectionProps) => void
+  focusTop?: boolean
 }
 export class MapChart extends BaseChart {
-  geoGener: GeoPath<any, GeoPermissibleObjects>
-  pathMap: Map<string, string | null>
-  pathComponentMap: Map<string, Path>
-  labelComponentMap: Map<string, Component>
-  projection: GeoProjection
-  map: any
-  mapIdField: string
-  visualMap: (t: number) => string
-  noDataLabel: string | undefined | null
-  getMapId: (id: string) => string
-  strokeStyle: string
-  defaultFill: string | CanvasGradient | CanvasPattern
-  projectionType: 'orthographic' | 'natural' | 'mercator' | 'equirectangular'
-  scale: ScaleLinear<number, number, never>
-  showGraticule: boolean
-  graticulePath: string
-  graticulePathComp: Path
+  private geoGener: GeoPath<any, GeoPermissibleObjects>
+  private pathMap: Map<string, string | null>
+  private pathComponentMap: Map<string, Path>
+  private labelComponentMap: Map<string, Component>
+  private projection: GeoProjection
+  private map: any
+  private graticulePathComp: Path
+  private defaultFill: string | CanvasGradient | CanvasPattern
+  private scale: ScaleLinear<number, number, never>
+  private readonly mapIdField: string
+  private readonly visualMap: (t: number, value: number) => string
+  private readonly noDataLabel: string | undefined | null
+  private readonly getMapId: (id: string) => string
+  private readonly strokeStyle: string
+  private readonly projectionType: 'orthographic' | 'natural' | 'mercator' | 'equirectangular'
+  private readonly showGraticule: boolean
+  private readonly graticulePath: string
+  private readonly pathShadowBlur: number
+  private readonly pathShadowColor: string
+  private readonly useShadow: boolean
+  private readonly showLabel: boolean
+  private readonly labelPadding: number
+  private readonly labelSize: number
+  private readonly labelAlphaScale: ScaleLinear<number, number, never>
+  private readonly propertiesMap: Map<string, any> = new Map<string, any>()
+  private readonly focusTop: boolean
 
-  pathShadowBlur: number
-  pathShadowColor: string
-  useShadow: boolean
-  showLabel: boolean
-  labelPadding: number
-  labelSize: number
-  labelAlphaScale: ScaleLinear<number, number, never>
+  updateProjection: ((props: UpdateProjectionProps) => void) = (props) => {
+    props.chart.projection.rotate([props.sec, 0, 0])
+  }
 
   constructor (options: MapChartOptions = {}) {
     super(options)
@@ -80,17 +88,8 @@ export class MapChart extends BaseChart {
 
     if (options.defaultFill) {
       this.defaultFill = options.defaultFill
-    } else {
-      const svgStr = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 0L0 20H10L20 10V0Z" fill="#4444"/><path d="M10 0H0V10L10 0Z" fill="#4444"/></svg>'
-      const blob = new Blob([svgStr], { type: 'image/svg+xml' })
-      const url = URL.createObjectURL(blob)
-      void this.stage?.resource.loadImage(url, '_map_default_pattern').then((img) => {
-        if (img != null) {
-          const ptn = canvasHelper.getPattern(img)
-          this.defaultFill = ptn
-        }
-      })
     }
+
     this.projectionType = options.projectionType ?? 'natural'
     this.useShadow = options.useShadow ?? false
     this.pathShadowColor = options.pathShadowColor ?? '#fff2'
@@ -103,11 +102,16 @@ export class MapChart extends BaseChart {
     if (options.labelFormat != null) this.labelFormat = options.labelFormat
     this.labelAlphaScale =
       options.labelAlphaScale ?? scaleLinear([400, 560], [0, 1]).clamp(true)
+    if (!options.focusTop && options.updateProjection) {
+      this.updateProjection = options.updateProjection
+    }
+    this.focusTop = options.focusTop ?? false
   }
 
   margin: { top: number, left: number, right: number, bottom: number }
-  setup (stage: Stage, parent: Ani) {
-    super.setup(stage, parent)
+  async setup (stage: Stage, parent: Ani) {
+    await super.setup(stage, parent)
+
     if (stage) {
       const map = this.stage?.resource.data.get('map')
       let projection: GeoProjection
@@ -140,14 +144,39 @@ export class MapChart extends BaseChart {
 
       this.projection = projection
       this.map = map
+      await this.initDefaultFill()
       this.init(projection, map)
     }
   }
 
-  wrapper: Component
+  private wrapper: Component
+  private async initDefaultFill () {
+    const svgStr = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 0L0 20H10L20 10V0Z" fill="#4444"/><path d="M10 0H0V10L10 0Z" fill="#4444"/></svg>'
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const img = await this.stage?.resource.loadImage(url, '_map_default_pattern')
+    if (img != null) {
+      const ptn = canvasHelper.getPattern(img)
+      this.defaultFill = ptn
+    }
+  }
+
   private init (projection: GeoProjection, map: any) {
     this.initGeoPath(projection, map)
     this.initComps()
+    if (this.focusTop) {
+      const secRange = range(
+        0,
+        this.stage?.options.sec ?? 10,
+        1 / (this.stage?.options.fps ?? 30) * 15,
+      )
+      const centerRange = secRange.map((sec) => this.propertiesMap.get(this.getCurrentData(sec)[0][this.idField]).center)
+      const centerScale = scaleLinear(secRange, centerRange).clamp(true)
+      this.updateProjection = (props) => {
+        const center = centerScale(props.sec)
+        props.chart.projection.rotate([-center[0], -center[1], 0])
+      }
+    }
   }
 
   private initGeoPath (projection: GeoProjection, map: any) {
@@ -164,9 +193,11 @@ export class MapChart extends BaseChart {
   private initPathMap (map: any, geoGener: GeoPath<any, GeoPermissibleObjects>) {
     this.labelComponentMap = new Map<string, Component>()
     for (const feature of map.features) {
+      this.propertiesMap.set(feature.properties[this.mapIdField], feature.properties)
       const mapId: string = feature.properties[this.mapIdField]
       const path = geoGener(feature)
       this.pathMap.set(mapId, path)
+      if (!feature.properties[this.mapIdField]) continue
       const txt = new Text({
         key: `map-text-${mapId}`,
         position: { x: 4, y: 6 },
@@ -234,7 +265,7 @@ export class MapChart extends BaseChart {
 
   getComponent (sec: number) {
     this.updateScale(sec)
-    this.updateProject(sec)
+    this.updateProject({ sec, chart: this })
     this.updatePath(sec)
     return this.wrapper
   }
@@ -284,6 +315,7 @@ export class MapChart extends BaseChart {
     }
     for (const feature of this.map.features) {
       const mapId = feature.properties[this.mapIdField]
+      if (mapId === 'undefined') continue
       const path = this.geoGener(feature)
       const comp = this.pathComponentMap.get(mapId)
       if (comp != null) {
@@ -320,7 +352,7 @@ export class MapChart extends BaseChart {
       const mapId = this.getMapId(id)
       const currentValue = data(sec)[this.valueField]
       const rate = this.scale(currentValue)
-      const color = this.visualMap(rate)
+      const color = this.visualMap(rate, currentValue)
       const comp = this.pathComponentMap.get(mapId)
       if (comp != null) {
         comp.fillStyle = currentValue ? color : this.defaultFill
@@ -335,7 +367,9 @@ export class MapChart extends BaseChart {
     }
   }
 
-  updateProject (sec: number) {
-    this.projection.rotate([sec * 20, 0])
+  updateProject (data: UpdateProjectionProps) {
+    if (this.updateProjection) {
+      this.updateProjection(data)
+    }
   }
 }

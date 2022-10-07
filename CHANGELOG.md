@@ -1,5 +1,29 @@
 # Change Log
 
+## ver 3.2.0 [2022-10-07]
+
+- In the Stage component, use the async and await syntax.
+
+**Base Chart**
+
+- Data optimization has been introduced and will now remove redundant data entries.
+
+**Map Chart**
+
+- Fixed the issue that map chart default fill does not work.
+- Adds the current value as the second parameter to the visual map callback function.
+- Allows the camera to follow the top entry.
+
+**Bar Chart**
+
+- Enables the option of visualRange is `history`.
+
+## ver 3.1.0 [2022-10-06]
+
+- Optimized rendering logic and component composition.
+- Added the component's key property to identify the component.
+- The resource is now contained by stage.
+
 ## ver 3.0.2 [2022-08-15]
 
 **Chore**

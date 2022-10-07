@@ -32,8 +32,8 @@ export class LineChart extends BaseChart {
     y: ScaleLinear<number, number, never>
   }
 
-  setup (stage: Stage, parent: Ani) {
-    super.setup(stage, parent)
+  async setup (stage: Stage, parent: Ani) {
+    await super.setup(stage, parent)
     this.xTickFormat = (n: number | { valueOf: () => number }) => {
       return timeFormat(this.dateFormat)(this.secToDate(n))
     }

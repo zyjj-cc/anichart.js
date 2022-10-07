@@ -1,3 +1,4 @@
+import { max, range, sum } from 'd3-array'
 import { Component } from '../component/Component'
 import { Image } from '../component/Image'
 import { Rect } from '../component/Rect'
@@ -7,10 +8,11 @@ import { canvasHelper } from '../CanvasHelper'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions, KeyGenerate } from './BaseChart'
 import { font } from '../Constant'
-import { extent, max, range, sum } from 'd3-array'
+
 import { ScaleLinear, scaleLinear } from 'd3-scale'
 import { timeFormat } from 'd3-time-format'
 import { Ani } from '../ani/Ani'
+import { convolve } from '../utils/convolve'
 export interface BarChartOptions extends BaseChartOptions {
   domain?: (data: any[]) => [number, number]
   dy?: number
@@ -89,8 +91,8 @@ export class BarChart extends BaseChart {
   }
 
   IDList: string[]
-  setup (stage: Stage, ani: Ani) {
-    super.setup(stage, ani)
+  async setup (stage: Stage, ani: Ani) {
+    await super.setup(stage, ani)
     // 获得曾出现过的Label集合
     this.setShowingIDList()
     this.rankLabelPlaceholder = this.maxRankLabelWidth
@@ -99,7 +101,7 @@ export class BarChart extends BaseChart {
     const historyIndex = this.getTotalHistoryIndex()
     const kernel = this.getConvolveKernel(3)
     for (const [key] of historyIndex) {
-      historyIndex.set(key, this.convolve(historyIndex.get(key), kernel))
+      historyIndex.set(key, convolve(historyIndex.get(key), kernel))
     }
     this.totalHistoryIndex = historyIndex
   }
@@ -144,37 +146,6 @@ export class BarChart extends BaseChart {
       d.set(id, indexList)
       return d
     }, new Map())
-  }
-
-  /**
-   * 卷积的一种实现，特别地，这个函数对左右两边进行 padding 处理。
-   *
-   * @param array 被卷数组
-   * @param weights 卷积核
-   * @returns 卷积后的数组，大小和被卷数组一致
-   */
-  private convolve (array: number[], weights: number[]) {
-    if (weights.length % 2 !== 1) { throw new Error('weights array must have an odd length') }
-
-    const al = array.length
-    const wl = weights.length
-    const offset = ~~(wl / 2)
-    const output = new Array<number>(al)
-
-    for (let i = 0; i < al; i++) {
-      const kmin = 0
-      const kmax = wl - 1
-
-      output[i] = 0
-      for (let k = kmin; k <= kmax; k++) {
-        let idx = i - offset + k
-        if (idx < 0) idx = 0
-        if (idx >= array.length) idx = array.length - 1
-        output[i] += array[idx] * weights[k]
-      }
-    }
-
-    return output
   }
 
   /**
@@ -326,11 +297,14 @@ export class BarChart extends BaseChart {
     let domain: number[]
     if (this.domain !== undefined) {
       domain = this.domain(currentData)
-    } else if (this.visualRange !== 'history') {
-      const [, max] = extent(currentData, (d) => d[this.valueField])
-      domain = [0, max]
-    } else {
+    } else if (this.visualRange === 'current') {
+      const m = max(currentData, (d) => d[this.valueField])
+      domain = [0, m]
+    } else if (this.visualRange === 'total') {
       domain = [0, max(this.data, (d) => d[this.valueField])]
+    } else {
+      const cMax = max(currentData, (d) => d[this.valueField])
+      domain = [0, this.historyMax > cMax ? this.historyMax : cMax]
     }
     const scaleX = scaleLinear(domain, [
       0,
@@ -504,7 +478,7 @@ export class BarChart extends BaseChart {
       fontSize: options.shape.height * this.barFontSizeScale,
       font,
       fillStyle: '#fff',
-      strokeStyle: options.color,
+      strokeStyle: '#fff',
       lineWidth: 0,
     }
 

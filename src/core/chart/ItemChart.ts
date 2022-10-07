@@ -10,8 +10,8 @@ export class ItemChart extends BaseChart {
     super(options)
   }
 
-  setup (stage: Stage, ani: Ani) {
-    super.setup(stage, ani)
+  async setup (stage: Stage, ani: Ani) {
+    await super.setup(stage, ani)
   }
 
   getComponent (sec: number): Component {
