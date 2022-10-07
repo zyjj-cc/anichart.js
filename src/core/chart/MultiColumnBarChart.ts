@@ -19,8 +19,8 @@ export class MultiColumnBarChart extends BarChart {
     }
   }
 
-  setup (stage: Stage, parent: Ani) {
-    super.setup(stage, parent)
+  async setup (stage: Stage, parent: Ani) {
+    await super.setup(stage, parent)
 
     this.c.children.forEach((v: BarChart, i) => {
       if (i === this.cols - 1) {
@@ -36,17 +36,18 @@ export class MultiColumnBarChart extends BarChart {
 
       v.nonstandardDate = this.nonstandardDate
       v.reduceID = false
-      v.setup(stage, this)
-      v.rankOffset = 1 + i * this.itemCount
-      v.getBarIdx = (his: number[], c: number) => {
-        return his[c] - i * this.itemCount
-      }
-      v.getCurrentData = (sec) => {
-        const list = this.getCurrentData(sec)
-        return list.splice(i * this.itemCount)
-      }
-      v.labelPlaceholder = v.maxLabelWidth
-      v.valuePlaceholder = v.maxValueLabelWidth
+      void v.setup(stage, this).then(() => {
+        v.rankOffset = 1 + i * this.itemCount
+        v.getBarIdx = (his: number[], c: number) => {
+          return his[c] - i * this.itemCount
+        }
+        v.getCurrentData = (sec) => {
+          const list = this.getCurrentData(sec)
+          return list.splice(i * this.itemCount)
+        }
+        v.labelPlaceholder = v.maxLabelWidth
+        v.valuePlaceholder = v.maxValueLabelWidth
+      })
     })
   }
 

@@ -76,7 +76,7 @@ export class Stage {
     }
     if (!this.alreadySetup) {
       await this.loadRecourse()
-      this.root.setup(this)
+      await this.root.setup(this)
       this.alreadySetup = true
       this.doRender()
     } else {
@@ -90,7 +90,7 @@ export class Stage {
   }
 
   async loadRecourse (): Promise<any[]> {
-    return this.resource.setup()
+    return await this.resource.setup()
   }
 
   async play () {
@@ -123,7 +123,7 @@ export class Stage {
 
   async setup () {
     await this.loadRecourse()
-    this.root.setup(this)
+    await this.root.setup(this)
     this.alreadySetup = true
   }
 

@@ -133,8 +133,8 @@ export abstract class BaseChart extends Ani {
   historyMax: number
   historyMin: number
 
-  setup (stage: Stage, parent: Ani) {
-    super.setup(stage, parent)
+  async setup (stage: Stage, parent: Ani) {
+    await super.setup(stage, parent)
     this.setData()
     this.setMeta()
     this.setDefaultAniTime(stage)
@@ -224,19 +224,7 @@ export abstract class BaseChart extends Ani {
       // 可优化: 删掉连续的重复值
       // FIXME: 此处有BUG。目前的实现，会干掉连续两个重复值的后一个。
       // 然而只有出现连续的三个重复值，才能忽略了中间的一个重复值。
-      // if (true) {
-      //   let temp: any[] = [];
-      //   temp.push(dataList[0]);
-      //   for (let i = 1; i < dataList.length; i++) {
-      //     if (
-      //       dataList[i][this.valueField] != dataList[i - 1][this.valueField]
-      //     ) {
-      //       temp.push(dataList[i]);
-      //     }
-      //   }
-      //   temp.push(dataList[dataList.length - 1]);
-      //   dataList = temp;
-      // }
+      dataList = this.removeDumplicate(dataList)
       const dateList = dataList.map((d) => d[this.dateField])
       const secList = dateList.map((d) => this.secToDate.invert(d))
       // 线性插值
@@ -244,6 +232,19 @@ export abstract class BaseChart extends Ani {
       dataScales.set(k, dataScale)
     })
     this.dataScales = dataScales
+  }
+
+  private removeDumplicate (dataList: any[]) {
+    const temp = [dataList[0]]
+    for (let i = 1; i < dataList.length - 1; i++) {
+      if (dataList[i][this.valueField] !== dataList[i - 1][this.valueField] ||
+        dataList[i][this.valueField] !== dataList[i + 1][this.valueField]) {
+        temp.push(dataList[i])
+      }
+    }
+    temp.push(dataList[dataList.length - 1])
+    dataList = temp
+    return dataList
   }
 
   private insertNaN (dataList: any[], dateExtent: [any, any]) {

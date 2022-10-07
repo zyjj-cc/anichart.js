@@ -2,7 +2,7 @@ class ColorPicker {
   private colorIndex = 0
   private readonly colorMap: Map<string, string> = new Map<string, string>()
   colorScheme: string[] = [
-    '#D33',
+    '#dc2626',
     '#27C',
     '#FB0',
     '#2C8',
