@@ -32,7 +32,6 @@
     "dev": "webpack --config webpack.dev.js",
     "watch": "webpack --watch --config webpack.dev.js",
     "prepublishOnly": "pnpm build",
-    "test-node": "ts-node ./test/index_for_node.ts",
     "git-patch": "git checkout --patch master ./src"
   },
   "devDependencies": {
