@@ -21,6 +21,7 @@ import { Text } from '../component/Text'
 import { Stage } from '../Stage'
 import { BaseChart, BaseChartOptions } from './BaseChart'
 import { Ani } from '../ani/Ani'
+import KalmanFilter, { KalmanFilterOptions } from '../utils/KalmanFilter'
 interface UpdateProjectionProps { chart: MapChart, sec: number }
 interface MapChartOptions extends BaseChartOptions {
   labelAlphaScale?: ScaleLinear<number, number, never>
@@ -40,6 +41,7 @@ interface MapChartOptions extends BaseChartOptions {
   showLabel?: boolean
   updateProjection?: (data: UpdateProjectionProps) => void
   focusTop?: boolean
+  focusTopKfOptions?: KalmanFilterOptions
 }
 export class MapChart extends BaseChart {
   private geoGener: GeoPath<any, GeoPermissibleObjects>
@@ -68,6 +70,7 @@ export class MapChart extends BaseChart {
   private readonly labelAlphaScale: ScaleLinear<number, number, never>
   private readonly propertiesMap: Map<string, any> = new Map<string, any>()
   private readonly focusTop: boolean
+  private readonly focusTopKfOptions: KalmanFilterOptions = { R: 0.1, Q: 5 }
 
   updateProjection: ((props: UpdateProjectionProps) => void) = (props) => {
     props.chart.projection.rotate([props.sec, 0, 0])
@@ -99,6 +102,9 @@ export class MapChart extends BaseChart {
     this.noDataLabel = options.noDataLabel ?? undefined
     this.labelPadding = options.labelPadding ?? 8
     this.labelSize = options.labelSize ?? 12
+    if (options.focusTopKfOptions) {
+      this.focusTopKfOptions = options.focusTopKfOptions
+    }
     if (options.labelFormat != null) this.labelFormat = options.labelFormat
     this.labelAlphaScale =
       options.labelAlphaScale ?? scaleLinear([400, 560], [0, 1]).clamp(true)
@@ -168,10 +174,17 @@ export class MapChart extends BaseChart {
       const secRange = range(
         0,
         this.stage?.options.sec ?? 10,
-        1 / (this.stage?.options.fps ?? 30) * 15,
+        0.1, // every  sec
       )
       const centerRange = secRange.map((sec) => this.propertiesMap.get(this.getCurrentData(sec)[0][this.idField]).center)
-      const centerScale = scaleLinear(secRange, centerRange).clamp(true)
+      const kfx = new KalmanFilter(this.focusTopKfOptions)
+      const kfy = new KalmanFilter(this.focusTopKfOptions)
+      const centerData: Array<[number, number]> = []
+      centerRange.forEach(center => {
+        const x = kfx.filter(center[0])
+        centerData.push([x, kfy.filter(center[1])])
+      })
+      const centerScale = scaleLinear(secRange, centerData).clamp(true)
       this.updateProjection = (props) => {
         const center = centerScale(props.sec)
         props.chart.projection.rotate([-center[0], -center[1], 0])

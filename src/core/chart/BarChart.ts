@@ -1,3 +1,4 @@
+import { KalmanFilterOptions } from './../utils/KalmanFilter'
 import { max, range, sum } from 'd3-array'
 import { Component } from '../component/Component'
 import { Image } from '../component/Image'
@@ -27,6 +28,7 @@ export interface BarChartOptions extends BaseChartOptions {
   showRankLabel?: boolean
   barInfoOptions?: Omit<TextOptions, 'key'>
   swapDurationMS?: number
+  kalmanFilterOptions?: KalmanFilterOptions
 }
 
 export interface BarOptions {

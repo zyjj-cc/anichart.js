@@ -1,6 +1,6 @@
 {
   "name": "anichart",
-  "version": "3.1.0",
+  "version": "3.2.2",
   "description": "Data visualization animation library",
   "author": "jannchie <jannchie@gmail.com>",
   "license": "MIT",
@@ -32,7 +32,6 @@
     "dev": "webpack --config webpack.dev.js",
     "watch": "webpack --watch --config webpack.dev.js",
     "prepublishOnly": "pnpm build",
-    "test-node": "ts-node ./test/index_for_node.ts",
     "git-patch": "git checkout --patch master ./src"
   },
   "devDependencies": {

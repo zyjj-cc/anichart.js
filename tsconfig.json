@@ -28,11 +28,10 @@
     "disableReferencedProjectLoad": true,
     "extendedDiagnostics": true,
     "noImplicitUseStrict": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
   },
   "compileOnSave": true,
   "include": [
     "src/**/*",
-    "test/**/*"
   ]
 }
