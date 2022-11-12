@@ -42,6 +42,7 @@ interface MapChartOptions extends BaseChartOptions {
   updateProjection?: (data: UpdateProjectionProps) => void
   focusTop?: boolean
   focusTopKfOptions?: KalmanFilterOptions
+  focusTopValueField?: string
 }
 export class MapChart extends BaseChart {
   private geoGener: GeoPath<any, GeoPermissibleObjects>
@@ -71,6 +72,7 @@ export class MapChart extends BaseChart {
   private readonly propertiesMap: Map<string, any> = new Map<string, any>()
   private readonly focusTop: boolean
   private readonly focusTopKfOptions: KalmanFilterOptions = { R: 0.1, Q: 5 }
+  private readonly focusTopValueField: string
 
   updateProjection: ((props: UpdateProjectionProps) => void) = (props) => {
     props.chart.projection.rotate([props.sec, 0, 0])
@@ -110,6 +112,11 @@ export class MapChart extends BaseChart {
       options.labelAlphaScale ?? scaleLinear([400, 560], [0, 1]).clamp(true)
     if (!options.focusTop && options.updateProjection) {
       this.updateProjection = options.updateProjection
+    }
+    if (options.focusTopValueField) {
+      this.focusTopValueField = options.focusTopValueField
+    } else {
+      this.focusTopValueField = this.valueField
     }
     this.focusTop = options.focusTop ?? false
   }
@@ -176,15 +183,18 @@ export class MapChart extends BaseChart {
         this.stage?.options.sec ?? 10,
         0.1, // every  sec
       )
-      const centerRange = secRange.map((sec) => this.propertiesMap.get(this.getCurrentData(sec)[0][this.idField]).center)
       const kfx = new KalmanFilter(this.focusTopKfOptions)
       const kfy = new KalmanFilter(this.focusTopKfOptions)
-      const centerData: Array<[number, number]> = []
-      centerRange.forEach(center => {
-        const x = kfx.filter(center[0])
-        centerData.push([x, kfy.filter(center[1])])
+      const centerRange = secRange.map((sec) => {
+        const curData = this.getCurrentData(sec).filter(d => this.propertiesMap.get(d[this.idField])?.center !== undefined).sort((a, b) => b[this.focusTopValueField] - a[this.focusTopValueField])
+        if (curData.length === 0) return [kfx.lastMeasurement(), kfy.lastMeasurement()]
+        if (this.propertiesMap.get(curData[0][this.idField]).center) {
+          const center = this.propertiesMap.get(curData[0][this.idField]).center
+          return [kfx.filter(center[0]), kfy.filter(center[1])]
+        }
+        return [kfx.lastMeasurement(), kfy.lastMeasurement()]
       })
-      const centerScale = scaleLinear(secRange, centerData).clamp(true)
+      const centerScale = scaleLinear(secRange, centerRange).clamp(true)
       this.updateProjection = (props) => {
         const center = centerScale(props.sec)
         props.chart.projection.rotate([-center[0], -center[1], 0])
