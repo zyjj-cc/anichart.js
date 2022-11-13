@@ -362,7 +362,7 @@ export class MapChart extends BaseChart {
       }
       if (label != null) {
         (label.children[0] as Text).text =
-          this.dataScales?.get(mapId)?.(sec)[this.valueField] ||
+          this.dataScales?.get(mapId)?.(sec)?.[this.valueField] ||
           !this.noDataLabel
             ? this.labelFormat(mapId, this.meta, this.dataGroupByID)
             : this.noDataLabel
@@ -371,19 +371,22 @@ export class MapChart extends BaseChart {
         (label as Rect).shape.width = width + this.labelPadding
       }
     }
-    for (const [id, data] of this.dataScales) {
+    for (const [id, f] of this.dataScales) {
       const mapId = this.getMapId(id)
-      const currentValue = data(sec)[this.valueField]
-      const rate = this.scale(currentValue)
-      const color = this.visualMap(rate, currentValue)
-      const comp = this.pathComponentMap.get(mapId)
-      if (comp != null) {
-        comp.fillStyle = currentValue ? color : this.defaultFill
-        if (this.useShadow) {
-          comp.shadow = {
-            enable: true,
-            blur: this.pathShadowBlur * rate + 1,
-            color: this.pathShadowColor ?? color,
+      const data = f(sec)
+      if (data) {
+        const currentValue = data[this.valueField]
+        const rate = this.scale(currentValue)
+        const color = this.visualMap(rate, currentValue)
+        const comp = this.pathComponentMap.get(mapId)
+        if (comp != null) {
+          comp.fillStyle = currentValue ? color : this.defaultFill
+          if (this.useShadow) {
+            comp.shadow = {
+              enable: true,
+              blur: this.pathShadowBlur * rate + 1,
+              color: this.pathShadowColor ?? color,
+            }
           }
         }
       }

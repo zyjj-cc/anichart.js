@@ -17,6 +17,7 @@ export interface BaseChartOptions {
   aniTime?: [number, number]
   fadeTime?: [number, number]
   freezeTime?: [number, number]
+  ignoreNaN?: boolean
   position?: { x: number, y: number }
   shape?: { width: number, height: number }
   margin?: { left: number, top: number, bottom: number, right: number }
@@ -68,6 +69,7 @@ export abstract class BaseChart extends Ani {
   showAxis: boolean
   showXAxis: boolean
   showYAxis: boolean
+  ignoreNaN: boolean = true
   constructor (options: BaseChartOptions = {}) {
     super()
     if (!options) return
@@ -192,7 +194,11 @@ export abstract class BaseChart extends Ani {
               typeof d[k] === 'string' &&
               (this.valueKeys.includes(k) || this.valueField === k)
             ) {
-              d[k] = +d[k].replace(/,/g, '')
+              if (d[k] === '') {
+                d[k] = NaN
+              } else {
+                d[k] = +d[k].replace(/,/g, '')
+              }
             }
         }
       })
@@ -222,14 +228,26 @@ export abstract class BaseChart extends Ani {
       // 插入 NaN
       this.insertNaN(dataList, dateExtent)
       // 可优化: 删掉连续的重复值
-      // FIXME: 此处有BUG。目前的实现，会干掉连续两个重复值的后一个。
-      // 然而只有出现连续的三个重复值，才能忽略了中间的一个重复值。
       dataList = this.removeDumplicate(dataList)
       const dateList = dataList.map((d) => d[this.dateField])
-      const secList = dateList.map((d) => this.secToDate.invert(d))
+      let secList = dateList.map((d) => this.secToDate.invert(d))
+      if (this.ignoreNaN) {
+        const nanIndex: number[] = []
+        secList.forEach((s, i) => {
+          if (i === 0) return
+          if (isNaN(dataList[i][this.valueField])) {
+            nanIndex.push(i)
+          }
+        })
+        dataList = dataList.filter((d, i) => !nanIndex.includes(i))
+        secList = secList.filter((s, i) => !nanIndex.includes(i))
+      }
       // 线性插值
       const dataScale = scaleLinear(secList, dataList).clamp(true)
       dataScales.set(k, dataScale)
+      if (k === 'KAZ') {
+        console.log(k, dataList.map(d => d[this.valueField]))
+      }
     })
     this.dataScales = dataScales
   }
