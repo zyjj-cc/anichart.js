@@ -238,6 +238,7 @@ export class MapChart extends BaseChart {
       const label = new Rect({
         key: `map-label-${mapId}`,
         position: { x: 0, y: 0 },
+        alpha: 0,
         fillStyle: '#2225',
         strokeStyle: this.strokeStyle,
         shape: {
@@ -353,20 +354,22 @@ export class MapChart extends BaseChart {
         const center = this.projection(cp)
         const area = this.geoGener.area(feature)
         label.alpha = path ? this.labelAlphaScale(area) : 0
-        if (center != null) {
+        if (center !== null) {
+          if (center[0] === 0) {
+            console.log(center[0] === 0)
+          }
           label.position.x = center[0]
           label.position.y = center[1]
         } else {
           label.alpha = 0
         }
       }
-      if (label != null) {
-        (label.children[0] as Text).text =
-          this.dataScales?.get(mapId)?.(sec)?.[this.valueField] ||
+      if (label) {
+        const text = this.dataScales?.get(mapId)?.(sec)?.[this.valueField] ||
           !this.noDataLabel
-            ? this.labelFormat(mapId, this.meta, this.dataGroupByID)
-            : this.noDataLabel
-
+          ? this.labelFormat(mapId, this.meta, this.dataGroupByID)
+          : this.noDataLabel;
+        (label.children[0] as Text).text = text
         const width = canvasHelper.measure(label.children[0] as Text).width;
         (label as Rect).shape.width = width + this.labelPadding
       }
