@@ -198,6 +198,9 @@ export class MapChart extends BaseChart {
       this.updateProjection = (props) => {
         const center = centerScale(props.sec)
         props.chart.projection.rotate([-center[0], -center[1], 0])
+        if (props.sec < this.aniTime[0]) {
+          props.chart.projection.rotate([0, 0, 0])
+        }
       }
     }
   }

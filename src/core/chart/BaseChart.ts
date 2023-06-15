@@ -329,12 +329,11 @@ export abstract class BaseChart extends Ani {
   }
 
   getComponent (sec: number): Component | null {
-    const res = new Component({
-      key: 'base-chart',
-      position: this.position,
-      alpha: this.alphaScale(sec - this.fadeTime[0] - this.freezeTime[0]),
-    })
-    return res
+    return new Component({
+          key: 'base-chart',
+          position: this.position,
+          alpha: this.alphaScale(sec - this.fadeTime[0] - this.freezeTime[0]),
+        });
   }
 
   setMeta () {
@@ -416,17 +415,16 @@ export abstract class BaseChart extends Ani {
         : sec > this.aniTime[1]
           ? this.aniTime[1]
           : sec
-    const scales = {
-      x: scaleLinear(
-        [this.aniTime[0], trueSec],
-        [0, this.shape.width - this.margin.left - this.margin.right],
-      ),
-      y: scaleLinear(
-        [minValue, maxValue],
-        [this.shape.height - this.margin.top - this.margin.bottom, 0],
-      ),
-    }
-    return scales
+    return {
+          x: scaleLinear(
+            [this.aniTime[0], trueSec],
+            [0, this.shape.width - this.margin.left - this.margin.right],
+          ),
+          y: scaleLinear(
+            [minValue, maxValue],
+            [this.shape.height - this.margin.top - this.margin.bottom, 0],
+          ),
+        };
   }
 
   protected getAxis (sec: number, scales: { x: any, y: any }) {

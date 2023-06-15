@@ -14,6 +14,8 @@ function initStage (stage: ani.Stage) {
     aniTime: [4, 60],
     dataName: 'filted_data',
     idField: 'iso_code',
+    showXAxis: true,
+    margin: { top: 100, left: 10, right: 10, bottom: 10 },
     valueField: 'total_vaccinations',
   })
 
@@ -36,7 +38,7 @@ function initStage (stage: ani.Stage) {
     visualMap: scaleLinear([1, 0.7, 0.3, 0], ['#0284c7FF', '#0284c744', '#0284c722', '#0284c700'])
       .clamp(true),
   })
-  stage.addChild(map)
+  // stage.addChild(map)
   stage.addChild(barChart)
   void stage.resource.loadJSON(
     'https://raw.githubusercontent.com/Jannchie/geoJson-map-data/main/world.json',

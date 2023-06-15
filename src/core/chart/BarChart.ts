@@ -1,5 +1,5 @@
 import { KalmanFilterOptions } from './../utils/KalmanFilter'
-import { max, range, sum } from 'd3-array'
+import { extent, max, range, sum } from 'd3-array'
 import { Component } from '../component/Component'
 import { Image } from '../component/Image'
 import { Rect } from '../component/Rect'
@@ -269,7 +269,41 @@ export class BarChart extends BaseChart {
       const dateLabel = new Text({ key: 'date-label', ...dateLabelOptions })
       barComponent.children.push(dateLabel)
     }
+    if (this.showXAxis || this.showAxis) {
+      const scales = this.getScalesBySec(sec)
+      const axises = this.getAxis(sec, scales)
+      axises.xAxis.position.y -= 38
+      barComponent.children.push(axises.xAxis)
+    }
     return barComponent
+  }
+
+  protected getScalesBySec (sec: number) {
+    const currentData = this.getCurrentData(sec)
+    let [minValue, maxValue] = extent(currentData, (d) => d[this.valueField])
+
+    if (this.historyMax > maxValue) {
+      maxValue = this.historyMax
+    }
+    if (this.historyMin < minValue) {
+      minValue = this.historyMin
+    }
+    const trueSec =
+      sec < this.aniTime[0]
+        ? this.aniTime[0]
+        : sec > this.aniTime[1]
+          ? this.aniTime[1]
+          : sec
+    return {
+          x: scaleLinear(
+            [minValue, maxValue],
+            [0, this.shape.width - this.margin.left - this.margin.right],
+            ),
+            y: scaleLinear(
+            [this.aniTime[0], trueSec],
+            [this.shape.height - this.margin.top - this.margin.bottom, 0],
+          ),
+        };
   }
 
   private appendRankLabels (res: Component) {
@@ -308,17 +342,16 @@ export class BarChart extends BaseChart {
       const cMax = max(currentData, (d) => d[this.valueField])
       domain = [0, this.historyMax > cMax ? this.historyMax : cMax]
     }
-    const scaleX = scaleLinear(domain, [
-      0,
-      this.shape.width -
-        this.margin.left -
-        this.barPadding -
-        this.labelPlaceholder -
-        this.totalRankPlaceHolder -
-        this.margin.right -
-        this.valuePlaceholder,
-    ])
-    return scaleX
+    return scaleLinear(domain, [
+          0,
+          this.shape.width -
+            this.margin.left -
+            this.barPadding -
+            this.labelPlaceholder -
+            this.totalRankPlaceHolder -
+            this.margin.right -
+            this.valuePlaceholder,
+        ]);
   }
 
   getDateLabelText (sec: number): string {

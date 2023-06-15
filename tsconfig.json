@@ -27,7 +27,6 @@
     "disableSizeLimit": true,
     "disableReferencedProjectLoad": true,
     "extendedDiagnostics": true,
-    "noImplicitUseStrict": true,
     "noImplicitThis": true,
   },
   "compileOnSave": true,
