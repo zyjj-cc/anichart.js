@@ -296,12 +296,12 @@ export class BarChart extends BaseChart {
           : sec
     return {
           x: scaleLinear(
-            [minValue, maxValue],
-            [0, this.shape.width - this.margin.left - this.margin.right],
+              [minValue, maxValue],
+              [this.margin.left + this.labelPlaceholder, this.shape.width - this.margin.left - this.margin.right - this.valuePlaceholder - this.rankLabelPlaceholder],
             ),
             y: scaleLinear(
-            [this.aniTime[0], trueSec],
-            [this.shape.height - this.margin.top - this.margin.bottom, 0],
+              [this.aniTime[0], trueSec],
+              [this.shape.height - this.margin.top - this.margin.bottom, 0],
           ),
         };
   }

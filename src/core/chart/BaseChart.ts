@@ -433,6 +433,7 @@ export abstract class BaseChart extends Ani {
       key: 'base-chart-tick',
       text: `${this.yTickFormat(this.currentMax)}`,
       font,
+      textAlign: 'center',
       fillStyle: '#777',
       fontSize: size,
     }
