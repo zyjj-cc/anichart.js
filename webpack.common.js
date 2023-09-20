@@ -1,30 +1,30 @@
-const path = require("path");
+const path = require('path')
 module.exports = {
-  entry: "./src/index.ts",
+  entry: './src/index.ts',
   output: {
-    filename: "anichart.js",
-    path: path.resolve(__dirname, "dist"),
-    library: "anichart",
-    libraryTarget: "umd",
-    globalObject: "this",
+    filename: 'anichart.js',
+    path: path.resolve(__dirname, 'dist'),
+    library: 'anichart',
+    libraryTarget: 'umd',
+    globalObject: 'this',
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
       {
         test: /\.ts?$/,
-        loader: "ts-loader",
-        options: { configFile: "tsconfig.json" },
+        loader: 'ts-loader',
+        options: { configFile: 'tsconfig.json' },
       },
       {
         test: /\.js$/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
         },
-        exclude: "/node_modules/",
+        exclude: '/node_modules/',
       },
     ],
   },
-};
+}
