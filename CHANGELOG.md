@@ -1,5 +1,17 @@
 # Change Log
 
+## v3.3.1
+
+[compare changes](https://github.com/Jannchie/anichart.js/compare/v3.3.0...v3.3.1)
+
+### 🩹 Fixes
+
+- **bar:** X axis domain ([d5920c5](https://github.com/Jannchie/anichart.js/commit/d5920c5))
+
+### ❤️ Contributors
+
+- Jianqi Pan ([@Jannchie](http://github.com/Jannchie))
+
 ## ver 3.2.0 [2022-10-07]
 
 - In the Stage component, use the async and await syntax.
