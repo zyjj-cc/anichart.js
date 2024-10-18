@@ -1,5 +1,5 @@
 {
-  "name": "anichart",
+  "name": "zyjj-anichart",
   "version": "3.3.1",
   "description": "Data visualization animation library",
   "author": "jannchie <jannchie@gmail.com>",
@@ -32,7 +32,8 @@
     "dev": "webpack --config webpack.dev.js",
     "watch": "webpack --watch --config webpack.dev.js",
     "prepublishOnly": "pnpm build",
-    "git-patch": "git checkout --patch master ./src"
+    "git-patch": "git checkout --patch master ./src",
+    "publish_pkg": "rm -rf lib/* && pnpm build && npm publish --access public"
   },
   "devDependencies": {
     "@algolia/client-search": "4.17.2",
@@ -53,8 +54,8 @@
     "@types/d3-shape": "^3.1.1",
     "@types/d3-time-format": "^4.0.0",
     "@types/d3-timer": "^3.0.0",
-    "@types/lodash": "^4.14.195",
     "@types/react": "^18.2.12",
+    "@types/lodash-es": "^4.17.12",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "babel-loader": "^9.1.2",
@@ -93,12 +94,13 @@
     "d3-time-format": "^4.1.0",
     "d3-timer": "^3.0.1",
     "dayjs": "^1.11.8",
-    "lodash": "^4.17.21"
+    "lodash-es": "^4.17.21"
   },
   "keywords": [
     "animation",
     "chart",
     "data",
     "visualization"
-  ]
+  ],
+  "packageManager": "pnpm@9.8.0+sha512.8e4c3550fb500e808dbc30bb0ce4dd1eb614e30b1c55245f211591ec2cdf9c611cabd34e1364b42f564bd54b3945ed0f49d61d1bbf2ec9bd74b866fcdc723276"
 }

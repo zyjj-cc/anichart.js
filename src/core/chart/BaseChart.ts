@@ -8,7 +8,7 @@ import { Component } from '../component/Component'
 import { Text, TextOptions } from '../component/Text'
 import { font } from '../Constant'
 import { Stage } from '../Stage'
-import cloneDeep from 'lodash/clonedeep'
+import { cloneDeep } from 'lodash-es'
 function isValidDate (date: any) {
   return date instanceof Date && !isNaN(date.getTime())
 }
